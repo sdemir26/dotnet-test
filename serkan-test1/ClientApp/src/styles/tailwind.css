@@ -1,0 +1,14 @@
+/* src/styles/tailwind.css */
+
+/* Tailwind CSS direktifleri , ÖNCE GELMELİ !! */
+/* Bunlar, Tailwind'in temel stillerini, bileşenlerini ve yardımcı sınıflarını dahil eder. */
+/* Tailwind CSS v4 import - V4'te @tailwind direktifleri YOK! */
+@import "tailwindcss" prefix(tw);
+/* Config burada da yazılabiliyor. Bazıları daha temiz yaklaşım olarak buluyor... vs */
+ @config "../../tailwind.config.js"; 
+
+@layer utilities {
+  .tw-trigger {
+    @apply tw:bg-red-500 tw:text-white tw:p-4 tw:rounded;
+  }
+}
