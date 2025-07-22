@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/serkan-test/.vs/serkan-test
+/serkan-test/serkan-test/obj
+/serkan-test
+/serkan-test1/bin/Debug/net9.0
+/serkan-test1/obj
