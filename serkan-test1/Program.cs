@@ -28,9 +28,10 @@ namespace serkan_test1
             app.UseAuthorization();
 
             app.MapStaticAssets();
+            app.UseStaticFiles();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{controller=Theme}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
             app.Run();

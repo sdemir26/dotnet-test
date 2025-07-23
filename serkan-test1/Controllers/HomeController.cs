@@ -8,11 +8,12 @@ namespace serkan_test1.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IMapper mapper;
+        private readonly IMapper _mapper;
 
-        public HomeController(IMapper mapper)
+        public HomeController(IMapper mapper,ILogger<HomeController> logger)
         {
-            this.mapper = mapper;
+            this._mapper = mapper;
+            _logger = logger;
         }
 
         
@@ -26,7 +27,7 @@ namespace serkan_test1.Controllers
         [HttpPost]
         public IActionResult PostIndex([FromForm] MusteriDto musteri)
         {
-           var Veritabani= mapper.Map<Customer>(musteri);
+           var Veritabani= _mapper.Map<Customer>(musteri);
             return View();
         }
 

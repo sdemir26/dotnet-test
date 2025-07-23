@@ -11,7 +11,7 @@
 // $primary: #your-color;
 // $secondary: #your-secondary-color;
 
-// 3. Bootstrap utilities'i import edin (bu satır hataya neden olan satırdı)
+// 3. Bootstrap utilities'i import edin
 @import "~bootstrap/scss/utilities";
 
 // 4. Bootstrap'in diğer bileşenlerini import edin
@@ -51,50 +51,31 @@
 @import "~bootstrap/scss/utilities/api";
 
 // 6. RTL desteği için (eğer kullanıyorsanız)
-@import "~bootstrap/scss/helpers";
+@import "~bootstrap/scss/helpers"; // Bootstrap'in RTL yardımcılarını içerir
 
-// 7. Kendi özel stillerinizi buraya ekleyebilirsiniz
-// .custom-class {
-//   // özel stilleriniz
-// }
+// 7. Kendi özel stillerinizi veya Bootstrap/Tailwind üzerine yazmalarınızı burada olabilir
 
 /* RTL/LTR Base Styles */
-:root {
-  --bs-body-direction: ltr;
+// HTML elementinin 'dir' özelliğini kullanarak yönlendirme
+// Bu, generate-rtl.js tarafından dönüştürülecek ve RTL için uygun hale gelecek
+[dir="rtl"] {
+  direction: rtl;
 }
 
-[dir="rtl"] {
-  --bs-body-direction: rtl;
+[dir="ltr"] {
+  direction: ltr;
 }
 
 /* Bootstrap RTL düzeltmeleri */
+// Bootstrap'in varsayılan olarak RTL desteği olsa da, bazı ek düzeltmeler gerekebilir.
 [dir="rtl"] .container,
 [dir="rtl"] .container-fluid {
   direction: rtl;
 }
 
-/* Tailwind RTL utilities */
-@layer utilities {
-  .rtl\:text-right:where([dir="rtl"], [dir="rtl"] *) {
-    text-align: right;
-  }
-  
-  .rtl\:text-left:where([dir="rtl"], [dir="rtl"] *) {
-    text-align: left;
-  }
-  
-  .rtl\:mr-auto:where([dir="rtl"], [dir="rtl"] *) {
-    margin-right: auto;
-  }
-  
-  .rtl\:ml-auto:where([dir="rtl"], [dir="rtl"] *) {
-    margin-left: auto;
-  }
-}
-
-/* Bootstrap + Tailwind uyumluluğu için custom sınıflar */
+/* Tailwind + Bootstrap uyumluluğu için custom sınıflar */
+// Tailwind'in reset'lerini Bootstrap ile uyumlu hale getirir
 .tw-bootstrap-reset {
-  /* Tailwind'in bazı reset'lerini Bootstrap ile uyumlu hale getir */
   box-sizing: border-box;
 }
 
@@ -107,7 +88,9 @@
   .tw-sm-block { display: block; }
 }
 
-/* RTL specific adjustments */
+/* RTL specific adjustments for Tailwind classes (generate-rtl.js tarafından işlenecek) */
+// Bu kurallar generate-rtl.js tarafından otomatik olarak tersine çevrilecektir.
+// Ancak, bazı durumlarda manuel müdahale gerekebilir.
 [dir="rtl"] .tw-ml-auto {
   margin-left: 0;
   margin-right: auto;
@@ -146,7 +129,6 @@
 [dir="rtl"] .float-end {
   float: left !important;
 }
-
 
 // Kendi özel stilleriniz veya Bootstrap/Tailwind üzerine yazmalarınız burada olabilir
 .rtl-card {
