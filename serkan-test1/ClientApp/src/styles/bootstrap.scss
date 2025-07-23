@@ -81,11 +81,15 @@
 
 /* Responsive breakpoints - Bootstrap ile uyumlu */
 @media (max-width: 575.98px) {
-  .tw-sm-hidden { display: none; }
+  .tw-sm-hidden {
+    display: none;
+  }
 }
 
 @media (min-width: 576px) {
-  .tw-sm-block { display: block; }
+  .tw-sm-block {
+    display: block;
+  }
 }
 
 /* RTL specific adjustments for Tailwind classes (generate-rtl.js tarafından işlenecek) */
@@ -102,8 +106,13 @@
 }
 
 /* Custom utilities for RTL/LTR */
-.direction-ltr { direction: ltr; }
-.direction-rtl { direction: rtl; }
+.direction-ltr {
+  direction: ltr;
+}
+
+.direction-rtl {
+  direction: rtl;
+}
 
 /* Bootstrap navbar RTL fixes */
 [dir="rtl"] .navbar-nav {
@@ -148,3 +157,10 @@
   font-size: 0.95em;
   line-height: 1.6;
 }
+
+.test {
+  color: black; 
+}
+
+
+@import "layout-styles";

@@ -8,7 +8,7 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const ESLintWebpackPlugin = require("eslint-webpack-plugin");
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const { PurgeCSSPlugin } = require("purgecss-webpack-plugin");
-const glob = require("glob");
+const glob = require("glob"); // glob'u dahil ediyoruz
 const Dotenv = require("dotenv-webpack");
 
 // Yeni proje yapısına göre dizin yolları
@@ -48,7 +48,7 @@ const config = {
   devtool: isDev ? "eval-cheap-module-source-map" : false,
 
   devServer: isDev
-    ? {
+      ? {
         allowedHosts: "all",
         historyApiFallback: true,
         client: {
@@ -63,12 +63,12 @@ const config = {
           // Development server, public klasöründeki statik dosyaları servis eder
           directory: WWWROOT_DIR,
         },
-        compress: true,
+        compress: false, // Burayı false yaptık, önceki hatayı gidermek için
         open: false,
         hot: true,
         port: 8080,
       }
-    : undefined,
+      : undefined,
 
   plugins: [
     // wwwroot klasörünü temizler
@@ -114,243 +114,128 @@ const config = {
         },
       ],
     }),
-    // ...(!isDev
-    //   ? [
-    //       new PurgeCSSPlugin({
-    //         paths: glob.sync(
-    //           [
-    //             path.resolve(SRC_DIR, "**/*"),
-    //             path.resolve(WWWROOT_DIR, "**/*.html"),
-    //             // .NET Core projesi için bu yolları da ekleyin
-    //             path.resolve(PROJECT_ROOT, "../Views/**/*.{cshtml,razor}"),
-    //             path.resolve(PROJECT_ROOT, "../**/*.{cshtml,razor}"),
-    //           ],
-    //           { nodir: true }
-    //         ),
-    //         // Content ayarları - hangi dosyalarda sınıf arayacağını belirtir
-    //         content: [
-    //           path.resolve(SRC_DIR, "**/*.{html,js,ts,jsx,tsx}"),
-    //           path.resolve(WWWROOT_DIR, "**/*.html"),
-    //           path.resolve(PROJECT_ROOT, "../Views/**/*.{cshtml,razor}"),
-    //           path.resolve(PROJECT_ROOT, "../**/*.{cshtml,razor}"),
-    //         ],
-    //         safelist: {
-    //           standard: [
-    //             // HTML elementleri ve temel sınıflar
-    //             "html",
-    //             "body",
-    //             "div",
-    //             "span",
-    //             "p",
-    //             "a",
-    //             "img",
-    //             "h1",
-    //             "h2",
-    //             "h3",
-    //             "h4",
-    //             "h5",
-    //             "h6",
+    // PurgeCSSPlugin'i sadece üretim modunda etkinleştiriyoruz
+    ...(!isDev
+        ? [
+          new PurgeCSSPlugin({
+            // PurgeCSS'in tarayacağı dosyalar
+            paths: glob.sync(
+                [
+                  path.resolve(SRC_DIR, "**/*"),
+                  path.resolve(WWWROOT_DIR, "**/*.html"),
+                  path.resolve(PROJECT_ROOT, "../Views/**/*.{cshtml,razor}"),
+                  // node_modules'ü hariç tut
+                  ...glob.sync(path.join(PROJECT_ROOT, '..', '**', '*.{html,cshtml,razor}'), {
+                    ignore: [
+                      path.join(PROJECT_ROOT, '..', 'node_modules', '**', '*')
+                    ]
+                  }),
+                ],
+                { nodir: true }
+            ),
+            // Content ayarları - hangi dosyalarda sınıf arayacağını belirtir
+            content: [
+              path.resolve(SRC_DIR, "**/*.{html,js,ts,jsx,tsx}"),
+              path.resolve(WWWROOT_DIR, "**/*.html"),
+              path.resolve(PROJECT_ROOT, "../Views/**/*.{cshtml,razor}"),
+              // node_modules'ü hariç tut
+              ...glob.sync(path.join(PROJECT_ROOT, '..', '**', '*.{html,cshtml,razor}'), {
+                ignore: [
+                  path.join(PROJECT_ROOT, '..', 'node_modules', '**', '*')
+                ]
+              }),
+            ],
+            // Güvenli listeye eklenen sınıflar (silinmemesi gerekenler)
+            safelist: {
+              standard: [
+                // HTML elementleri ve temel sınıflar
+                "html", "body", "div", "span", "p", "a", "img", "h1", "h2", "h3", "h4", "h5", "h6",
 
-    //             // Tailwind ön eki ile başlayan tüm sınıflar
-    //             /^tw-/,
+                // Tailwind ön eki ile başlayan tüm sınıflar
+                /^tw-/,
 
-    //             // Bootstrap bileşen sınıfları - daha geniş pattern'ler
-    //             /^(btn|button)/,
-    //             /^card/,
-    //             /^container/,
-    //             /^row/,
-    //             /^col/,
-    //             /^navbar/,
-    //             /^nav/,
-    //             /^dropdown/,
-    //             /^form/,
-    //             /^input/,
-    //             /^modal/,
-    //             /^alert/,
-    //             /^badge/,
-    //             /^table/,
-    //             /^list/,
-    //             /^pagination/,
-    //             /^spinner/,
-    //             /^carousel/,
-    //             /^toast/,
-    //             /^tooltip/,
-    //             /^popover/,
-    //             /^collapse/,
-    //             /^accordion/,
-    //             /^offcanvas/,
-    //             /^progress/,
-    //             /^placeholder/,
+                // Bootstrap bileşen sınıfları - daha geniş pattern'ler
+                /^(btn|button)/, /^card/, /^container/, /^row/, /^col/, /^navbar/, /^nav/, /^dropdown/,
+                /^form/, /^input/, /^modal/, /^alert/, /^badge/, /^table/, /^list/, /^pagination/,
+                /^spinner/, /^carousel/, /^toast/, /^tooltip/, /^popover/, /^collapse/, /^accordion/,
+                /^offcanvas/, /^progress/, /^placeholder/,
 
-    //             // Bootstrap renk sınıfları
-    //             /^text-(primary|secondary|success|danger|warning|info|light|dark|body|muted|white|black)/,
-    //             /^bg-(primary|secondary|success|danger|warning|info|light|dark|body|white|transparent)/,
-    //             /^border-(primary|secondary|success|danger|warning|info|light|dark|white)/,
+                // Bootstrap renk sınıfları
+                /^text-(primary|secondary|success|danger|warning|info|light|dark|body|muted|white|black)/,
+                /^bg-(primary|secondary|success|danger|warning|info|light|dark|body|white|transparent)/,
+                /^border-(primary|secondary|success|danger|warning|info|light|dark|white)/,
 
-    //             // Bootstrap spacing sınıfları
-    //             /^p[xyteblrs]?-[0-5]$/,
-    //             /^m[xyteblrs]?-[0-5]$/,
-    //             /^p[xyteblrs]?-auto$/,
-    //             /^m[xyteblrs]?-auto$/,
+                // Bootstrap spacing sınıfları
+                /^p[xyteblrs]?-[0-5]$/, /^m[xyteblrs]?-[0-5]$/, /^p[xyteblrs]?-auto$/, /^m[xyteblrs]?-auto$/,
 
-    //             // Bootstrap grid ve flexbox
-    //             /^d-(none|block|inline|inline-block|flex|grid)/,
-    //             /^flex/,
-    //             /^justify-content/,
-    //             /^align/,
-    //             /^order/,
-    //             /^gap/,
-    //             /^g-/,
-    //             /^gx-/,
-    //             /^gy-/,
+                // Bootstrap grid ve flexbox
+                /^d-(none|block|inline|inline-block|flex|grid)/, /^flex/, /^justify-content/, /^align/,
+                /^order/, /^gap/, /^g-/, /^gx-/, /^gy-/,
 
-    //             // Bootstrap boyut sınıfları
-    //             /^w-(25|50|75|100|auto)$/,
-    //             /^h-(25|50|75|100|auto)$/,
-    //             /^mw-/,
-    //             /^mh-/,
-    //             /^vw-/,
-    //             /^vh-/,
+                // Bootstrap boyut sınıfları
+                /^w-(25|50|75|100|auto)$/, /^h-(25|50|75|100|auto)$/, /^mw-/, /^mh-/, /^vw-/, /^vh-/,
 
-    //             // Bootstrap pozisyon sınıfları
-    //             /^position/,
-    //             /^(top|bottom|left|right|start|end)-/,
-    //             /^z-index/,
+                // Bootstrap pozisyon sınıfları
+                /^position/, /^(top|bottom|left|right|start|end)-/, /^z-index/,
 
-    //             // Bootstrap metin sınıfları
-    //             /^text-(start|end|center|justify)/,
-    //             /^text-(lowercase|uppercase|capitalize)/,
-    //             /^fw-(light|normal|bold|bolder|lighter)/,
-    //             /^fs-/,
-    //             /^lh-/,
+                // Bootstrap metin sınıfları
+                /^text-(start|end|center|justify)/, /^text-(lowercase|uppercase|capitalize)/,
+                /^fw-(light|normal|bold|bolder|lighter)/, /^fs-/, /^lh-/,
 
-    //             // Bootstrap border ve shadow
-    //             /^border/,
-    //             /^rounded/,
-    //             /^shadow/,
+                // Bootstrap border ve shadow
+                /^border/, /^rounded/, /^shadow/,
 
-    //             // Bootstrap overflow ve display
-    //             /^overflow/,
-    //             /^float/,
-    //             /^user-select/,
-    //             /^pe-/,
-    //             /^ps-/,
+                // Bootstrap overflow ve display
+                /^overflow/, /^float/, /^user-select/, /^pe-/, /^ps-/,
 
-    //             // Bootstrap utilities
-    //             /^visually-hidden/,
-    //             /^stretched-link/,
-    //             /^text-decoration/,
-    //             /^text-wrap/,
-    //             /^text-break/,
-    //             /^font-/,
-    //             /^opacity-/,
-    //             /^ratio/,
-    //             /^vstack/,
-    //             /^hstack/,
+                // Bootstrap utilities
+                /^visually-hidden/, /^stretched-link/, /^text-decoration/, /^text-wrap/, /^text-break/,
+                /^font-/, /^opacity-/, /^ratio/, /^vstack/, /^hstack/,
 
-    //             // Form sınıfları
-    //             /^form-(control|select|check|range|floating|label|text)/,
-    //             /^input-group/,
-    //             /^is-(valid|invalid)/,
-    //             /^valid/,
-    //             /^invalid/,
+                // Form sınıfları
+                /^form-(control|select|check|range|floating|label|text)/, /^input-group/,
+                /^is-(valid|invalid)/, /^valid/, /^invalid/,
 
-    //             // Interactive state'ler
-    //             /^focus-ring/,
-    //             /^btn-close/,
-    //             /^dropdown-/,
-    //             /^modal-/,
-    //             /^offcanvas-/,
-    //             /^nav-/,
-    //             /^tab-/,
-    //             /^accordion-/,
-    //             /^carousel-/,
-    //             /^popover-/,
-    //             /^tooltip-/,
+                // Interactive state'ler
+                /^focus-ring/, /^btn-close/, /^dropdown-/, /^modal-/, /^offcanvas-/, /^nav-/, /^tab-/,
+                /^accordion-/, /^carousel-/, /^popover-/, /^tooltip-/,
 
-    //             // Data attributes
-    //             /^data-bs-/,
+                // Data attributes
+                /^data-bs-/,
 
-    //             // Responsive sınıfları
-    //             /^col-(\w+)-(\d+)$/,
-    //             /^d-(\w+)-(none|block|inline|flex|grid)$/,
-    //             /^text-(\w+)-(start|end|center)$/,
-    //           ],
-    //           deep: [
-    //             // Dinamik olarak eklenen sınıflar
-    //             /show$/,
-    //             /active$/,
-    //             /disabled$/,
-    //             /selected$/,
-    //             /checked$/,
-    //             /focus$/,
-    //             /hover$/,
-    //             /collapsing$/,
-    //             /fade$/,
-    //             /modal-open/,
-    //             /carousel-item-(start|end|next|prev)/,
-    //             /no-transition/,
-    //             /tooltip-/,
-    //             /popover-/,
-    //             /accordion-/,
-    //             /dropdown-/,
-    //             /navbar-/,
-    //             /nav-/,
-    //             /btn-/,
-    //             /form-/,
-    //             /input-/,
-    //             /table-/,
-    //             /list-/,
-    //             /card-/,
-    //             /alert-/,
-    //             /badge-/,
-    //             /pagination-/,
-    //             /breadcrumb-/,
-    //             /spinner-/,
-    //             /progress-/,
-    //             /placeholder-/,
+                // Responsive sınıfları
+                /^col-(\w+)-(\d+)$/, /^d-(\w+)-(none|block|inline|flex|grid)$/, /^text-(\w+)-(start|end|center)$/,
+              ],
+              deep: [
+                // Dinamik olarak eklenen sınıflar
+                /show$/, /active$/, /disabled$/, /selected$/, /checked$/, /focus$/, /hover$/,
+                /collapsing$/, /fade$/, /modal-open/, /carousel-item-(start|end|next|prev)/,
+                /no-transition/, /tooltip-/, /popover-/, /accordion-/, /dropdown-/, /navbar-/,
+                /nav-/, /btn-/, /form-/, /input-/, /table-/, /list-/, /card-/, /alert-/, /badge-/,
+                /pagination-/, /breadcrumb-/, /spinner-/, /progress-/, /placeholder-/,
 
-    //             // RTL/LTR sınıfları
-    //             /rtl/,
-    //             /ltr/,
-    //           ],
-    //           // Greedy matching - daha esnek eşleştirme
-    //           greedy: [
-    //             /^btn-/,
-    //             /^card-/,
-    //             /^nav-/,
-    //             /^dropdown-/,
-    //             /^form-/,
-    //             /^input-/,
-    //             /^modal-/,
-    //             /^alert-/,
-    //             /^badge-/,
-    //             /^table-/,
-    //             /^list-/,
-    //             /^pagination-/,
-    //             /^carousel-/,
-    //             /^accordion-/,
-    //             /^offcanvas-/,
-    //             /^progress-/,
-    //             /^spinner-/,
-    //             /^toast-/,
-    //             /^tooltip-/,
-    //             /^popover-/,
-    //             /^breadcrumb-/,
-    //             /^placeholder-/,
-    //             /^tw-/,
-    //           ],
-    //         },
-    //         // PurgeCSS'e hangi sınıfların korunacağını daha iyi anlayabilmesi için
-    //         fontFace: true,
-    //         keyframes: true,
-    //         variables: true,
-    //         // Daha az agresif temizlik için
-    //         rejected: false,
-    //       }),
-    //       ...(useAnalyzer ? [new BundleAnalyzerPlugin()] : []),
-    //     ]
-    //   : []),
+                // RTL/LTR sınıfları
+                /rtl/, /ltr/,
+              ],
+              // Greedy matching - daha esnek eşleştirme
+              greedy: [
+                /^btn-/, /^card-/, /^nav-/, /^dropdown-/, /^form-/, /^input-/, /^modal-/, /^alert-/,
+                /^badge-/, /^table-/, /^list-/, /^pagination-/, /^carousel-/, /^accordion-/,
+                /^offcanvas-/, /^progress-/, /^spinner-/, /^toast-/, /^tooltip-/, /^popover-/,
+                /^breadcrumb-/, /^placeholder-/,
+                /^tw-/, // Tailwind ön ekli sınıfları koru
+              ],
+            },
+            // PurgeCSS'e hangi sınıfların korunacağını daha iyi anlayabilmesi için
+            fontFace: true,
+            keyframes: true,
+            variables: true,
+            // Daha az agresif temizlik için
+            rejected: false,
+          }),
+          ...(useAnalyzer ? [new BundleAnalyzerPlugin()] : []),
+        ]
+        : []),
   ],
   module: {
     strictExportPresence: true,
@@ -407,11 +292,6 @@ const config = {
                   path.resolve(NODE_MODULES_DIR),
                 ],
               },
-              //   // Bootstrap SASS variables'ını kullanabilmek için
-              //   additionalData: `
-              //   @import "~bootstrap/scss/functions";
-              //   @import "~bootstrap/scss/variables";
-              //   @import "~bootstrap/scss/mixins";`,
             },
           },
         ],
