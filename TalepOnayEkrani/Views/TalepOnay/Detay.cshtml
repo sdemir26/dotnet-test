@@ -1,0 +1,228 @@
+@model TalepOnayEkrani.Models.DegisiklikTalebi
+@{
+    ViewData["Title"] = "Admin - Talep Detayı";
+}
+
+<div class="container-fluid p-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="mb-1 text-dark fw-bold">
+                        <i class="bi bi-file-text me-2 text-primary"></i>
+                        Talep Detayı
+                    </h3>
+                    <p class="text-muted mb-0">Değişiklik talebini detaylı inceleyin</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="@Url.Action("Index", "TalepOnay")" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-1"></i>Listeye Dön
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Talep Bilgileri -->
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Ana Talep Bilgileri -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-primary bg-gradient text-white border-0 py-3">
+                    <h6 class="mb-0 fw-semibold">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Talep Bilgileri
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-medium text-muted">Firma Adı:</label>
+                            <div class="fw-medium">@Model.FirmaAdi</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-medium text-muted">Kullanıcı:</label>
+                            <div class="fw-medium">@Model.KullaniciAdi</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-medium text-muted">Alan Adı:</label>
+                            <div class="fw-medium">@Model.AlanAdi</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-medium text-muted">Talep Tarihi:</label>
+                            <div class="fw-medium">@Model.TalepTarihi.ToString("dd.MM.yyyy HH:mm")</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Değişiklik Detayları -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-info bg-gradient text-white border-0 py-3">
+                    <h6 class="mb-0 fw-semibold">
+                        <i class="bi bi-arrow-left-right me-2"></i>
+                        Değişiklik Detayları
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-medium text-muted">Eski Değer:</label>
+                            <div class="p-3 bg-light rounded border">
+                                <span class="text-muted">@Model.EskiDeger</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-medium text-muted">Yeni Değer:</label>
+                            <div class="p-3 bg-primary bg-opacity-10 rounded border border-primary">
+                                <span class="text-primary fw-medium">@Model.YeniDeger</span>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-medium text-muted">Değişiklik Sebebi:</label>
+                            <div class="p-3 bg-warning bg-opacity-10 rounded border border-warning">
+                                <span class="text-dark">@Model.DegisiklikSebebi</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Durum ve İşlem Bilgileri -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-secondary bg-gradient text-white border-0 py-3">
+                    <h6 class="mb-0 fw-semibold">
+                        <i class="bi bi-flag me-2"></i>
+                        Durum ve İşlem Bilgileri
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-medium text-muted">Mevcut Durum:</label>
+                            <div>
+                                @switch (Model.Durum)
+                                {
+                                    case TalepOnayEkrani.Models.TalepDurumu.KontrolEdiliyor:
+                                        <span class="badge bg-warning fs-6">
+                                            <i class="bi bi-clock me-1"></i>Kontrol Ediliyor
+                                        </span>
+                                        break;
+                                    case TalepOnayEkrani.Models.TalepDurumu.Onaylandi:
+                                        <span class="badge bg-success fs-6">
+                                            <i class="bi bi-check me-1"></i>Onaylandı
+                                        </span>
+                                        break;
+                                    case TalepOnayEkrani.Models.TalepDurumu.Reddedildi:
+                                        <span class="badge bg-danger fs-6">
+                                            <i class="bi bi-times me-1"></i>Reddedildi
+                                        </span>
+                                        break;
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-medium text-muted">İşlem Tarihi:</label>
+                            <div class="fw-medium">
+                                @if (Model.IslemTarihi.HasValue)
+                                {
+                                    @Model.IslemTarihi.Value.ToString("dd.MM.yyyy HH:mm")
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Henüz işlenmedi</span>
+                                }
+                            </div>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.AdminNotu))
+                        {
+                            <div class="col-12">
+                                <label class="form-label small fw-medium text-muted">Admin Notu:</label>
+                                <div class="p-3 bg-info bg-opacity-10 rounded border border-info">
+                                    <span class="text-dark">@Model.AdminNotu</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ Sidebar - İşlem Butonları -->
+        <div class="col-lg-4">
+            @if (Model.Durum == TalepOnayEkrani.Models.TalepDurumu.KontrolEdiliyor)
+            {
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-success bg-gradient text-white border-0 py-3">
+                        <h6 class="mb-0 fw-semibold">
+                            <i class="bi bi-check-circle me-2"></i>
+                            Talebi Onayla
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="@Url.Action("Onayla", "TalepOnay")">
+                            <input type="hidden" name="talepId" value="@Model.Id" />
+                            <div class="mb-3">
+                                <label class="form-label small fw-medium">Admin Notu (Opsiyonel):</label>
+                                <textarea name="adminNotu" class="form-control" rows="3" 
+                                          placeholder="Onay için ek not ekleyebilirsiniz..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="bi bi-check me-1"></i>Onayla
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-danger bg-gradient text-white border-0 py-3">
+                        <h6 class="mb-0 fw-semibold">
+                            <i class="bi bi-x-circle me-2"></i>
+                            Talebi Reddet
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="@Url.Action("Reddet", "TalepOnay")">
+                            <input type="hidden" name="talepId" value="@Model.Id" />
+                            <div class="mb-3">
+                                <label class="form-label small fw-medium text-danger">Red Sebebi:</label>
+                                <textarea name="adminNotu" class="form-control" rows="3" 
+                                          placeholder="Red sebebini yazın..." required></textarea>
+                                <div class="form-text text-danger">Red sebebi zorunludur.</div>
+                            </div>
+                            <button type="submit" class="btn btn-danger w-100">
+                                <i class="bi bi-x me-1"></i>Reddet
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-secondary bg-gradient text-white border-0 py-3">
+                        <h6 class="mb-0 fw-semibold">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Talep Durumu
+                        </h6>
+                    </div>
+                    <div class="card-body text-center">
+                        @if (Model.Durum == TalepOnayEkrani.Models.TalepDurumu.Onaylandi)
+                        {
+                            <i class="bi bi-check-circle text-success mb-3" style="font-size: 3rem;"></i>
+                            <h5 class="text-success">Talep Onaylandı</h5>
+                            <p class="text-muted">Bu talep zaten onaylanmış durumda.</p>
+                        }
+                        else if (Model.Durum == TalepOnayEkrani.Models.TalepDurumu.Reddedildi)
+                        {
+                            <i class="bi bi-x-circle text-danger mb-3" style="font-size: 3rem;"></i>
+                            <h5 class="text-danger">Talep Reddedildi</h5>
+                            <p class="text-muted">Bu talep reddedilmiş durumda.</p>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

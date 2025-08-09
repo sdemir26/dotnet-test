@@ -1,0 +1,477 @@
+@model IEnumerable<serkan_test1.Models.DegisiklikTalebi>
+@{
+    ViewData["Title"] = "Admin - Değişiklik Talepleri";
+}
+
+<div class="container-fluid p-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="mb-1 text-dark fw-bold">
+                        <i class="bi bi-shield-check me-2 text-primary"></i>
+                        Admin - Değişiklik Talepleri
+                    </h3>
+                    <p class="text-muted mb-0">Kullanıcı taleplerini inceleyin ve karar verin</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="@Url.Action("Bilgiler", "FirmaBilgileri")" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-1"></i>Geri Dön
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mesajlar -->
+    @if (ViewBag.AdminMesaj != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show py-2 mb-3" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@ViewBag.AdminMesaj
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (ViewBag.AdminHata != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show py-2 mb-3" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>@ViewBag.AdminHata
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Filtreler -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body py-3">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label small fw-medium">Durum Filtresi:</label>
+                            <select class="form-select form-select-sm" id="durumFilter">
+                                <option value="">Tümü</option>
+                                <option value="0">Kontrol Ediliyor</option>
+                                <option value="1">Onaylandı</option>
+                                <option value="2">Reddedildi</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-medium">Firma Ara:</label>
+                            <input type="text" class="form-control form-control-sm" id="firmaFilter" placeholder="Firma adı yazın...">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-medium">Tarih Aralığı:</label>
+                            <input type="date" class="form-control form-control-sm" id="tarihFilter">
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <div class="d-flex gap-2 w-100">
+                                <button type="button" class="btn btn-primary btn-sm" onclick="filterTalepler()">
+                                    <i class="bi bi-funnel me-1"></i>Filtrele
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearFilters()">
+                                    <i class="bi bi-x-circle me-1"></i>Temizle
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Talep Listesi -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary bg-gradient text-white border-0 py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0 fw-semibold">
+                            <i class="bi bi-list-ul me-2"></i>
+                            Talep Listesi
+                        </h6>
+                        <span class="badge bg-light text-dark">
+                            Toplam: @ViewBag.ToplamTalep
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    @if (!Model.Any())
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-inbox text-muted mb-3" style="font-size: 3rem;"></i>
+                            <h5 class="text-muted">Henüz değişiklik talebi bulunmuyor</h5>
+                            <p class="text-muted">Kullanıcılar talep oluşturduğunda burada görünecek.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0" id="taleplerTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="py-3 px-3">
+                                            <i class="bi bi-building me-1"></i>Firma
+                                        </th>
+                                        <th class="py-3 px-3">
+                                            <i class="bi bi-person me-1"></i>Kullanıcı
+                                        </th>
+                                        <th class="py-3 px-3">
+                                            <i class="bi bi-gear me-1"></i>Alan
+                                        </th>
+                                        <th class="py-3 px-3">
+                                            <i class="bi bi-arrow-right me-1"></i>Değişiklik
+                                        </th>
+                                        <th class="py-3 px-3">
+                                            <i class="bi bi-calendar me-1"></i>Talep Tarihi
+                                        </th>
+                                        <th class="py-3 px-3">
+                                            <i class="bi bi-flag me-1"></i>Durum
+                                        </th>
+                                        <th class="py-3 px-3 text-center">
+                                            <i class="bi bi-tools me-1"></i>İşlemler
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var talep in Model)
+                                    {
+                                        <tr class="talep-row" data-durum="@((int)talep.Durum)" data-firma="@talep.FirmaAdi">
+                                            <td class="py-3 px-3">
+                                                <strong>@talep.FirmaAdi</strong>
+                                            </td>
+                                            <td class="py-3 px-3">
+                                                <span class="badge bg-secondary">@talep.KullaniciAdi</span>
+                                            </td>
+                                            <td class="py-3 px-3">
+                                                <span class="badge bg-info">@talep.AlanAdi</span>
+                                            </td>
+                                            <td class="py-3 px-3">
+                                                <div class="d-flex flex-column">
+                                                    <small class="text-muted">@talep.EskiDeger</small>
+                                                    <i class="bi bi-arrow-down text-primary"></i>
+                                                    <strong class="text-primary">@talep.YeniDeger</strong>
+                                                </div>
+                                            </td>
+                                            <td class="py-3 px-3">
+                                                <small class="text-muted">@talep.TalepTarihi.ToString("dd.MM.yyyy HH:mm")</small>
+                                            </td>
+                                            <td class="py-3 px-3">
+                                                @switch (talep.Durum)
+                                                {
+                                                    case serkan_test1.Models.TalepDurumu.KontrolEdiliyor:
+                                                        <span class="badge bg-warning">
+                                                            <i class="bi bi-clock me-1"></i>Kontrol Ediliyor
+                                                        </span>
+                                                        break;
+                                                    case serkan_test1.Models.TalepDurumu.Onaylandi:
+                                                        <span class="badge bg-success">
+                                                            <i class="bi bi-check me-1"></i>Onaylandı
+                                                        </span>
+                                                        break;
+                                                    case serkan_test1.Models.TalepDurumu.Reddedildi:
+                                                        <span class="badge bg-danger">
+                                                            <i class="bi bi-times me-1"></i>Reddedildi
+                                                        </span>
+                                                        break;
+                                                }
+                                            </td>
+                                            <td class="py-3 px-3 text-center">
+                                                <div class="btn-group" role="group">
+                                                    <a href="@Url.Action("AdminTalepDetay", "FirmaBilgileri", new { id = talep.Id })" 
+                                                       class="btn btn-sm btn-outline-primary">
+                                                        <i class="bi bi-eye me-1"></i>Detay
+                                                    </a>
+                                                    @if (talep.Durum == serkan_test1.Models.TalepDurumu.KontrolEdiliyor)
+                                                    {
+                                                        <button type="button" class="btn btn-sm btn-success" 
+                                                                onclick="onaylaTalep(@talep.Id)">
+                                                            <i class="bi bi-check me-1"></i>Onayla
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-danger" 
+                                                                onclick="reddetTalep(@talep.Id)">
+                                                            <i class="bi bi-times me-1"></i>Reddet
+                                                        </button>
+                                                    }
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Sayfalama -->
+                        @if (ViewBag.ToplamSayfa > 1)
+                        {
+                            <div class="card-footer bg-light border-0 py-3">
+                                <nav aria-label="Talep sayfaları">
+                                    <ul class="pagination justify-content-center mb-0">
+                                        @if (ViewBag.Sayfa > 1)
+                                        {
+                                            <li class="page-item">
+                                                <a class="page-link" href="@Url.Action("AdminTalepListesi", new { sayfa = ViewBag.Sayfa - 1, sayfaBoyutu = ViewBag.SayfaBoyutu })">
+                                                    <i class="bi bi-chevron-left"></i> Önceki
+                                                </a>
+                                            </li>
+                                        }
+
+                                        @for (int i = Math.Max(1, ViewBag.Sayfa - 2); i <= Math.Min(ViewBag.ToplamSayfa, ViewBag.Sayfa + 2); i++)
+                                        {
+                                            <li class="page-item @(i == ViewBag.Sayfa ? "active" : "")">
+                                                <a class="page-link" href="@Url.Action("AdminTalepListesi", new { sayfa = i, sayfaBoyutu = ViewBag.SayfaBoyutu })">@i</a>
+                                            </li>
+                                        }
+
+                                        @if (ViewBag.Sayfa < ViewBag.ToplamSayfa)
+                                        {
+                                            <li class="page-item">
+                                                <a class="page-link" href="@Url.Action("AdminTalepListesi", new { sayfa = ViewBag.Sayfa + 1, sayfaBoyutu = ViewBag.SayfaBoyutu })">
+                                                    Sonraki <i class="bi bi-chevron-right"></i>
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </nav>
+                                
+                                <div class="text-center text-muted mt-2">
+                                    <small>
+                                        Sayfa @ViewBag.Sayfa / @ViewBag.ToplamSayfa 
+                                        (Toplam @ViewBag.ToplamTalep talep)
+                                    </small>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Onay/Red Modal -->
+<div class="modal fade" id="onayModal" tabindex="-1" aria-labelledby="onayModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="onayModalLabel">İşlem Onayı</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Modal içeriği JavaScript ile doldurulacak -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>İptal
+                </button>
+                <button type="button" class="btn btn-primary">
+                    <i class="bi bi-check-circle me-1"></i>Onayla
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Modal açıldığında butonları sıfırla
+        $('#onayModal').on('show.bs.modal', function () {
+            // Butonları varsayılan haline getir
+            $('#onayModal .btn-primary')
+                .removeClass('btn-danger')
+                .addClass('btn-primary')
+                .html('<i class="bi bi-check-circle me-1"></i>Onayla');
+        });
+        
+        // Filtreleme fonksiyonu
+        function filterTalepler() {
+            const durumFilter = document.getElementById('durumFilter').value;
+            const firmaFilter = document.getElementById('firmaFilter').value.toLowerCase().trim();
+            const tarihFilter = document.getElementById('tarihFilter').value;
+            
+            const rows = document.querySelectorAll('.talep-row');
+            
+            rows.forEach(row => {
+                let show = true;
+                
+                // Durum filtresi
+                if (durumFilter && row.dataset.durum !== durumFilter) {
+                    show = false;
+                }
+                
+                // Firma filtresi - artık text input ile arama yapıyoruz
+                if (firmaFilter) {
+                    const firmaAdi = row.dataset.firma ? row.dataset.firma.toLowerCase() : '';
+                    if (!firmaAdi.includes(firmaFilter)) {
+                        show = false;
+                    }
+                }
+                
+                // Tarih filtresi
+                if (tarihFilter) {
+                    const talepTarihiElement = row.querySelector('td:nth-child(5) small');
+                    if (talepTarihiElement) {
+                        const talepTarihi = talepTarihiElement.textContent.trim();
+                        // Tarih formatını parse et ve karşılaştır
+                        try {
+                            const talepDate = new Date(talepTarihi);
+                            const filterDate = new Date(tarihFilter);
+                            if (talepDate.toDateString() !== filterDate.toDateString()) {
+                                show = false;
+                            }
+                        } catch (e) {
+                            // Tarih parse edilemezse gösterme
+                            show = false;
+                        }
+                    }
+                }
+                
+                row.style.display = show ? '' : 'none';
+            });
+        }
+        
+        // Filtreleri temizle
+        function clearFilters() {
+            document.getElementById('durumFilter').value = '';
+            document.getElementById('firmaFilter').value = '';
+            document.getElementById('tarihFilter').value = '';
+            
+            const rows = document.querySelectorAll('.talep-row');
+            rows.forEach(row => row.style.display = '');
+        }
+        
+        // Sayfa yüklendiğinde event listener'ları ekle
+        document.addEventListener('DOMContentLoaded', function() {
+            // Firma arama input'una real-time arama ekle
+            const firmaFilter = document.getElementById('firmaFilter');
+            if (firmaFilter) {
+                firmaFilter.addEventListener('input', function() {
+                    // Kullanıcı yazdıkça otomatik filtreleme yap
+                    filterTalepler();
+                });
+            }
+            
+            // Durum filtresi değiştiğinde otomatik filtreleme
+            const durumFilter = document.getElementById('durumFilter');
+            if (durumFilter) {
+                durumFilter.addEventListener('change', function() {
+                    filterTalepler();
+                });
+            }
+            
+            // Tarih filtresi değiştiğinde otomatik filtreleme
+            const tarihFilter = document.getElementById('tarihFilter');
+            if (tarihFilter) {
+                tarihFilter.addEventListener('change', function() {
+                    filterTalepler();
+                });
+            }
+        });
+        
+        // Hızlı onaylama
+        function onaylaTalep(talepId) {
+            // Onay modal'ını aç
+            $('#onayModal .modal-title').text('Talebi Onayla');
+            $('#onayModal .modal-body').html(`
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Bu talebi onaylamak istediğinizden emin misiniz?
+                    </div>
+                    <div class="mb-3">
+                        <label for="adminNotuOnay" class="form-label">Admin Notu (Opsiyonel)</label>
+                        <textarea class="form-control" id="adminNotuOnay" rows="3" placeholder="Onay için ek not ekleyebilirsiniz..."></textarea>
+                    </div>
+                </div>
+            `);
+            
+            // Onay butonunu güncelle
+            $('#onayModal .btn-primary')
+                .removeClass('btn-danger')
+                .addClass('btn-primary')
+                .html('<i class="bi bi-check-circle me-1"></i>Onayla');
+            
+            // Modal'ı aç
+            $('#onayModal').modal('show');
+            
+            // Onay butonuna tıklandığında
+            $('#onayModal .btn-primary').off('click').on('click', function() {
+                var adminNotu = $('#adminNotuOnay').val();
+                
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '@Url.Action("AdminOnayla", "FirmaBilgileri")';
+                
+                var input1 = document.createElement('input');
+                input1.type = 'hidden';
+                input1.name = 'talepId';
+                input1.value = talepId;
+                
+                var input2 = document.createElement('input');
+                input2.type = 'hidden';
+                input2.name = 'adminNotu';
+                input2.value = adminNotu;
+                
+                form.appendChild(input1);
+                form.appendChild(input2);
+                document.body.appendChild(form);
+                form.submit();
+            });
+        }
+        
+        // Hızlı reddetme
+        function reddetTalep(talepId) {
+            // Red modal'ını aç
+            $('#onayModal .modal-title').text('Talebi Reddet');
+            $('#onayModal .modal-body').html(`
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    Bu talebi reddetmek istediğinizden emin misiniz?
+                </div>
+                <div class="mb-3">
+                    <label for="adminNotuRed" class="form-label">Red Sebebi <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="adminNotuRed" rows="3" placeholder="Red sebebini yazın..." required></textarea>
+                </div>
+            `);
+            
+            // Red butonunu güncelle
+            $('#onayModal .btn-primary')
+                .removeClass('btn-primary')
+                .addClass('btn-danger')
+                .html('<i class="bi bi-times-circle me-1"></i>Reddet');
+            
+            // Modal'ı aç
+            $('#onayModal').modal('show');
+            
+            // Red butonuna tıklandığında
+            $('#onayModal .btn-danger').off('click').on('click', function() {
+                var adminNotu = $('#adminNotuRed').val();
+                
+                if (!adminNotu || !adminNotu.trim()) {
+                    alert('Red sebebi yazmanız gerekiyor!');
+                    return;
+                }
+                
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '@Url.Action("AdminReddet", "FirmaBilgileri")';
+                
+                var input1 = document.createElement('input');
+                input1.type = 'hidden';
+                input1.name = 'talepId';
+                input1.value = talepId;
+                
+                var input2 = document.createElement('input');
+                input2.type = 'hidden';
+                input2.name = 'adminNotu';
+                input2.value = adminNotu.trim();
+                
+                form.appendChild(input1);
+                form.appendChild(input2);
+                document.body.appendChild(form);
+                form.submit();
+            });
+        }
+    </script>
+}
+

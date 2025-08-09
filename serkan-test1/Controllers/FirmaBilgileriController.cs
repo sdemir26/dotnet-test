@@ -268,5 +268,78 @@ namespace serkan_test1.Controllers
             TempData["TalepMesaj"] = mesaj;
             return RedirectToAction("Bilgiler");
         }
+
+        // ========== ADMIN METODLARI ==========
+        
+        // Admin - Talep listesi
+        public IActionResult AdminTalepListesi(int sayfa = 1, int sayfaBoyutu = 10)
+        {
+            var toplamTalep = _db.DegisiklikTalepleri.Count();
+            var toplamSayfa = (int)Math.Ceiling((double)toplamTalep / sayfaBoyutu);
+            
+            var talepler = _db.DegisiklikTalepleri
+                .OrderByDescending(t => t.TalepTarihi)
+                .Skip((sayfa - 1) * sayfaBoyutu)
+                .Take(sayfaBoyutu)
+                .ToList();
+
+            ViewBag.Sayfa = sayfa;
+            ViewBag.SayfaBoyutu = sayfaBoyutu;
+            ViewBag.ToplamSayfa = toplamSayfa;
+            ViewBag.ToplamTalep = toplamTalep;
+
+            return View(talepler);
+        }
+
+        // Admin - Talep detayı
+        public IActionResult AdminTalepDetay(int id)
+        {
+            var talep = _db.DegisiklikTalepleri.Find(id);
+            if (talep == null)
+            {
+                return NotFound();
+            }
+            return View(talep);
+        }
+
+        // Admin - Talebi onayla
+        [HttpPost]
+        public IActionResult AdminOnayla(int talepId, string adminNotu = null)
+        {
+            var talep = _db.DegisiklikTalepleri.Find(talepId);
+            if (talep != null)
+            {
+                talep.Durum = TalepDurumu.Onaylandi;
+                talep.AdminNotu = adminNotu;
+                talep.IslemTarihi = DateTime.Now;
+                _db.SaveChanges();
+                
+                TempData["AdminMesaj"] = "Talep başarıyla onaylandı.";
+            }
+            return RedirectToAction("AdminTalepListesi");
+        }
+
+        // Admin - Talebi reddet
+        [HttpPost]
+        public IActionResult AdminReddet(int talepId, string adminNotu)
+        {
+            if (string.IsNullOrWhiteSpace(adminNotu))
+            {
+                TempData["AdminHata"] = "Red sebebi zorunludur.";
+                return RedirectToAction("AdminTalepDetay", new { id = talepId });
+            }
+
+            var talep = _db.DegisiklikTalepleri.Find(talepId);
+            if (talep != null)
+            {
+                talep.Durum = TalepDurumu.Reddedildi;
+                talep.AdminNotu = adminNotu;
+                talep.IslemTarihi = DateTime.Now;
+                _db.SaveChanges();
+                
+                TempData["AdminMesaj"] = "Talep reddedildi.";
+            }
+            return RedirectToAction("AdminTalepListesi");
+        }
     }
 }

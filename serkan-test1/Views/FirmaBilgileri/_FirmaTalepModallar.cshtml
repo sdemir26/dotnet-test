@@ -164,3 +164,72 @@
         </form>
     </div>
 </div>
+
+<!-- Kişisel Bilgi Değişikliği (Ad, Soyad, TC) -->
+<div class="modal fade" id="modalKisiselBilgiTalep" tabindex="-1" aria-labelledby="modalKisiselBilgiTalepLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <form asp-action="TalepKisiselBilgi" method="post" enctype="multipart/form-data" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalKisiselBilgiTalepLabel">Kişisel Bilgi Değişiklik Talebi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Yeni Yetkili Adı</label>
+                            <input type="text" name="yeniYetkiliAdi" class="form-control" value="@Model.YetkiliAdi" required />
+                            <div class="invalid-feedback">Yetkili adı zorunludur</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Yeni Yetkili Soyadı</label>
+                            <input type="text" name="yeniYetkiliSoyadi" class="form-control" value="@Model.YetkiliSoyadi" required />
+                            <div class="invalid-feedback">Yetkili soyadı zorunludur</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Yeni TC Kimlik No</label>
+                    <input type="text" name="yeniYetkiliTCNo" class="form-control" value="@Model.YetkiliTCNo" required maxlength="11" minlength="11" id="yeniTCNo" />
+                    <div class="invalid-feedback">TC No 11 haneli olmalıdır</div>
+                    <div class="alert alert-warning mt-2 d-none" id="tcUyari">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>Dikkat!</strong> TC değişikliği kişi değişikliği anlamına gelir. Bu işlem geri alınamaz.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Değişiklik Sebebi</label>
+                    <textarea name="degisiklikSebebi" class="form-control" rows="3" required placeholder="Değişiklik sebebini detaylı olarak açıklayın..."></textarea>
+                    <div class="invalid-feedback">Değişiklik sebebi zorunludur</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Dosya Ekle</label>
+                    <input type="file" name="dosya" class="form-control" />
+                    <small class="text-muted">Dosya eklemek zorunlu değildir</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="submit" class="btn btn-warning">Talep Oluştur</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tcInput = document.getElementById('yeniTCNo');
+    const tcUyari = document.getElementById('tcUyari');
+    const mevcutTC = '@Model.YetkiliTCNo';
+    
+    tcInput.addEventListener('input', function() {
+        if (this.value !== mevcutTC && this.value.length === 11) {
+            tcUyari.classList.remove('d-none');
+        } else {
+            tcUyari.classList.add('d-none');
+        }
+    });
+});
+</script>
