@@ -1,0 +1,190 @@
+﻿@model serkan_test1.Models.FirmaBilgileriViewModel
+
+<!-- Firma Unvanı -->
+<div class="modal fade" id="modalFirmaUnvani" tabindex="-1" aria-labelledby="modalFirmaUnvaniLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-action="GuncelleFirmaUnvani" method="post" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalFirmaUnvaniLabel">Firma Unvanı Güncelle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <label asp-for="FirmaUnvani" class="form-label">Firma Unvanı *</label>
+                <input asp-for="FirmaUnvani" class="form-control" required />
+                <span asp-validation-for="FirmaUnvani" class="text-danger"></span>
+                <div class="invalid-feedback">Firma unvanı zorunludur.</div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Şifre -->
+<div class="modal fade" id="modalSifre" tabindex="-1" aria-labelledby="modalSifreLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-action="GuncelleSifre" method="post" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalSifreLabel">Şifre Güncelle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <label asp-for="Sifre" class="form-label">Yeni Şifre *</label>
+                <input asp-for="Sifre" type="password" class="form-control" required minlength="6" />
+                <span asp-validation-for="Sifre" class="text-danger"></span>
+                <div class="invalid-feedback">Şifre en az 6 karakter olmalıdır.</div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- İl -->
+<div class="modal fade" id="modalIl" tabindex="-1" aria-labelledby="modalIlLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-action="GuncelleIl" method="post" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalIlLabel">İl Güncelle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <label asp-for="Il" class="form-label">İl *</label>
+                <input asp-for="Il" class="form-control" required />
+                <span asp-validation-for="Il" class="text-danger"></span>
+                <div class="invalid-feedback">İl zorunludur.</div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- İlçe -->
+<div class="modal fade" id="modalIlce" tabindex="-1" aria-labelledby="modalIlceLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-action="GuncelleIlce" method="post" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalIlceLabel">İlçe Güncelle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <label asp-for="Ilce" class="form-label">İlçe *</label>
+                <input asp-for="Ilce" class="form-control" required />
+                <span asp-validation-for="Ilce" class="text-danger"></span>
+                <div class="invalid-feedback">İlçe zorunludur.</div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Mahalle -->
+<div class="modal fade" id="modalMahalle" tabindex="-1" aria-labelledby="modalMahalleLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-action="GuncelleMahalle" method="post" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalMahalleLabel">Mahalle Güncelle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <label asp-for="Mahalle" class="form-label">Mahalle *</label>
+                <input asp-for="Mahalle" class="form-control" required />
+                <span asp-validation-for="Mahalle" class="text-danger"></span>
+                <div class="invalid-feedback">Mahalle zorunludur.</div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Cep Telefonu -->
+<div class="modal fade" id="modalCep" tabindex="-1" aria-labelledby="modalCepLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-action="GuncelleCepTelefonu" method="post" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCepLabel">Cep Telefonu Güncelle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <label asp-for="CepTelefonu" class="form-label">Cep Telefonu *</label>
+                <input asp-for="CepTelefonu" class="form-control" required />
+                <span asp-validation-for="CepTelefonu" class="text-danger"></span>
+                <div class="invalid-feedback">Cep telefonu zorunludur.</div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- E-Posta -->
+<div class="modal fade" id="modalEPosta" tabindex="-1" aria-labelledby="modalEPostaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-action="GuncelleEPosta" method="post" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEPostaLabel">E-Posta Güncelle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <label asp-for="EPosta" class="form-label">E-Posta *</label>
+                <input asp-for="EPosta" type="email" class="form-control" required />
+                <span asp-validation-for="EPosta" class="text-danger"></span>
+                <div class="invalid-feedback">E-posta zorunludur.</div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Vergi Dairesi İli -->
+<div class="modal fade" id="modalVergiDairesiIl" tabindex="-1" aria-labelledby="modalVergiDairesiIlLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-action="GuncelleVergiDairesiIl" method="post" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalVergiDairesiIlLabel">Vergi Dairesi İli Güncelle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <label asp-for="VergiDairesiIl" class="form-label">Vergi Dairesi İli *</label>
+                <input asp-for="VergiDairesiIl" class="form-control" required />
+                <span asp-validation-for="VergiDairesiIl" class="text-danger"></span>
+                <div class="invalid-feedback">Vergi dairesi ili zorunludur.</div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Vergi Dairesi -->
+<div class="modal fade" id="modalVergiDairesi" tabindex="-1" aria-labelledby="modalVergiDairesiLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-action="GuncelleVergiDairesi" method="post" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalVergiDairesiLabel">Vergi Dairesi Güncelle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <label asp-for="VergiDairesi" class="form-label">Vergi Dairesi *</label>
+                <input asp-for="VergiDairesi" class="form-control" required />
+                <span asp-validation-for="VergiDairesi" class="text-danger"></span>
+                <div class="invalid-feedback">Vergi dairesi zorunludur.</div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+            </div>
+        </form>
+    </div>
+</div>

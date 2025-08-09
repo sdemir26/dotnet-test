@@ -1,0 +1,180 @@
+@model IEnumerable<serkan_test1.Models.DegisiklikTalebi>
+@{
+    ViewData["Title"] = "Değişiklik Talepleri";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-list-alt me-2"></i>
+                        Değişiklik Talepleri
+                    </h4>
+                </div>
+                <div class="card-body">
+                    @if (!Model.Any())
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">Henüz değişiklik talebi bulunmuyor</h5>
+                            <p class="text-muted">Firma bilgilerinde değişiklik yapmak için yukarıdaki butonları kullanabilirsiniz.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Firma</th>
+                                        <th>Alan</th>
+                                        <th>Eski Değer</th>
+                                        <th>Yeni Değer</th>
+                                        <th>Sebep</th>
+                                        <th>Talep Tarihi</th>
+                                        <th>Durum</th>
+                                        <th>Admin Notu</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var talep in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <strong>@talep.FirmaAdi</strong>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info">@talep.AlanAdi</span>
+                                            </td>
+                                            <td>
+                                                <small class="text-muted">@talep.EskiDeger</small>
+                                            </td>
+                                            <td>
+                                                <strong class="text-primary">@talep.YeniDeger</strong>
+                                            </td>
+                                            <td>
+                                                <small>@talep.DegisiklikSebebi</small>
+                                            </td>
+                                            <td>
+                                                <small>@talep.TalepTarihi.ToString("dd.MM.yyyy HH:mm")</small>
+                                            </td>
+                                            <td>
+                                                @switch (talep.Durum)
+                                                {
+                                                    case serkan_test1.Models.TalepDurumu.KontrolEdiliyor:
+                                                        <span class="badge bg-warning">
+                                                            <i class="fas fa-clock me-1"></i>
+                                                            Kontrol Ediliyor
+                                                        </span>
+                                                        break;
+                                                    case serkan_test1.Models.TalepDurumu.Onaylandi:
+                                                        <span class="badge bg-success">
+                                                            <i class="fas fa-check me-1"></i>
+                                                            Onaylandı
+                                                        </span>
+                                                        break;
+                                                    case serkan_test1.Models.TalepDurumu.Reddedildi:
+                                                        <span class="badge bg-danger">
+                                                            <i class="fas fa-times me-1"></i>
+                                                            Reddedildi
+                                                        </span>
+                                                        break;
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(talep.AdminNotu))
+                                                {
+                                                    <small class="text-muted">@talep.AdminNotu</small>
+                                                }
+                                                else
+                                                {
+                                                    <small class="text-muted">-</small>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Sayfalama -->
+                        @if (ViewBag.ToplamSayfa > 1)
+                        {
+                            <nav aria-label="Talep sayfaları">
+                                <ul class="pagination justify-content-center">
+                                    @if (ViewBag.Sayfa > 1)
+                                    {
+                                        <li class="page-item">
+                                            <a class="page-link" href="@Url.Action("TalepListesi", new { sayfa = ViewBag.Sayfa - 1, sayfaBoyutu = ViewBag.SayfaBoyutu })">
+                                                <i class="fas fa-chevron-left"></i> Önceki
+                                            </a>
+                                        </li>
+                                    }
+
+                                    @for (int i = Math.Max(1, ViewBag.Sayfa - 2); i <= Math.Min(ViewBag.ToplamSayfa, ViewBag.Sayfa + 2); i++)
+                                    {
+                                        <li class="page-item @(i == ViewBag.Sayfa ? "active" : "")">
+                                            <a class="page-link" href="@Url.Action("TalepListesi", new { sayfa = i, sayfaBoyutu = ViewBag.SayfaBoyutu })">@i</a>
+                                        </li>
+                                    }
+
+                                    @if (ViewBag.Sayfa < ViewBag.ToplamSayfa)
+                                    {
+                                        <li class="page-item">
+                                            <a class="page-link" href="@Url.Action("TalepListesi", new { sayfa = ViewBag.Sayfa + 1, sayfaBoyutu = ViewBag.SayfaBoyutu })">
+                                                Sonraki <i class="fas fa-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </nav>
+                        }
+
+                        <!-- Sayfa bilgisi -->
+                        <div class="text-center text-muted">
+                            <small>
+                                Toplam @ViewBag.ToplamTalep talep, @ViewBag.ToplamSayfa sayfa
+                                (Sayfa @ViewBag.Sayfa / @ViewBag.ToplamSayfa)
+                            </small>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .table th {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .table td {
+            vertical-align: middle;
+            font-size: 0.9rem;
+        }
+        
+        .badge {
+            font-size: 0.75rem;
+        }
+        
+        .pagination .page-link {
+            color: #495057;
+            border-color: #dee2e6;
+        }
+        
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+    </style>
+}

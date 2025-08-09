@@ -1,0 +1,166 @@
+﻿@model serkan_test1.Models.FirmaBilgileriViewModel
+
+<!-- Firma Adı Talep -->
+<div class="modal fade" id="modalFirmaAdiTalep" tabindex="-1" aria-labelledby="modalFirmaAdiTalepLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-action="TalepFirmaAdi" method="post" enctype="multipart/form-data" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalFirmaAdiTalepLabel">Firma Adı Değişiklik Talebi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Yeni Firma Adı</label>
+                    <input type="text" name="yeniFirmaAdi" class="form-control" value="@Model.FirmaAdi" required />
+                    <div class="invalid-feedback">Firma adı zorunludur</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Değişiklik Sebebi</label>
+                    <textarea name="degisiklikSebebi" class="form-control" rows="3" required></textarea>
+                    <div class="invalid-feedback">Değişiklik sebebi zorunludur</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Dosya Ekle</label>
+                    <input type="file" name="dosya" class="form-control" />
+                    <small class="text-muted">Dosya eklemek zorunlu değildir</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="submit" class="btn btn-warning">Talep Oluştur</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Domain Talep -->
+<div class="modal fade" id="modalDomainTalep" tabindex="-1" aria-labelledby="modalDomainTalepLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-action="TalepDomain" method="post" enctype="multipart/form-data" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalDomainTalepLabel">Domain Değişiklik Talebi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Yeni Domain</label>
+                    <input type="text" name="yeniDomain" class="form-control" value="@Model.Domain" required />
+                    <div class="invalid-feedback">Domain zorunludur</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Değişiklik Sebebi</label>
+                    <textarea name="degisiklikSebebi" class="form-control" rows="3" required></textarea>
+                    <div class="invalid-feedback">Değişiklik sebebi zorunludur</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Dosya Ekle</label>
+                    <input type="file" name="dosya" class="form-control" />
+                    <small class="text-muted">Dosya eklemek zorunlu değildir</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="submit" class="btn btn-warning">Talep Oluştur</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Yetkili Adı Talep -->
+<div class="modal fade" id="modalYetkiliAdiTalep" tabindex="-1" aria-labelledby="modalYetkiliAdiTalepLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-action="TalepYetkiliAdi" method="post" enctype="multipart/form-data" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalYetkiliAdiTalepLabel">Yetkili Adı Değişiklik Talebi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Yeni Yetkili Adı</label>
+                    <input type="text" name="yeniYetkiliAdi" class="form-control" value="@Model.YetkiliAdi" required />
+                    <div class="invalid-feedback">Yetkili adı zorunludur</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Değişiklik Sebebi</label>
+                    <textarea name="degisiklikSebebi" class="form-control" rows="3" required></textarea>
+                    <div class="invalid-feedback">Değişiklik sebebi zorunludur</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Dosya Ekle</label>
+                    <input type="file" name="dosya" class="form-control" />
+                    <small class="text-muted">Dosya eklemek zorunlu değildir</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="submit" class="btn btn-warning">Talep Oluştur</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Yetkili Soyadı Talep -->
+<div class="modal fade" id="modalYetkiliSoyadiTalep" tabindex="-1" aria-labelledby="modalYetkiliSoyadiTalepLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-action="TalepYetkiliSoyadi" method="post" enctype="multipart/form-data" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalYetkiliSoyadiTalepLabel">Yetkili Soyadı Değişiklik Talebi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Yeni Yetkili Soyadı</label>
+                    <input type="text" name="yeniYetkiliSoyadi" class="form-control" value="@Model.YetkiliSoyadi" required />
+                    <div class="invalid-feedback">Yetkili soyadı zorunludur</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Değişiklik Sebebi</label>
+                    <textarea name="degisiklikSebebi" class="form-control" rows="3" required></textarea>
+                    <div class="invalid-feedback">Değişiklik sebebi zorunludur</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Dosya Ekle</label>
+                    <input type="file" name="dosya" class="form-control" />
+                    <small class="text-muted">Dosya eklemek zorunlu değildir</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="submit" class="btn btn-warning">Talep Oluştur</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Yetkili TC No Talep -->
+<div class="modal fade" id="modalYetkiliTCNoTalep" tabindex="-1" aria-labelledby="modalYetkiliTCNoTalepLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-action="TalepYetkiliTCNo" method="post" enctype="multipart/form-data" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalYetkiliTCNoTalepLabel">Yetkili TC No Değişiklik Talebi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Yeni Yetkili TC No</label>
+                    <input type="text" name="yeniYetkiliTCNo" class="form-control" value="@Model.YetkiliTCNo" required maxlength="11" minlength="11" />
+                    <div class="invalid-feedback">TC No 11 haneli olmalıdır</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Değişiklik Sebebi</label>
+                    <textarea name="degisiklikSebebi" class="form-control" rows="3" required></textarea>
+                    <div class="invalid-feedback">Değişiklik sebebi zorunludur</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Dosya Ekle</label>
+                    <input type="file" name="dosya" class="form-control" />
+                    <small class="text-muted">Dosya eklemek zorunlu değildir</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="submit" class="btn btn-warning">Talep Oluştur</button>
+            </div>
+        </form>
+    </div>
+</div>

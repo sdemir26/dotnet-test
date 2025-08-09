@@ -1,0 +1,18 @@
+[
+  {
+    "ContainingType": "serkan_test1.Controllers.HomeApi",
+    "Method": "PostIndex",
+    "RelativePath": "api/postindex",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "musteri",
+        "Type": "serkan_test1.Models.MusteriDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

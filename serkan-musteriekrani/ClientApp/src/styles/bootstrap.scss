@@ -1,0 +1,166 @@
+// Bootstrap 5.3'ü dahil edin
+// Bu, Bootstrap'in tüm Sass dosyalarını (değişkenler, mixin'ler, bileşenler vb.) içe aktarır.
+/// 1. Bootstrap'in temel bileşenlerini doğru sırada import edin
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/variables-dark";
+@import "~bootstrap/scss/maps";
+@import "~bootstrap/scss/mixins";
+
+// 2. Kendi özel değişkenlerinizi burada tanımlayabilirsiniz
+// $primary: #your-color;
+// $secondary: #your-secondary-color;
+
+// 3. Bootstrap utilities'i import edin
+@import "~bootstrap/scss/utilities";
+
+// 4. Bootstrap'in diğer bileşenlerini import edin
+@import "~bootstrap/scss/root";
+@import "~bootstrap/scss/reboot";
+@import "~bootstrap/scss/type";
+@import "~bootstrap/scss/images";
+@import "~bootstrap/scss/containers";
+@import "~bootstrap/scss/grid";
+@import "~bootstrap/scss/tables";
+@import "~bootstrap/scss/forms";
+@import "~bootstrap/scss/buttons";
+@import "~bootstrap/scss/transitions";
+@import "~bootstrap/scss/dropdown";
+@import "~bootstrap/scss/button-group";
+@import "~bootstrap/scss/nav";
+@import "~bootstrap/scss/navbar";
+@import "~bootstrap/scss/card";
+@import "~bootstrap/scss/accordion";
+@import "~bootstrap/scss/breadcrumb";
+@import "~bootstrap/scss/pagination";
+@import "~bootstrap/scss/badge";
+@import "~bootstrap/scss/alert";
+@import "~bootstrap/scss/progress";
+@import "~bootstrap/scss/list-group";
+@import "~bootstrap/scss/close";
+@import "~bootstrap/scss/toasts";
+@import "~bootstrap/scss/modal";
+@import "~bootstrap/scss/tooltip";
+@import "~bootstrap/scss/popover";
+@import "~bootstrap/scss/carousel";
+@import "~bootstrap/scss/spinners";
+@import "~bootstrap/scss/offcanvas";
+@import "~bootstrap/scss/placeholders";
+
+// 5. Bootstrap utilities API'sini en son import edin
+@import "~bootstrap/scss/utilities/api";
+
+// 6. RTL desteği için (eğer kullanıyorsanız)
+@import "~bootstrap/scss/helpers"; // Bootstrap'in RTL yardımcılarını içerir
+
+// 7. Kendi özel stillerinizi veya Bootstrap/Tailwind üzerine yazmalarınızı burada olabilir
+
+/* RTL/LTR Base Styles */
+// HTML elementinin 'dir' özelliğini kullanarak yönlendirme
+// Bu, generate-rtl.js tarafından dönüştürülecek ve RTL için uygun hale gelecek
+[dir="rtl"] {
+  direction: rtl;
+}
+
+[dir="ltr"] {
+  direction: ltr;
+}
+
+/* Bootstrap RTL düzeltmeleri */
+// Bootstrap'in varsayılan olarak RTL desteği olsa da, bazı ek düzeltmeler gerekebilir.
+[dir="rtl"] .container,
+[dir="rtl"] .container-fluid {
+  direction: rtl;
+}
+
+/* Tailwind + Bootstrap uyumluluğu için custom sınıflar */
+// Tailwind'in reset'lerini Bootstrap ile uyumlu hale getirir
+.tw-bootstrap-reset {
+  box-sizing: border-box;
+}
+
+/* Responsive breakpoints - Bootstrap ile uyumlu */
+@media (max-width: 575.98px) {
+  .tw-sm-hidden {
+    display: none;
+  }
+}
+
+@media (min-width: 576px) {
+  .tw-sm-block {
+    display: block;
+  }
+}
+
+/* RTL specific adjustments for Tailwind classes (generate-rtl.js tarafından işlenecek) */
+// Bu kurallar generate-rtl.js tarafından otomatik olarak tersine çevrilecektir.
+// Ancak, bazı durumlarda manuel müdahale gerekebilir.
+[dir="rtl"] .tw-ml-auto {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+[dir="rtl"] .tw-mr-auto {
+  margin-right: 0;
+  margin-left: auto;
+}
+
+/* Custom utilities for RTL/LTR */
+.direction-ltr {
+  direction: ltr;
+}
+
+.direction-rtl {
+  direction: rtl;
+}
+
+/* Bootstrap navbar RTL fixes */
+[dir="rtl"] .navbar-nav {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .dropdown-menu {
+  right: 0;
+  left: auto;
+}
+
+/* Form controls RTL */
+[dir="rtl"] .form-control,
+[dir="rtl"] .form-select {
+  text-align: right;
+}
+
+/* Float utilities for RTL */
+[dir="rtl"] .float-start {
+  float: right !important;
+}
+
+[dir="rtl"] .float-end {
+  float: left !important;
+}
+
+// Kendi özel stilleriniz veya Bootstrap/Tailwind üzerine yazmalarınız burada olabilir
+.rtl-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  text-align: right; /* RTL için özel hizalama */
+}
+
+.rtl-title {
+  color: #0056b3;
+  margin-bottom: 10px;
+}
+
+.rtl-content {
+  font-size: 0.95em;
+  line-height: 1.6;
+}
+
+.test {
+  color: black; 
+}
+
+
+@import "layout-styles";

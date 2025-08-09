@@ -1,0 +1,425 @@
+﻿@model serkan_test1.Models.FirmaBilgileriViewModel
+@{
+    ViewData["Title"] = "Firma Bilgileri";
+}
+
+<style>
+/* Inline CSS - Boşlukları hemen azaltmak için */
+.list-group-item {
+    padding: 0.05rem 0.25rem !important;
+    margin: 0 !important;
+}
+
+.list-group-item .flex-grow-1 {
+    margin-right: 0.05rem !important;
+}
+
+.list-group-item .ms-2 {
+    margin-left: 0.05rem !important;
+}
+
+.vergi-bilgileri .list-group-item {
+    padding: 0.02rem 0.15rem !important;
+}
+
+.vergi-bilgileri .col-md-4 {
+    flex: 1 !important;
+    min-width: 0 !important;
+}
+
+.vergi-bilgileri .row {
+    margin: 0 !important;
+}
+
+.vergi-bilgileri .col-md-4 {
+    padding: 0 !important;
+    border-right: 1px solid #f0f0f0;
+}
+
+.vergi-bilgileri .col-md-4:last-child {
+    border-right: none;
+}
+</style>
+
+<div class="container-fluid p-3">
+    <!-- Header -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="mb-1 text-dark fw-bold">Firma Bilgileri</h4>
+                    <p class="text-muted mb-0 small">Kurumsal bilgilerinizi görüntüleyin ve yönetin</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (ViewBag.TalepMesaj != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show py-2 mb-3" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@ViewBag.TalepMesaj
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row g-3">
+        <!-- Firma Bilgileri -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-primary bg-gradient text-white border-0 py-2">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-building me-2"></i>
+                        <h6 class="mb-0 fw-semibold">Firma Bilgileri</h6>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
+                            <div class="d-flex align-items-center flex-grow-1">
+                                <div class="me-2">
+                                    <i class="bi bi-building text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="text-muted small mb-0">Firma Adı</div>
+                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.FirmaAdi) ? Model.FirmaAdi : "-")</div>
+                                </div>
+                            </div>
+                            <div class="ms-2">
+                                <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modalFirmaAdiTalep">
+                                    <i class="bi bi-exclamation-triangle"></i>Talep
+                                </button>
+                            </div>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
+                            <div class="d-flex align-items-center flex-grow-1">
+                                <div class="me-2">
+                                    <i class="bi bi-briefcase text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="text-muted small mb-0">Firma Unvanı</div>
+                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.FirmaUnvani) ? Model.FirmaUnvani : "-")</div>
+                                </div>
+                            </div>
+                            <div class="ms-2">
+                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalFirmaUnvani">
+                                    <i class="bi bi-pencil"></i>Düzenle
+                                </button>
+                            </div>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
+                            <div class="d-flex align-items-center flex-grow-1">
+                                <div class="me-2">
+                                    <i class="bi bi-tag text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="text-muted small mb-0">Firma Tipi</div>
+                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.FirmaTipi) ? Model.FirmaTipi : "-")</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
+                            <div class="d-flex align-items-center flex-grow-1">
+                                <div class="me-2">
+                                    <i class="bi bi-globe text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="text-muted small mb-0">Domain</div>
+                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.Domain) ? Model.Domain : "-")</div>
+                                </div>
+                            </div>
+                            <div class="ms-2">
+                                <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modalDomainTalep">
+                                    <i class="bi bi-exclamation-triangle"></i>Talep
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Yetkili Kişi Bilgileri -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-success bg-gradient text-white border-0 py-2">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-person-badge me-2"></i>
+                        <h6 class="mb-0 fw-semibold">Yetkili Kişi</h6>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
+                            <div class="d-flex align-items-center flex-grow-1">
+                                <div class="me-2">
+                                    <i class="bi bi-person text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="text-muted small mb-0">Ad</div>
+                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.YetkiliAdi) ? Model.YetkiliAdi : "-")</div>
+                                </div>
+                            </div>
+                            <div class="ms-2">
+                                <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modalYetkiliAdiTalep">
+                                    <i class="bi bi-exclamation-triangle"></i>Talep
+                                </button>
+                            </div>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
+                            <div class="d-flex align-items-center flex-grow-1">
+                                <div class="me-2">
+                                    <i class="bi bi-person text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="text-muted small mb-0">Soyad</div>
+                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.YetkiliSoyadi) ? Model.YetkiliSoyadi : "-")</div>
+                                </div>
+                            </div>
+                            <div class="ms-2">
+                                <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modalYetkiliSoyadiTalep">
+                                    <i class="bi bi-exclamation-triangle"></i>Talep
+                                </button>
+                            </div>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
+                            <div class="d-flex align-items-center flex-grow-1">
+                                <div class="me-2">
+                                    <i class="bi bi-card-text text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="text-muted small mb-0">TC Kimlik No</div>
+                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.YetkiliTCNo) ? Model.YetkiliTCNo : "-")</div>
+                                </div>
+                            </div>
+                            <div class="ms-2">
+                                <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modalYetkiliTCTalep">
+                                    <i class="bi bi-exclamation-triangle"></i>Talep
+                                </button>
+                            </div>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
+                            <div class="d-flex align-items-center flex-grow-1">
+                                <div class="me-2">
+                                    <i class="bi bi-lock text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="text-muted small mb-0">Şifre</div>
+                                    <div class="fw-medium small">@(string.IsNullOrWhiteSpace(Model.Sifre) ? "-" : "••••••••")</div>
+                                </div>
+                            </div>
+                            <div class="ms-2">
+                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalSifre">
+                                    <i class="bi bi-pencil"></i>Düzenle
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- İletişim Bilgileri -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-info bg-gradient text-white border-0 py-2">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-telephone me-2"></i>
+                        <h6 class="mb-0 fw-semibold">İletişim Bilgileri</h6>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
+                            <div class="d-flex align-items-center flex-grow-1">
+                                <div class="me-2">
+                                    <i class="bi bi-phone text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="text-muted small mb-0">Cep Telefonu</div>
+                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.CepTelefonu) ? Model.CepTelefonu : "-")</div>
+                                </div>
+                            </div>
+                            <div class="ms-2">
+                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCep">
+                                    <i class="bi bi-pencil"></i>Düzenle
+                                </button>
+                            </div>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
+                            <div class="d-flex align-items-center flex-grow-1">
+                                <div class="me-2">
+                                    <i class="bi bi-envelope text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="text-muted small mb-0">E-Posta</div>
+                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.EPosta) ? Model.EPosta : "-")</div>
+                                </div>
+                            </div>
+                            <div class="ms-2">
+                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalEposta">
+                                    <i class="bi bi-pencil"></i>Düzenle
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Adres Bilgileri -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-warning bg-gradient text-dark border-0 py-2">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-geo-alt me-2"></i>
+                        <h6 class="mb-0 fw-semibold">Adres Bilgileri</h6>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
+                            <div class="d-flex align-items-center flex-grow-1">
+                                <div class="me-2">
+                                    <i class="bi bi-flag text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="text-muted small mb-0">Ülke</div>
+                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.Ulke) ? Model.Ulke : "-")</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
+                            <div class="d-flex align-items-center flex-grow-1">
+                                <div class="me-2">
+                                    <i class="bi bi-geo-alt text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="text-muted small mb-0">İl</div>
+                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.Il) ? Model.Il : "-")</div>
+                                </div>
+                            </div>
+                            <div class="ms-2">
+                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalIl">
+                                    <i class="bi bi-pencil"></i>Düzenle
+                                </button>
+                            </div>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
+                            <div class="d-flex align-items-center flex-grow-1">
+                                <div class="me-2">
+                                    <i class="bi bi-geo-alt text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="text-muted small mb-0">İlçe</div>
+                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.Ilce) ? Model.Ilce : "-")</div>
+                                </div>
+                            </div>
+                            <div class="ms-2">
+                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalIlce">
+                                    <i class="bi bi-pencil"></i>Düzenle
+                                </button>
+                            </div>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
+                            <div class="d-flex align-items-center flex-grow-1">
+                                <div class="me-2">
+                                    <i class="bi bi-house text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="text-muted small mb-0">Mahalle</div>
+                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.Mahalle) ? Model.Mahalle : "-")</div>
+                                </div>
+                            </div>
+                            <div class="ms-2">
+                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalMahalle">
+                                    <i class="bi bi-pencil"></i>Düzenle
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vergi Bilgileri -->
+        <div class="col-12">
+            <div class="card border-0 shadow-sm vergi-bilgileri">
+                <div class="card-header bg-danger bg-gradient text-white border-0 py-2">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-receipt me-2"></i>
+                        <h6 class="mb-0 fw-semibold">Vergi Bilgileri</h6>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <div class="list-group list-group-flush">
+                                <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
+                                    <div class="d-flex align-items-center flex-grow-1">
+                                        <div class="me-2">
+                                            <i class="bi bi-building text-primary"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="text-muted small mb-0">Vergi Dairesi İli</div>
+                                            <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.VergiDairesiIl) ? Model.VergiDairesiIl : "-")</div>
+                                        </div>
+                                    </div>
+                                    <div class="ms-2">
+                                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalVDIl">
+                                            <i class="bi bi-pencil"></i>Düzenle
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="list-group list-group-flush">
+                                <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
+                                    <div class="d-flex align-items-center flex-grow-1">
+                                        <div class="me-2">
+                                            <i class="bi bi-bank text-primary"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="text-muted small mb-0">Vergi Dairesi</div>
+                                            <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.VergiDairesi) ? Model.VergiDairesi : "-")</div>
+                                        </div>
+                                    </div>
+                                    <div class="ms-2">
+                                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalVd">
+                                            <i class="bi bi-pencil"></i>Düzenle
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="list-group list-group-flush">
+                                <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
+                                    <div class="d-flex align-items-center flex-grow-1">
+                                        <div class="me-2">
+                                            <i class="bi bi-hash text-primary"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="text-muted small mb-0">Vergi No</div>
+                                            <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.VergiNo) ? Model.VergiNo : "-")</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Düzenlenebilir alanlar için modallar -->
+@await Html.PartialAsync("_FirmaDuzenleModallar", Model)
+
+<!-- Değişiklik talebi alanlar için modallar -->
+@await Html.PartialAsync("_FirmaTalepModallar", Model)
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/firma-bilgileri.css" asp-append-version="true" />
+}
