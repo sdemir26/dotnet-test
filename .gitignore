@@ -493,6 +493,7 @@ $RECYCLE.BIN/
 /TalepOnayEkrani/bin
 /TalepOnayEkrani/bin/Debug/net9.0
 /TalepOnayEkrani/obj
-/serkan-test1/bin/
-/serkan-test1/obj
-/.vs/dotnet-test/v17/DocumentLayout.backup.json
+/.vs/*.*
+/TalepOnayEkrani/obj/
+bin
+obj
