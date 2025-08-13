@@ -7,10 +7,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TalepOnayEkrani", "TalepOnayEkrani\TalepOnayEkrani.csproj", "{88C47955-08C6-4B01-9955-24692572939E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFiles", "SolutionFiles", "{975FF2F6-A404-C03E-DF92-5C9A1AD80326}"
-	ProjectSection(SolutionItems) = preProject
-		.gitignore = .gitignore
-		ReadMe.md = ReadMe.md
-	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FavorilerimSayfasi", "FavorilerimSayfasi\FavorilerimSayfasi.csproj", "{8A072238-534A-409A-8CA6-7A03AF2BCB76}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +24,10 @@ Global
 		{88C47955-08C6-4B01-9955-24692572939E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88C47955-08C6-4B01-9955-24692572939E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88C47955-08C6-4B01-9955-24692572939E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A072238-534A-409A-8CA6-7A03AF2BCB76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A072238-534A-409A-8CA6-7A03AF2BCB76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A072238-534A-409A-8CA6-7A03AF2BCB76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A072238-534A-409A-8CA6-7A03AF2BCB76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -129,6 +129,9 @@
                                             <i class="bi bi-flag me-1"></i>Durum
                                         </th>
                                         <th class="py-3 px-3 text-center">
+                                            <i class="bi bi-file-earmark me-1"></i>Belge
+                                        </th>
+                                        <th class="py-3 px-3 text-center">
                                             <i class="bi bi-tools me-1"></i>İşlemler
                                         </th>
                                     </tr>
@@ -176,6 +179,27 @@
                                                         break;
                                                 }
                                             </td>
+                                                                                         <td class="py-3 px-3 text-center">
+                                                 @if (talep.BelgeVarMi)
+                                                 {
+                                                     <div class="btn-group" role="group">
+                                                         <button type="button" class="btn btn-sm btn-outline-primary" 
+                                                                 onclick="belgeGoruntule(@talep.Id)" title="Belgeyi Görüntüle">
+                                                             <i class="bi bi-eye"></i>
+                                                         </button>
+                                                         <a href="@Url.Action("BelgeIndir", "FirmaBilgileri", new { talepId = talep.Id })" 
+                                                            class="btn btn-sm btn-outline-success" title="Belgeyi İndir">
+                                                             <i class="bi bi-download"></i>
+                                                         </a>
+                                                     </div>
+                                                 }
+                                                 else
+                                                 {
+                                                     <span class="badge bg-secondary">
+                                                         <i class="bi bi-file-earmark-x me-1"></i>Yok
+                                                     </span>
+                                                 }
+                                             </td>
                                             <td class="py-3 px-3 text-center">
                                                 <div class="btn-group" role="group">
                                                     <a href="@Url.Action("AdminTalepDetay", "FirmaBilgileri", new { id = talep.Id })" 
@@ -269,10 +293,38 @@
                 </button>
             </div>
         </div>
-    </div>
-</div>
+         </div>
+ </div>
 
-@section Scripts {
+ <!-- Belge Görüntüleme Modal -->
+ <div class="modal fade" id="belgeGoruntuleModal" tabindex="-1" aria-labelledby="belgeGoruntuleModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-xl">
+         <div class="modal-content">
+             <div class="modal-header bg-primary text-white">
+                 <h5 class="modal-title" id="belgeGoruntuleModalLabel">
+                     <i class="bi bi-file-earmark-text me-2"></i>
+                     Belge Görüntüleme
+                 </h5>
+                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+             </div>
+             <div class="modal-body p-0">
+                 <div class="ratio ratio-16x9">
+                     <iframe id="belgeIframe" src="" frameborder="0" style="width: 100%; height: 70vh;"></iframe>
+                 </div>
+             </div>
+             <div class="modal-footer">
+                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                     <i class="bi bi-x-circle me-2"></i>Kapat
+                 </button>
+                 <a href="#" id="belgeIndirLink" class="btn btn-success">
+                     <i class="bi bi-download me-2"></i>İndir
+                 </a>
+             </div>
+         </div>
+     </div>
+ </div>
+ 
+ @section Scripts {
     <script>
         // Modal açıldığında butonları sıfırla
         $('#onayModal').on('show.bs.modal', function () {
@@ -340,8 +392,24 @@
             rows.forEach(row => row.style.display = '');
         }
         
-        // Sayfa yüklendiğinde event listener'ları ekle
-        document.addEventListener('DOMContentLoaded', function() {
+                 // Belge görüntüleme fonksiyonu
+         function belgeGoruntule(talepId) {
+             const iframe = document.getElementById('belgeIframe');
+             const indirLink = document.getElementById('belgeIndirLink');
+             
+             // Iframe src'sini ayarla
+             iframe.src = '@Url.Action("BelgeGoruntule", "FirmaBilgileri")?talepId=' + talepId;
+             
+             // İndirme linkini ayarla
+             indirLink.href = '@Url.Action("BelgeIndir", "FirmaBilgileri")?talepId=' + talepId;
+             
+             // Modal'ı aç
+             const modal = new bootstrap.Modal(document.getElementById('belgeGoruntuleModal'));
+             modal.show();
+         }
+         
+         // Sayfa yüklendiğinde event listener'ları ekle
+         document.addEventListener('DOMContentLoaded', function() {
             // Firma arama input'una real-time arama ekle
             const firmaFilter = document.getElementById('firmaFilter');
             if (firmaFilter) {

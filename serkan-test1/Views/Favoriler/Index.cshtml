@@ -1,0 +1,385 @@
+@model IEnumerable<serkan_test1.Models.FavoriKlasor>
+
+@{
+    ViewData["Title"] = "Favorilerim";
+}
+
+<style>
+    /* Inline CSS - Buton boyutlarını zorla küçült */
+    .btn-xs {
+        padding: 0.125rem 0.25rem !important;
+        font-size: 0.625rem !important;
+        line-height: 1 !important;
+        border-radius: 0.15rem !important;
+        min-width: 20px !important;
+        height: 20px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    /* Kart layout düzeltmeleri */
+    .klasor-card {
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    .klasor-card .card-body {
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 0.75rem !important;
+    }
+    
+    .klasor-card .card-title {
+        margin-bottom: 0.5rem !important;
+        line-height: 1.2 !important;
+    }
+    
+    .klasor-card .mt-auto {
+        margin-top: auto !important;
+        padding-top: 0.5rem !important;
+    }
+    
+    /* Buton grubu düzeltmeleri */
+    .klasor-card .d-flex.gap-1 {
+        gap: 0.25rem !important;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="bi bi-heart-fill text-danger me-2"></i>
+                        Favorilerim
+                    </h4>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#yeniKlasorModal">
+                        <i class="bi bi-plus-circle me-1"></i>
+                        Yeni Klasör
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="row" id="klasorlerContainer">
+                        @foreach (var klasor in Model)
+                        {
+                            <div class="col-lg-3 col-md-4 col-sm-6 mb-4" data-klasor-id="@klasor.Id">
+                                <div class="card h-100 klasor-card" style="border-left: 4px solid @klasor.RenkKodu;">
+                                    <div class="card-body d-flex flex-column">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div class="d-flex align-items-center flex-grow-1 me-2">
+                                                <i class="bi @klasor.IkonAdi fs-4 me-2" style="color: @klasor.RenkKodu;"></i>
+                                                <h6 class="card-title mb-0">
+                                                    <a href="#" class="text-decoration-none" onclick="klasorIlanlariniGoster(@klasor.Id, '@klasor.KlasorAdi')" style="color: inherit;">
+                                                        @klasor.KlasorAdi
+                                                    </a>
+                                                </h6>
+                                            </div>
+                                            <div class="d-flex gap-1 flex-shrink-0">
+                                                <button class="btn btn-xs btn-outline-primary" type="button" onclick="klasorDuzenle(@klasor.Id, '@klasor.KlasorAdi')" title="Düzenle" style="padding: 0.125rem 0.25rem; font-size: 0.625rem; min-width: 20px; height: 20px;">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button class="btn btn-xs btn-outline-danger" type="button" onclick="klasorSil(@klasor.Id)" title="Sil" style="padding: 0.125rem 0.25rem; font-size: 0.625rem; min-width: 20px; height: 20px;">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mt-auto">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="badge bg-secondary">
+                                                    <i class="bi bi-star-fill me-1"></i>
+                                                    @if (klasor.FavoriSayisi == 0)
+                                                    {
+                                                        <span>0 ilan</span>
+                                                    }
+                                                    else if (klasor.FavoriSayisi == 1)
+                                                    {
+                                                        <span>1 ilan</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>@klasor.FavoriSayisi ilan</span>
+                                                    }
+                                                </span>
+                                                <small class="text-muted">
+                                                    @klasor.OlusturmaTarihi.ToString("dd.MM.yyyy")
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Yeni Klasör Modal -->
+<div class="modal fade" id="yeniKlasorModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-folder-plus me-2"></i>
+                    Yeni Klasör Oluştur
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="yeniKlasorForm">
+                    <div class="mb-3">
+                        <label for="klasorAdi" class="form-label">Klasör Adı</label>
+                        <input type="text" class="form-control" id="klasorAdi" name="klasorAdi" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-primary" onclick="yeniKlasorOlustur()">
+                    <i class="bi bi-check-circle me-1"></i>
+                    Oluştur
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Klasör Düzenleme Modal -->
+<div class="modal fade" id="klasorDuzenleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-pencil-square me-2"></i>
+                    Klasör Düzenle
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="klasorDuzenleForm">
+                    <input type="hidden" id="duzenleKlasorId">
+                    <div class="mb-3">
+                        <label for="duzenleKlasorAdi" class="form-label">Klasör Adı</label>
+                        <input type="text" class="form-control" id="duzenleKlasorAdi" name="duzenleKlasorAdi" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-primary" onclick="klasorAdiGuncelle()">
+                    <i class="bi bi-check-circle me-1"></i>
+                    Güncelle
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- İlanları Göster Modal -->
+<div class="modal fade" id="ilanlarModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ilanlarModalTitle">
+                    <i class="bi bi-list-ul me-2"></i>
+                    Klasör İlanları
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="ilanlarContainer">
+                    <!-- İlanlar burada gösterilecek -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Yeni klasör oluştur
+        function yeniKlasorOlustur() {
+            const klasorAdi = document.getElementById('klasorAdi').value.trim();
+            if (!klasorAdi) {
+                alert('Klasör adı boş olamaz!');
+                return;
+            }
+
+            fetch('/Favoriler/YeniKlasor', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `klasorAdi=${encodeURIComponent(klasorAdi)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message || 'Klasör oluşturulamadı!');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Bir hata oluştu!');
+            });
+        }
+
+        // Klasör düzenle
+        function klasorDuzenle(id, ad) {
+            document.getElementById('duzenleKlasorId').value = id;
+            document.getElementById('duzenleKlasorAdi').value = ad;
+            new bootstrap.Modal(document.getElementById('klasorDuzenleModal')).show();
+        }
+
+        // Klasör adı güncelle
+        function klasorAdiGuncelle() {
+            const id = document.getElementById('duzenleKlasorId').value;
+            const yeniAd = document.getElementById('duzenleKlasorAdi').value.trim();
+            
+            if (!yeniAd) {
+                alert('Klasör adı boş olamaz!');
+                return;
+            }
+
+            fetch('/Favoriler/KlasorAdiGuncelle', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `id=${id}&yeniAd=${encodeURIComponent(yeniAd)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message || 'Güncelleme başarısız!');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Bir hata oluştu!');
+            });
+        }
+
+        // Klasör sil
+        function klasorSil(id) {
+            if (confirm('Bu klasörü silmek istediğinizden emin misiniz?')) {
+                fetch('/Favoriler/KlasorSil', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `id=${id}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert(data.message || 'Silme işlemi başarısız!');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Bir hata oluştu!');
+                });
+            }
+        }
+
+        // Klasör ilanlarını göster
+        function klasorIlanlariniGoster(id, klasorAdi) {
+            document.getElementById('ilanlarModalTitle').textContent = klasorAdi + ' - İlanlar';
+            const ilanlarContainer = document.getElementById('ilanlarContainer');
+            
+            // Loading göster
+            ilanlarContainer.innerHTML = `
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Yükleniyor...</span>
+                    </div>
+                    <p class="mt-2">İlanlar yükleniyor...</p>
+                </div>
+            `;
+            
+            // Modalı aç
+            const modal = new bootstrap.Modal(document.getElementById('ilanlarModal'));
+            modal.show();
+            
+            // API'den ilanları çek
+            fetch(`/Favoriler/KlasorIlanlari?klasorId=${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.ilanlar.length > 0) {
+                        // İlanları listele
+                        let ilanlarHTML = '<div class="row">';
+                        data.ilanlar.forEach(ilan => {
+                            ilanlarHTML += `
+                                <div class="col-md-6 col-lg-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h6 class="card-title">${ilan.baslik}</h6>
+                                            <p class="card-text text-primary fw-bold">${ilan.fiyat}</p>
+                                            <small class="text-muted">Tarih: ${ilan.tarih}</small>
+                                        </div>
+                                        <div class="card-footer bg-transparent">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="ilanDetayGoster(${ilan.id})">
+                                                <i class="bi bi-eye me-1"></i>Detay
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        ilanlarHTML += '</div>';
+                        ilanlarContainer.innerHTML = ilanlarHTML;
+                    } else {
+                        // İlan yoksa mesaj göster
+                        ilanlarContainer.innerHTML = `
+                            <div class="alert alert-info text-center">
+                                <i class="bi bi-info-circle fs-1 text-primary mb-3"></i>
+                                <h5>Bu klasörde henüz ilan bulunmuyor.</h5>
+                                <p class="mb-0">İlan eklemek için arama yapabilir veya yeni ilanlar oluşturabilirsiniz.</p>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Hata:', error);
+                    ilanlarContainer.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            İlanlar yüklenirken bir hata oluştu. Lütfen tekrar deneyin.
+                        </div>
+                    `;
+                });
+        }
+
+        // İlan detayını göster (gelecekte kullanılacak)
+        function ilanDetayGoster(ilanId) {
+            alert(`İlan ID: ${ilanId} - Detay sayfası açılacak`);
+            // Burada ilan detay sayfasına yönlendirme yapılabilir
+        }
+
+        // Modal kapandığında form temizle
+        document.getElementById('yeniKlasorModal').addEventListener('hidden.bs.modal', function () {
+            document.getElementById('yeniKlasorForm').reset();
+        });
+
+        document.getElementById('klasorDuzenleModal').addEventListener('hidden.bs.modal', function () {
+            document.getElementById('klasorDuzenleForm').reset();
+        });
+    </script>
+}

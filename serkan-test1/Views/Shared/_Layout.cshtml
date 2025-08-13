@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - serkan_test1</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/firma-bilgileri.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/serkan_test1.styles.css" asp-append-version="true" />
@@ -27,6 +28,11 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Favoriler" asp-action="Index">
+                                <i class="bi bi-heart-fill text-danger me-1"></i>Favoriler
+                            </a>
                         </li>
                     </ul>
                 </div>

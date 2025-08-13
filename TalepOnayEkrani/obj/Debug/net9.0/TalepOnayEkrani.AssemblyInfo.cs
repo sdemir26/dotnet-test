@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TalepOnayEkrani")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+94c2c62c385b1b1adab2334105d9c668e5e2dcd5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+232b84819bb71882f0d048fdd7f3904b82cf6f72")]
 [assembly: System.Reflection.AssemblyProductAttribute("TalepOnayEkrani")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TalepOnayEkrani")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

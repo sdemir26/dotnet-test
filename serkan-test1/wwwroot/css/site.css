@@ -29,3 +29,52 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+/* Custom styles for the application */
+
+/* Extra small button size for favorite folder actions */
+.btn-xs {
+    padding: 0.125rem 0.25rem;
+    font-size: 0.625rem;
+    line-height: 1;
+    border-radius: 0.15rem;
+    min-width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Clickable folder names styling */
+.klasor-card .card-title a:hover {
+    color: #007bff !important;
+    text-decoration: underline !important;
+}
+
+/* Favorite folder card layout fixes */
+.klasor-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.klasor-card .card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem;
+}
+
+.klasor-card .card-title {
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}
+
+.klasor-card .btn-group {
+    flex-shrink: 0;
+}
+
+.klasor-card .mt-auto {
+    margin-top: auto !important;
+    padding-top: 0.5rem;
+}

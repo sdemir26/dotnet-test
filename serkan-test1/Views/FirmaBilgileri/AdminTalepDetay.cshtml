@@ -89,6 +89,65 @@
                 </div>
             </div>
 
+            <!-- Belge Bilgileri -->
+            @if (Model.BelgeVarMi)
+            {
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-success bg-gradient text-white border-0 py-3">
+                        <h6 class="mb-0 fw-semibold">
+                            <i class="bi bi-file-earmark-text me-2"></i>
+                            Yüklenen Belge
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium text-muted">Belge Dosya Adı:</label>
+                                <div class="p-3 bg-light rounded border">
+                                    <span class="text-muted">@Model.BelgeDosyaAdi</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium text-muted">Yükleme Tarihi:</label>
+                                <div class="p-3 bg-light rounded border">
+                                    <span class="text-muted">@Model.BelgeYuklemeTarihi?.ToString("dd.MM.yyyy HH:mm")</span>
+                                </div>
+                            </div>
+                                                         <div class="col-12">
+                                 <div class="d-flex justify-content-center gap-3">
+                                     <button type="button" class="btn btn-primary btn-lg" onclick="belgeGoruntule(@Model.Id)">
+                                         <i class="bi bi-eye me-2"></i>
+                                         Belgeyi Görüntüle
+                                     </button>
+                                     <a href="@Url.Action("BelgeIndir", "FirmaBilgileri", new { talepId = Model.Id })" 
+                                        class="btn btn-success btn-lg">
+                                         <i class="bi bi-download me-2"></i>
+                                         Belgeyi İndir
+                                     </a>
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-secondary bg-gradient text-white border-0 py-3">
+                        <h6 class="mb-0 fw-semibold">
+                            <i class="bi bi-file-earmark-x me-2"></i>
+                            Belge Bilgisi
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info text-center">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Bu değişiklik talebi için belge yüklenmemiş.
+                        </div>
+                    </div>
+                </div>
+            }
+
             <!-- Durum ve İşlem Bilgileri -->
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-secondary bg-gradient text-white border-0 py-3">
@@ -298,10 +357,38 @@
                 </form>
             </div>
         </div>
-    </div>
-</div>
+         </div>
+ </div>
 
-@section Scripts {
+ <!-- Belge Görüntüleme Modal -->
+ <div class="modal fade" id="belgeGoruntuleModal" tabindex="-1" aria-labelledby="belgeGoruntuleModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-xl">
+         <div class="modal-content">
+             <div class="modal-header bg-primary text-white">
+                 <h5 class="modal-title" id="belgeGoruntuleModalLabel">
+                     <i class="bi bi-file-earmark-text me-2"></i>
+                     Belge Görüntüleme
+                 </h5>
+                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+             </div>
+             <div class="modal-body p-0">
+                 <div class="ratio ratio-16x9">
+                     <iframe id="belgeIframe" src="" frameborder="0" style="width: 100%; height: 70vh;"></iframe>
+                 </div>
+             </div>
+             <div class="modal-footer">
+                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                     <i class="bi bi-x-circle me-2"></i>Kapat
+                 </button>
+                 <a href="#" id="belgeIndirLink" class="btn btn-success">
+                     <i class="bi bi-download me-2"></i>İndir
+                 </a>
+             </div>
+         </div>
+     </div>
+ </div>
+ 
+ @section Scripts {
     <script>
         // Onaylama modal'ını aç
         function onaylaTalep() {
@@ -315,19 +402,35 @@
             modal.show();
         }
         
-        // Form validasyonu
-        document.addEventListener('DOMContentLoaded', function() {
-            var forms = document.querySelectorAll('form');
-            forms.forEach(function(form) {
-                form.addEventListener('submit', function(event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                });
-            });
-        });
+                 // Belge görüntüleme fonksiyonu
+         function belgeGoruntule(talepId) {
+             const iframe = document.getElementById('belgeIframe');
+             const indirLink = document.getElementById('belgeIndirLink');
+             
+             // Iframe src'sini ayarla
+             iframe.src = '@Url.Action("BelgeGoruntule", "FirmaBilgileri")?talepId=' + talepId;
+             
+             // İndirme linkini ayarla
+             indirLink.href = '@Url.Action("BelgeIndir", "FirmaBilgileri")?talepId=' + talepId;
+             
+             // Modal'ı aç
+             const modal = new bootstrap.Modal(document.getElementById('belgeGoruntuleModal'));
+             modal.show();
+         }
+         
+         // Form validasyonu
+         document.addEventListener('DOMContentLoaded', function() {
+             var forms = document.querySelectorAll('form');
+             forms.forEach(function(form) {
+                 form.addEventListener('submit', function(event) {
+                     if (!form.checkValidity()) {
+                         event.preventDefault();
+                         event.stopPropagation();
+                     }
+                     form.classList.add('was-validated');
+                 });
+             });
+         });
     </script>
 }
 

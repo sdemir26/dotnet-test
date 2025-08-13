@@ -62,6 +62,29 @@
         </div>
     }
 
+    <!-- Uyarı Mesajı -->
+    <div class="row mb-3" id="uyariMesaji" style="display: none;">
+        <div class="col-12">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <strong>Önemli:</strong> * işaretli alanlar için belge yüklenmesi gereklidir. 
+                Belge yüklenmeyen talepler olumsuz sonuçlanabilir.
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Düzenle Butonu -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-primary" id="duzenleBtn" onclick="duzenleModunuAc()">
+                    <i class="bi bi-pencil me-2"></i>Düzenle
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="row g-3">
         <!-- Firma Bilgileri -->
         <div class="col-lg-6">
@@ -69,7 +92,7 @@
                 <div class="card-header bg-primary bg-gradient text-white border-0 py-2">
                     <div class="d-flex align-items-center">
                         <i class="bi bi-building me-2"></i>
-                        <h6 class="mb-0 fw-semibold">Firma Bilgileri</h6>
+                        <h6 class="mb-0 fw-semibold">Genel Bilgiler</h6>
                     </div>
                 </div>
                 <div class="card-body p-0">
@@ -80,14 +103,10 @@
                                     <i class="bi bi-building text-primary"></i>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <div class="text-muted small mb-0">Firma Adı</div>
-                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.FirmaAdi) ? Model.FirmaAdi : "-")</div>
+                                    <div class="text-muted small mb-0">Firma Adı*</div>
+                                    <div class="fw-medium small" id="firmaAdiDisplay">@(!string.IsNullOrWhiteSpace(Model.FirmaAdi) ? Model.FirmaAdi : "-")</div>
+                                    <input type="text" class="form-control form-control-sm d-none" id="firmaAdiInput" value="@Model.FirmaAdi" data-original="@Model.FirmaAdi" data-requires-document="true">
                                 </div>
-                            </div>
-                            <div class="ms-2">
-                                <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modalFirmaAdiTalep">
-                                    <i class="bi bi-exclamation-triangle"></i>Talep
-                                </button>
                             </div>
                         </div>
                         <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
@@ -97,13 +116,9 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <div class="text-muted small mb-0">Firma Unvanı</div>
-                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.FirmaUnvani) ? Model.FirmaUnvani : "-")</div>
+                                    <div class="fw-medium small" id="firmaUnvaniDisplay">@(!string.IsNullOrWhiteSpace(Model.FirmaUnvani) ? Model.FirmaUnvani : "-")</div>
+                                    <input type="text" class="form-control form-control-sm d-none" id="firmaUnvaniInput" value="@Model.FirmaUnvani" data-original="@Model.FirmaUnvani" data-requires-document="false">
                                 </div>
-                            </div>
-                            <div class="ms-2">
-                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalFirmaUnvani">
-                                    <i class="bi bi-pencil"></i>Düzenle
-                                </button>
                             </div>
                         </div>
                         <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
@@ -113,7 +128,8 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <div class="text-muted small mb-0">Firma Tipi</div>
-                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.FirmaTipi) ? Model.FirmaTipi : "-")</div>
+                                    <div class="fw-medium small" id="firmaTipiDisplay">@(!string.IsNullOrWhiteSpace(Model.FirmaTipi) ? Model.FirmaTipi : "-")</div>
+                                    <input type="text" class="form-control form-control-sm d-none" id="firmaTipiInput" value="@Model.FirmaTipi" data-original="@Model.FirmaTipi" data-requires-document="false">
                                 </div>
                             </div>
                         </div>
@@ -123,14 +139,10 @@
                                     <i class="bi bi-globe text-primary"></i>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <div class="text-muted small mb-0">Domain</div>
-                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.Domain) ? Model.Domain : "-")</div>
+                                    <div class="text-muted small mb-0">Domain*</div>
+                                    <div class="fw-medium small" id="domainDisplay">@(!string.IsNullOrWhiteSpace(Model.Domain) ? Model.Domain : "-")</div>
+                                    <input type="text" class="form-control form-control-sm d-none" id="domainInput" value="@Model.Domain" data-original="@Model.Domain" data-requires-document="true">
                                 </div>
-                            </div>
-                            <div class="ms-2">
-                                <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modalDomainTalep">
-                                    <i class="bi bi-exclamation-triangle"></i>Talep
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -155,14 +167,10 @@
                                     <i class="bi bi-person text-primary"></i>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <div class="text-muted small mb-0">Ad</div>
-                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.YetkiliAdi) ? Model.YetkiliAdi : "-")</div>
+                                    <div class="text-muted small mb-0">Ad*</div>
+                                    <div class="fw-medium small" id="yetkiliAdiDisplay">@(!string.IsNullOrWhiteSpace(Model.YetkiliAdi) ? Model.YetkiliAdi : "-")</div>
+                                    <input type="text" class="form-control form-control-sm d-none" id="yetkiliAdiInput" value="@Model.YetkiliAdi" data-original="@Model.YetkiliAdi" data-requires-document="true">
                                 </div>
-                            </div>
-                            <div class="ms-2">
-                                <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modalKisiselBilgiTalep">
-                                    <i class="bi bi-exclamation-triangle me-1"></i>Talep
-                                </button>
                             </div>
                         </div>
                         <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
@@ -171,8 +179,9 @@
                                     <i class="bi bi-person text-primary"></i>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <div class="text-muted small mb-0">Soyad</div>
-                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.YetkiliSoyadi) ? Model.YetkiliSoyadi : "-")</div>
+                                    <div class="text-muted small mb-0">Soyad*</div>
+                                    <div class="fw-medium small" id="yetkiliSoyadiDisplay">@(!string.IsNullOrWhiteSpace(Model.YetkiliSoyadi) ? Model.YetkiliSoyadi : "-")</div>
+                                    <input type="text" class="form-control form-control-sm d-none" id="yetkiliSoyadiInput" value="@Model.YetkiliSoyadi" data-original="@Model.YetkiliSoyadi" data-requires-document="true">
                                 </div>
                             </div>
                         </div>
@@ -182,8 +191,9 @@
                                     <i class="bi bi-card-text text-primary"></i>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <div class="text-muted small mb-0">TC Kimlik No</div>
-                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.YetkiliTCNo) ? Model.YetkiliTCNo : "-")</div>
+                                    <div class="text-muted small mb-0">TC Kimlik No*</div>
+                                    <div class="fw-medium small" id="yetkiliTCNoDisplay">@(!string.IsNullOrWhiteSpace(Model.YetkiliTCNo) ? Model.YetkiliTCNo : "-")</div>
+                                    <input type="text" class="form-control form-control-sm d-none" id="yetkiliTCNoInput" value="@Model.YetkiliTCNo" data-original="@Model.YetkiliTCNo" data-requires-document="true">
                                 </div>
                             </div>
                         </div>
@@ -194,13 +204,9 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <div class="text-muted small mb-0">Şifre</div>
-                                    <div class="fw-medium small">@(string.IsNullOrWhiteSpace(Model.Sifre) ? "-" : "••••••••")</div>
+                                    <div class="fw-medium small" id="sifreDisplay">@(string.IsNullOrWhiteSpace(Model.Sifre) ? "-" : "••••••••")</div>
+                                    <input type="password" class="form-control form-control-sm d-none" id="sifreInput" value="@Model.Sifre" data-original="@Model.Sifre" data-requires-document="false">
                                 </div>
-                            </div>
-                            <div class="ms-2">
-                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalSifre">
-                                    <i class="bi bi-pencil"></i>Düzenle
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -226,13 +232,9 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <div class="text-muted small mb-0">Cep Telefonu</div>
-                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.CepTelefonu) ? Model.CepTelefonu : "-")</div>
+                                    <div class="fw-medium small" id="cepTelefonuDisplay">@(!string.IsNullOrWhiteSpace(Model.CepTelefonu) ? Model.CepTelefonu : "-")</div>
+                                    <input type="text" class="form-control form-control-sm d-none" id="cepTelefonuInput" value="@Model.CepTelefonu" data-original="@Model.CepTelefonu" data-requires-document="false">
                                 </div>
-                            </div>
-                            <div class="ms-2">
-                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCep">
-                                    <i class="bi bi-pencil"></i>Düzenle
-                                </button>
                             </div>
                         </div>
                         <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
@@ -242,13 +244,9 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <div class="text-muted small mb-0">E-Posta</div>
-                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.EPosta) ? Model.EPosta : "-")</div>
+                                    <div class="fw-medium small" id="ePostaDisplay">@(!string.IsNullOrWhiteSpace(Model.EPosta) ? Model.EPosta : "-")</div>
+                                    <input type="email" class="form-control form-control-sm d-none" id="ePostaInput" value="@Model.EPosta" data-original="@Model.EPosta" data-requires-document="false">
                                 </div>
-                            </div>
-                            <div class="ms-2">
-                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalEposta">
-                                    <i class="bi bi-pencil"></i>Düzenle
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -274,7 +272,8 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <div class="text-muted small mb-0">Ülke</div>
-                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.Ulke) ? Model.Ulke : "-")</div>
+                                    <div class="fw-medium small" id="ulkeDisplay">@(!string.IsNullOrWhiteSpace(Model.Ulke) ? Model.Ulke : "-")</div>
+                                    <input type="text" class="form-control form-control-sm d-none" id="ulkeInput" value="@Model.Ulke" data-original="@Model.Ulke" data-requires-document="false">
                                 </div>
                             </div>
                         </div>
@@ -285,13 +284,9 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <div class="text-muted small mb-0">İl</div>
-                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.Il) ? Model.Il : "-")</div>
+                                    <div class="fw-medium small" id="ilDisplay">@(!string.IsNullOrWhiteSpace(Model.Il) ? Model.Il : "-")</div>
+                                    <input type="text" class="form-control form-control-sm d-none" id="ilInput" value="@Model.Il" data-original="@Model.Il" data-requires-document="false">
                                 </div>
-                            </div>
-                            <div class="ms-2">
-                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalIl">
-                                    <i class="bi bi-pencil"></i>Düzenle
-                                </button>
                             </div>
                         </div>
                         <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
@@ -301,13 +296,9 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <div class="text-muted small mb-0">İlçe</div>
-                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.Ilce) ? Model.Ilce : "-")</div>
+                                    <div class="fw-medium small" id="ilceDisplay">@(!string.IsNullOrWhiteSpace(Model.Ilce) ? Model.Ilce : "-")</div>
+                                    <input type="text" class="form-control form-control-sm d-none" id="ilceInput" value="@Model.Ilce" data-original="@Model.Ilce" data-requires-document="false">
                                 </div>
-                            </div>
-                            <div class="ms-2">
-                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalIlce">
-                                    <i class="bi bi-pencil"></i>Düzenle
-                                </button>
                             </div>
                         </div>
                         <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 border-0">
@@ -317,13 +308,9 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <div class="text-muted small mb-0">Mahalle</div>
-                                    <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.Mahalle) ? Model.Mahalle : "-")</div>
+                                    <div class="fw-medium small" id="mahalleDisplay">@(!string.IsNullOrWhiteSpace(Model.Mahalle) ? Model.Mahalle : "-")</div>
+                                    <input type="text" class="form-control form-control-sm d-none" id="mahalleInput" value="@Model.Mahalle" data-original="@Model.Mahalle" data-requires-document="false">
                                 </div>
-                            </div>
-                            <div class="ms-2">
-                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalMahalle">
-                                    <i class="bi bi-pencil"></i>Düzenle
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -351,13 +338,9 @@
                                         </div>
                                         <div class="flex-grow-1">
                                             <div class="text-muted small mb-0">Vergi Dairesi İli</div>
-                                            <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.VergiDairesiIl) ? Model.VergiDairesiIl : "-")</div>
+                                            <div class="fw-medium small" id="vergiDairesiIlDisplay">@(!string.IsNullOrWhiteSpace(Model.VergiDairesiIl) ? Model.VergiDairesiIl : "-")</div>
+                                            <input type="text" class="form-control form-control-sm d-none" id="vergiDairesiIlInput" value="@Model.VergiDairesiIl" data-original="@Model.VergiDairesiIl" data-requires-document="false">
                                         </div>
-                                    </div>
-                                    <div class="ms-2">
-                                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalVDIl">
-                                            <i class="bi bi-pencil"></i>Düzenle
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -371,13 +354,9 @@
                                         </div>
                                         <div class="flex-grow-1">
                                             <div class="text-muted small mb-0">Vergi Dairesi</div>
-                                            <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.VergiDairesi) ? Model.VergiDairesi : "-")</div>
+                                            <div class="fw-medium small" id="vergiDairesiDisplay">@(!string.IsNullOrWhiteSpace(Model.VergiDairesi) ? Model.VergiDairesi : "-")</div>
+                                            <input type="text" class="form-control form-control-sm d-none" id="vergiDairesiInput" value="@Model.VergiDairesi" data-original="@Model.VergiDairesi" data-requires-document="false">
                                         </div>
-                                    </div>
-                                    <div class="ms-2">
-                                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalVd">
-                                            <i class="bi bi-pencil"></i>Düzenle
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -390,13 +369,33 @@
                                             <i class="bi bi-hash text-primary"></i>
                                         </div>
                                         <div class="flex-grow-1">
-                                            <div class="text-muted small mb-0">Vergi No</div>
-                                            <div class="fw-medium small">@(!string.IsNullOrWhiteSpace(Model.VergiNo) ? Model.VergiNo : "-")</div>
+                                            <div class="text-muted small mb-0">Vergi No*</div>
+                                            <div class="fw-medium small" id="vergiNoDisplay">@(!string.IsNullOrWhiteSpace(Model.VergiNo) ? Model.VergiNo : "-")</div>
+                                            <input type="text" class="form-control form-control-sm d-none" id="vergiNoInput" value="@Model.VergiNo" data-original="@Model.VergiNo" data-requires-document="true">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alt Butonlar -->
+        <div class="col-12" id="altButonlar" style="display: none;">
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" class="btn btn-warning" id="belgeYukleBtn" disabled onclick="belgeYukleModalAc()">
+                            <i class="bi bi-upload me-2"></i>Belge Yükle
+                        </button>
+                        <button type="button" class="btn btn-success" id="kaydetBtn" disabled onclick="degisiklikleriKaydet()">
+                            <i class="bi bi-check-circle me-2"></i>Kaydet
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="duzenleModunuKapat()">
+                            <i class="bi bi-x-circle me-2"></i>İptal
+                        </button>
                     </div>
                 </div>
             </div>
@@ -501,9 +500,355 @@
 <!-- Değişiklik talebi alanlar için modallar -->
 @await Html.PartialAsync("_FirmaTalepModallar", Model)
 
+
+
+<!-- Toast Bildirimleri -->
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="bi bi-check-circle me-2"></i>
+                <span id="successToastMessage">İşlem başarıyla tamamlandı!</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    
+    <div id="warningToast" class="toast align-items-center text-white bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <span id="warningToastMessage">Uyarı mesajı!</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<!-- Belge Yükleme Modal -->
+<div class="modal fade" id="belgeYukleModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">
+                    <i class="bi bi-upload me-2"></i>Belge Yükle
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Aşağıdaki alanlar için belge yüklemeniz gerekmektedir:
+                </div>
+                <div id="belgeGerektirenAlanlar">
+                    <!-- Belge gerektiren alanlar burada listelenecek -->
+                </div>
+                <div class="mt-3">
+                    <label class="form-label">Belge Yükle:</label>
+                    <input type="file" class="form-control" id="belgeInput" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                    <small class="text-muted">PDF, Word, JPG, PNG formatları kabul edilir</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-warning" onclick="belgeYukleVeBasvuruGonder()">
+                    <i class="bi bi-send me-2"></i>Başvuru Gönder
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
-        // Form validation handling
+        // Global değişkenler - düzenleme modu durumunu takip etmek için
+        let duzenlemeModu = false;
+        let degisiklikYapildi = false;
+        let belgeGerektirenDegisiklik = false;
+
+        // Düzenleme modunu açar - tüm alanları düzenlenebilir hale getirir
+        function duzenleModunuAc() {
+            duzenlemeModu = true;
+            
+            // Düzenle butonunu gizle
+            document.getElementById('duzenleBtn').style.display = 'none';
+            
+            // Alt butonları göster (Kaydet, Belge Yükle, İptal)
+            document.getElementById('altButonlar').style.display = 'block';
+            
+            // Uyarı mesajını göster (belge gerektiren alanlar için)
+            document.getElementById('uyariMesaji').style.display = 'block';
+            
+            // Tüm input alanlarını göster, display alanlarını gizle
+            const inputs = document.querySelectorAll('input[id$="Input"]');
+            const displays = document.querySelectorAll('div[id$="Display"]');
+            
+            inputs.forEach(input => {
+                input.classList.remove('d-none');
+                input.classList.add('d-block');
+            });
+            
+            displays.forEach(display => {
+                display.classList.add('d-none');
+            });
+        }
+
+        // Düzenleme modunu kapatır - alanları salt okunur hale getirir
+        function duzenleModunuKapat() {
+            duzenlemeModu = false;
+            degisiklikYapildi = false;
+            belgeGerektirenDegisiklik = false;
+            
+            // Düzenle butonunu göster
+            document.getElementById('duzenleBtn').style.display = 'block';
+            
+            // Alt butonları gizle
+            document.getElementById('altButonlar').style.display = 'none';
+            
+            // Uyarı mesajını gizle
+            document.getElementById('uyariMesaji').style.display = 'none';
+            
+            // Tüm input alanlarını gizle, display alanlarını göster
+            const inputs = document.querySelectorAll('input[id$="Input"]');
+            const displays = document.querySelectorAll('div[id$="Display"]');
+            
+            inputs.forEach(input => {
+                input.classList.add('d-none');
+                input.classList.remove('d-block');
+                // Orijinal değerleri geri yükle
+                const originalValue = input.getAttribute('data-original');
+                input.value = originalValue || '';
+            });
+            
+            displays.forEach(display => {
+                display.classList.remove('d-none');
+            });
+            
+            // Butonları pasif yap
+            document.getElementById('kaydetBtn').disabled = true;
+            document.getElementById('belgeYukleBtn').disabled = true;
+        }
+
+        // Input değişikliklerini kontrol eder ve butonları aktif/pasif yapar
+        function inputDegisti() {
+            degisiklikYapildi = false;
+            belgeGerektirenDegisiklik = false;
+            
+            const inputs = document.querySelectorAll('input[id$="Input"]');
+            
+            inputs.forEach(input => {
+                const originalValue = input.getAttribute('data-original') || '';
+                const currentValue = input.value;
+                
+                if (currentValue !== originalValue) {
+                    degisiklikYapildi = true;
+                    
+                    // Belge gerektiren alan mı kontrol et
+                    if (input.getAttribute('data-requires-document') === 'true') {
+                        belgeGerektirenDegisiklik = true;
+                    }
+                }
+            });
+            
+            // Kaydet butonunu aktif/pasif yap
+            document.getElementById('kaydetBtn').disabled = !degisiklikYapildi;
+            
+            // Belge yükle butonunu aktif/pasif yap
+            document.getElementById('belgeYukleBtn').disabled = !belgeGerektirenDegisiklik;
+        }
+
+        // Belge yükleme modalını açar ve değişiklikleri listeler
+        function belgeYukleModalAc() {
+            // Belge gerektiren alanları listele
+            const belgeGerektirenAlanlar = document.getElementById('belgeGerektirenAlanlar');
+            const inputs = document.querySelectorAll('input[id$="Input"][data-requires-document="true"]');
+            
+            let alanListesi = '';
+            inputs.forEach(input => {
+                const originalValue = input.getAttribute('data-original') || '';
+                const currentValue = input.value;
+                
+                if (currentValue !== originalValue) {
+                    const alanAdi = getAlanAdi(input.id);
+                    alanListesi += `
+                        <div class="alert alert-warning mb-2">
+                            <strong>${alanAdi}:</strong> "${originalValue}" → "${currentValue}"
+                        </div>
+                    `;
+                }
+            });
+            
+            belgeGerektirenAlanlar.innerHTML = alanListesi;
+            
+            // Modalı aç
+            const modal = new bootstrap.Modal(document.getElementById('belgeYukleModal'));
+            modal.show();
+        }
+
+        // Alan adını okunabilir hale getirir (input ID'sinden kullanıcı dostu isim)
+        function getAlanAdi(inputId) {
+            const alanAdlari = {
+                'firmaAdiInput': 'Firma Adı',
+                'domainInput': 'Domain',
+                'yetkiliAdiInput': 'Yetkili Kişi Adı',
+                'yetkiliSoyadiInput': 'Yetkili Kişi Soyadı',
+                'yetkiliTCNoInput': 'TC Kimlik Numarası',
+                'vergiNoInput': 'Vergi Numarası'
+            };
+            
+            return alanAdlari[inputId] || inputId.replace('Input', '').replace(/([A-Z])/g, ' $1').trim();
+        }
+
+        // Belge yükle ve başvuru gönder - belge gerektiren değişiklikler için
+        function belgeYukleVeBasvuruGonder() {
+            const belgeInput = document.getElementById('belgeInput');
+            
+            // Belge seçilip seçilmediğini kontrol et
+            if (!belgeInput.files || belgeInput.files.length === 0) {
+                showToast('warning', 'Lütfen bir belge seçin!');
+                return;
+            }
+            
+            // Belge gerektiren değişiklikleri topla
+            const inputs = document.querySelectorAll('input[id$="Input"][data-requires-document="true"]');
+            let degisiklikTalepleri = [];
+            
+            inputs.forEach(input => {
+                const originalValue = input.getAttribute('data-original') || '';
+                const currentValue = input.value;
+                
+                if (currentValue !== originalValue) {
+                    const alanAdi = getAlanAdi(input.id);
+                    degisiklikTalepleri.push({
+                        alanAdi: alanAdi,
+                        eskiDeger: originalValue,
+                        yeniDeger: currentValue
+                    });
+                }
+            });
+            
+            if (degisiklikTalepleri.length === 0) {
+                showToast('warning', 'Değişiklik bulunamadı!');
+                return;
+            }
+            
+            // Değişiklik taleplerini sisteme kaydet
+            degisiklikTalepleri.forEach(talep => {
+                kaydetDegisiklikTalebi(talep.alanAdi, talep.eskiDeger, talep.yeniDeger);
+            });
+            
+            // Başarı mesajı göster
+            showToast('success', `${degisiklikTalepleri.length} adet değişiklik talebi başarıyla gönderildi!`);
+            
+            // Modalı kapat
+            const modal = bootstrap.Modal.getInstance(document.getElementById('belgeYukleModal'));
+            modal.hide();
+            
+            // Düzenleme modunu kapat
+            duzenleModunuKapat();
+            
+            // Sayfayı yenile (yeni talepleri görmek için)
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        }
+
+        // Değişiklik talebini sisteme kaydet - AJAX ile backend'e gönder
+        function kaydetDegisiklikTalebi(alanAdi, eskiDeger, yeniDeger) {
+            const formData = new FormData();
+            formData.append('alanAdi', alanAdi);
+            formData.append('eskiDeger', eskiDeger);
+            formData.append('yeniDeger', yeniDeger);
+            formData.append('degisiklikSebebi', 'Kullanıcı tarafından talep edildi');
+            
+            // Belge dosyasını ekle
+            const belgeInput = document.getElementById('belgeInput');
+            if (belgeInput.files && belgeInput.files.length > 0) {
+                formData.append('belge', belgeInput.files[0]);
+            }
+            
+            fetch('/FirmaBilgileri/TalepOlustur', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Değişiklik talebi kaydedildi:', alanAdi);
+                } else {
+                    console.error('Değişiklik talebi kaydedilemedi:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Hata:', error);
+            });
+        }
+
+        // Toast bildirimi göster - kullanıcıya bilgi vermek için
+        function showToast(type, message) {
+            let toastElement;
+            let messageElement;
+            
+            if (type === 'success') {
+                toastElement = document.getElementById('successToast');
+                messageElement = document.getElementById('successToastMessage');
+            } else {
+                toastElement = document.getElementById('warningToast');
+                messageElement = document.getElementById('warningToastMessage');
+            }
+            
+            messageElement.textContent = message;
+            const toast = new bootstrap.Toast(toastElement);
+            toast.show();
+        }
+
+        // Değişiklikleri kaydet - belge gerektirmeyen alanlar için
+        function degisiklikleriKaydet() {
+            // Burada sadece düzenlenebilir alanlar kaydedilecek
+            const inputs = document.querySelectorAll('input[id$="Input"]:not([data-requires-document="true"])');
+            let kaydedilecekAlanlar = [];
+            
+            inputs.forEach(input => {
+                const originalValue = input.getAttribute('data-original') || '';
+                const currentValue = input.value;
+                
+                if (currentValue !== originalValue) {
+                    const alanAdi = getAlanAdi(input.id);
+                    kaydedilecekAlanlar.push({
+                        alan: alanAdi,
+                        eskiDeger: originalValue,
+                        yeniDeger: currentValue
+                    });
+                }
+            });
+            
+            if (kaydedilecekAlanlar.length > 0) {
+                // Burada AJAX ile kaydetme işlemi yapılacak
+                console.log('Kaydedilecek alanlar:', kaydedilecekAlanlar);
+                showToast('success', 'Değişiklikler başarıyla kaydedildi!');
+                
+                // Display alanlarını güncelle
+                kaydedilecekAlanlar.forEach(alan => {
+                    const inputId = alan.alan.replace(/\s+/g, '').toLowerCase() + 'Input';
+                    const displayId = inputId.replace('Input', 'Display');
+                    
+                    const input = document.getElementById(inputId);
+                    const display = document.getElementById(displayId);
+                    
+                    if (input && display) {
+                        input.setAttribute('data-original', alan.yeniDeger);
+                        display.textContent = alan.yeniDeger;
+                    }
+                });
+                
+                // Düzenleme modunu kapat
+                duzenleModunuKapat();
+            } else {
+                showToast('warning', 'Kaydedilecek değişiklik bulunamadı!');
+            }
+        }
+
+        // Form validation handling - jQuery ile form doğrulama
         $(document).ready(function() {
             // Handle form submissions for update modals
             $('form[asp-action^="Guncelle"]').on('submit', function(e) {

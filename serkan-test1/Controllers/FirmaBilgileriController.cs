@@ -1,300 +1,147 @@
 using Microsoft.AspNetCore.Mvc;
 using serkan_test1.Models;
-using serkan_test1.Data;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace serkan_test1.Controllers
 {
+    /// <summary>
+    /// Firma bilgileri ve değişiklik talepleri yönetimi için controller
+    /// </summary>
     public class FirmaBilgileriController : Controller
     {
-        private readonly UygulamaDbContext _db;
+        // Geçici olarak statik veri kullanıyoruz - gerçek uygulamada veritabanı kullanılacak
+        private static List<DegisiklikTalebi> _degisiklikTalepleri = new List<DegisiklikTalebi>();
+        private static int _talepIdCounter = 1;
 
-        public FirmaBilgileriController(UygulamaDbContext db)
-        {
-            _db = db;
-        }
-
+        /// <summary>
+        /// Ana firma bilgileri sayfasını gösterir
+        /// </summary>
+        /// <returns>Firma bilgileri view'ı</returns>
         public IActionResult Bilgiler()
         {
-            var firma = _db.Firmalar.FirstOrDefault();
-            ViewBag.TalepMesaj = TempData["TalepMesaj"];
-            
-            // Son değişiklik taleplerini getir (ana sayfada gösterilecek)
-            var sonTalepler = _db.DegisiklikTalepleri
-                .OrderByDescending(t => t.TalepTarihi)
-                .Take(5)
-                .ToList();
-            
-            ViewBag.SonTalepler = sonTalepler;
-            
-            return View("Bilgiler", firma);
-        }
-
-        // Talep listesi sayfası
-        public IActionResult TalepListesi(int sayfa = 1, int sayfaBoyutu = 5)
-        {
-            var toplamTalep = _db.DegisiklikTalepleri.Count();
-            var toplamSayfa = (int)Math.Ceiling((double)toplamTalep / sayfaBoyutu);
-            
-            var talepler = _db.DegisiklikTalepleri
-                .OrderByDescending(t => t.TalepTarihi)
-                .Skip((sayfa - 1) * sayfaBoyutu)
-                .Take(sayfaBoyutu)
-                .ToList();
-
-            ViewBag.Sayfa = sayfa;
-            ViewBag.SayfaBoyutu = sayfaBoyutu;
-            ViewBag.ToplamSayfa = toplamSayfa;
-            ViewBag.ToplamTalep = toplamTalep;
-
-            return View(talepler);
-        }
-
-        // Kullanıcı tarafından değiştirilebilen alanlar
-        [HttpPost]
-        public IActionResult GuncelleFirmaUnvani([FromForm] string firmaUnvani)
-        {
-            if (string.IsNullOrWhiteSpace(firmaUnvani))
+            // Örnek firma verisi - gerçek uygulamada veritabanından gelecek
+            var model = new FirmaBilgileriViewModel
             {
-                TempData["TalepMesaj"] = "Firma ünvanı boş olamaz.";
-                return RedirectToAction("Bilgiler");
-            }
-            return GuncelleAlan(f => f.FirmaUnvani = firmaUnvani, true);
-        }
-
-        [HttpPost]
-        public IActionResult GuncelleSifre([FromForm] string sifre)
-        {
-            if (string.IsNullOrWhiteSpace(sifre) || sifre.Length < 6)
-            {
-                TempData["TalepMesaj"] = "Şifre en az 6 karakter olmalıdır.";
-                return RedirectToAction("Bilgiler");
-            }
-            return GuncelleAlan(f => f.Sifre = sifre, true);
-        }
-
-        [HttpPost]
-        public IActionResult GuncelleIl([FromForm] string il)
-        {
-            if (string.IsNullOrWhiteSpace(il))
-            {
-                TempData["TalepMesaj"] = "İl boş olamaz.";
-                return RedirectToAction("Bilgiler");
-            }
-            return GuncelleAlan(f => f.Il = il, true);
-        }
-
-        [HttpPost]
-        public IActionResult GuncelleIlce([FromForm] string ilce)
-        {
-            if (string.IsNullOrWhiteSpace(ilce))
-            {
-                TempData["TalepMesaj"] = "İlçe boş olamaz.";
-                return RedirectToAction("Bilgiler");
-            }
-            return GuncelleAlan(f => f.Ilce = ilce, true);
-        }
-
-        [HttpPost]
-        public IActionResult GuncelleMahalle([FromForm] string mahalle)
-        {
-            if (string.IsNullOrWhiteSpace(mahalle))
-            {
-                TempData["TalepMesaj"] = "Mahalle boş olamaz.";
-                return RedirectToAction("Bilgiler");
-            }
-            return GuncelleAlan(f => f.Mahalle = mahalle, true);
-        }
-
-        [HttpPost]
-        public IActionResult GuncelleCepTelefonu([FromForm] string cepTelefonu)
-        {
-            if (string.IsNullOrWhiteSpace(cepTelefonu))
-            {
-                TempData["TalepMesaj"] = "Cep telefonu boş olamaz.";
-                return RedirectToAction("Bilgiler");
-            }
-            return GuncelleAlan(f => f.CepTelefonu = cepTelefonu, true);
-        }
-
-        [HttpPost]
-        public IActionResult GuncelleEPosta([FromForm] string ePosta)
-        {
-            if (string.IsNullOrWhiteSpace(ePosta))
-            {
-                TempData["TalepMesaj"] = "E-posta boş olamaz.";
-                return RedirectToAction("Bilgiler");
-            }
-            return GuncelleAlan(f => f.EPosta = ePosta, true);
-        }
-
-        [HttpPost]
-        public IActionResult GuncelleVergiDairesiIl([FromForm] string vergiDairesiIl)
-        {
-            if (string.IsNullOrWhiteSpace(vergiDairesiIl))
-            {
-                TempData["TalepMesaj"] = "Vergi dairesi ili boş olamaz.";
-                return RedirectToAction("Bilgiler");
-            }
-            return GuncelleAlan(f => f.VergiDairesiIl = vergiDairesiIl, true);
-        }
-
-        [HttpPost]
-        public IActionResult GuncelleVergiDairesi([FromForm] string vergiDairesi)
-        {
-            if (string.IsNullOrWhiteSpace(vergiDairesi))
-            {
-                TempData["TalepMesaj"] = "Vergi dairesi boş olamaz.";
-                return RedirectToAction("Bilgiler");
-            }
-            return GuncelleAlan(f => f.VergiDairesi = vergiDairesi, true);
-        }
-
-        private IActionResult GuncelleAlan(Action<FirmaBilgileriViewModel> guncelle, bool kosul)
-        {
-            var firma = _db.Firmalar.FirstOrDefault();
-            if (firma != null && kosul)
-            {
-                guncelle(firma);
-                _db.SaveChanges();
-                TempData["TalepMesaj"] = "Bilgi başarıyla güncellendi.";
-            }
-            return RedirectToAction("Bilgiler");
-        }
-
-        // Admin onayı gerektiren alanlar için değişiklik talepleri
-        [HttpPost]
-        public IActionResult TalepFirmaAdi([FromForm] string yeniFirmaAdi, [FromForm] string degisiklikSebebi)
-        {
-            if (string.IsNullOrWhiteSpace(yeniFirmaAdi))
-            {
-                TempData["TalepMesaj"] = "Firma adı boş olamaz.";
-                return RedirectToAction("Bilgiler");
-            }
-            if (string.IsNullOrWhiteSpace(degisiklikSebebi))
-            {
-                TempData["TalepMesaj"] = "Değişiklik sebebi zorunludur.";
-                return RedirectToAction("Bilgiler");
-            }
-            return TalepEkle("Firma Adı", yeniFirmaAdi, "Firma Adı değişiklik talebiniz alınmıştır.", degisiklikSebebi);
-        }
-
-        [HttpPost]
-        public IActionResult TalepDomain([FromForm] string yeniDomain, [FromForm] string degisiklikSebebi)
-        {
-            if (string.IsNullOrWhiteSpace(yeniDomain))
-            {
-                TempData["TalepMesaj"] = "Domain boş olamaz.";
-                return RedirectToAction("Bilgiler");
-            }
-            if (string.IsNullOrWhiteSpace(degisiklikSebebi))
-            {
-                TempData["TalepMesaj"] = "Değişiklik sebebi zorunludur.";
-                return RedirectToAction("Bilgiler");
-            }
-            return TalepEkle("Domain", yeniDomain, "Domain değişiklik talebiniz alınmıştır.", degisiklikSebebi);
-        }
-
-        [HttpPost]
-        public IActionResult TalepYetkiliAdi([FromForm] string yeniYetkiliAdi, [FromForm] string degisiklikSebebi)
-        {
-            if (string.IsNullOrWhiteSpace(yeniYetkiliAdi))
-            {
-                TempData["TalepMesaj"] = "Yetkili adı boş olamaz.";
-                return RedirectToAction("Bilgiler");
-            }
-            if (string.IsNullOrWhiteSpace(degisiklikSebebi))
-            {
-                TempData["TalepMesaj"] = "Değişiklik sebebi zorunludur.";
-                return RedirectToAction("Bilgiler");
-            }
-            return TalepEkle("Yetkili Adı", yeniYetkiliAdi, "Yetkili adı değişiklik talebiniz alınmıştır.", degisiklikSebebi);
-        }
-
-        [HttpPost]
-        public IActionResult TalepYetkiliSoyadi([FromForm] string yeniYetkiliSoyadi, [FromForm] string degisiklikSebebi)
-        {
-            if (string.IsNullOrWhiteSpace(yeniYetkiliSoyadi))
-            {
-                TempData["TalepMesaj"] = "Yetkili soyadı boş olamaz.";
-                return RedirectToAction("Bilgiler");
-            }
-            if (string.IsNullOrWhiteSpace(degisiklikSebebi))
-            {
-                TempData["TalepMesaj"] = "Değişiklik sebebi zorunludur.";
-                return RedirectToAction("Bilgiler");
-            }
-            return TalepEkle("Yetkili Soyadı", yeniYetkiliSoyadi, "Yetkili soyadı değişiklik talebiniz alınmıştır.", degisiklikSebebi);
-        }
-
-        [HttpPost]
-        public IActionResult TalepYetkiliTCNo([FromForm] string yeniYetkiliTCNo, [FromForm] string degisiklikSebebi)
-        {
-            if (string.IsNullOrWhiteSpace(yeniYetkiliTCNo))
-            {
-                TempData["TalepMesaj"] = "TC No boş olamaz.";
-                return RedirectToAction("Bilgiler");
-            }
-            if (yeniYetkiliTCNo.Length != 11)
-            {
-                TempData["TalepMesaj"] = "TC No 11 haneli olmalıdır.";
-                return RedirectToAction("Bilgiler");
-            }
-            if (string.IsNullOrWhiteSpace(degisiklikSebebi))
-            {
-                TempData["TalepMesaj"] = "Değişiklik sebebi zorunludur.";
-                return RedirectToAction("Bilgiler");
-            }
-            return TalepEkle("Yetkili TC No", yeniYetkiliTCNo, "TC kimlik no değişiklik talebiniz alınmıştır.", degisiklikSebebi);
-        }
-
-        private IActionResult TalepEkle(string alanAdi, string yeniDeger, string mesaj, string degisiklikSebebi = null)
-        {
-            var talep = new DegisiklikTalebi
-            {
-                KullaniciAdi = "testUser", // Gerçek sistemde: User.Identity.Name
-                FirmaAdi = "A Emlak", // Gerçek sistemde: mevcut firma adı
-                AlanAdi = alanAdi,
-                EskiDeger = "Mevcut değer", // Gerçek sistemde: mevcut değer
-                YeniDeger = yeniDeger,
-                DegisiklikSebebi = degisiklikSebebi ?? "Kullanıcı talebi",
-                TalepTarihi = DateTime.Now,
-                Durum = TalepDurumu.KontrolEdiliyor
+                FirmaAdi = "Test Firma A.Ş.",
+                FirmaUnvani = "Test Firma Anonim Şirketi",
+                FirmaTipi = "Anonim Şirket",
+                Domain = "testfirma.com",
+                YetkiliAdi = "Ahmet",
+                YetkiliSoyadi = "Yılmaz",
+                YetkiliTCNo = "12345678901",
+                Sifre = "123456",
+                CepTelefonu = "0555 123 45 67",
+                EPosta = "info@testfirma.com",
+                Ulke = "Türkiye",
+                Il = "İstanbul",
+                Ilce = "Kadıköy",
+                Mahalle = "Fenerbahçe",
+                VergiDairesiIl = "İstanbul",
+                VergiDairesi = "Kadıköy",
+                VergiNo = "1234567890"
             };
 
-            _db.DegisiklikTalepleri.Add(talep);
-            _db.SaveChanges();
-
-            TempData["TalepMesaj"] = mesaj;
-            return RedirectToAction("Bilgiler");
+            // Son 5 değişiklik talebini view'a gönder
+            ViewBag.SonTalepler = _degisiklikTalepleri.OrderByDescending(t => t.TalepTarihi).Take(5);
+            return View(model);
         }
 
-        // ========== ADMIN METODLARI ==========
-        
-        // Admin - Talep listesi
-        public IActionResult AdminTalepListesi(int sayfa = 1, int sayfaBoyutu = 10)
+        /// <summary>
+        /// Yeni değişiklik talebi oluşturur ve belge yükleme işlemini gerçekleştirir
+        /// </summary>
+        /// <param name="alanAdi">Değiştirilecek alanın adı</param>
+        /// <param name="eskiDeger">Alanın eski değeri</param>
+        /// <param name="yeniDeger">Alanın yeni değeri</param>
+        /// <param name="degisiklikSebebi">Değişiklik sebebi</param>
+        /// <param name="belge">Yüklenen belge dosyası (opsiyonel)</param>
+        /// <returns>JSON sonucu</returns>
+        [HttpPost]
+        public IActionResult TalepOlustur(string alanAdi, string eskiDeger, string yeniDeger, string degisikSebebi, IFormFile? belge)
         {
-            var toplamTalep = _db.DegisiklikTalepleri.Count();
-            var toplamSayfa = (int)Math.Ceiling((double)toplamTalep / sayfaBoyutu);
-            
-            var talepler = _db.DegisiklikTalepleri
-                .OrderByDescending(t => t.TalepTarihi)
-                .Skip((sayfa - 1) * sayfaBoyutu)
-                .Take(sayfaBoyutu)
-                .ToList();
+            try
+            {
+                string? belgeDosyaAdi = null;
+                
+                // Belge yükleme işlemi - eğer belge varsa
+                if (belge != null && belge.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "belgeler");
+                    
+                    // Klasör yoksa oluştur
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+                    
+                    // Benzersiz dosya adı oluştur (tarih + GUID + uzantı)
+                    var dosyaUzantisi = Path.GetExtension(belge.FileName);
+                    var benzersizAd = $"{DateTime.Now:yyyyMMdd_HHmmss}_{Guid.NewGuid()}{dosyaUzantisi}";
+                    var dosyaYolu = Path.Combine(uploadsFolder, benzersizAd);
+                    
+                    // Dosyayı fiziksel olarak kaydet
+                    using (var stream = new FileStream(dosyaYolu, FileMode.Create))
+                    {
+                        belge.CopyTo(stream);
+                    }
+                    
+                    belgeDosyaAdi = benzersizAd;
+                }
 
-            ViewBag.Sayfa = sayfa;
-            ViewBag.SayfaBoyutu = sayfaBoyutu;
-            ViewBag.ToplamSayfa = toplamSayfa;
-            ViewBag.ToplamTalep = toplamTalep;
+                // Yeni değişiklik talebi nesnesi oluştur
+                var yeniTalep = new DegisiklikTalebi
+                {
+                    Id = _talepIdCounter++,
+                    FirmaAdi = "Test Firma A.Ş.",
+                    KullaniciAdi = "testuser",
+                    AlanAdi = alanAdi,
+                    EskiDeger = eskiDeger ?? "-",
+                    YeniDeger = yeniDeger,
+                    DegisiklikSebebi = degisikSebebi ?? "Kullanıcı tarafından talep edildi",
+                    TalepTarihi = DateTime.Now,
+                    Durum = TalepDurumu.KontrolEdiliyor,
+                    BelgeDosyaAdi = belgeDosyaAdi,
+                    BelgeYuklemeTarihi = belgeDosyaAdi != null ? DateTime.Now : null
+                };
 
-            return View(talepler);
+                // Talebi listeye ekle
+                _degisiklikTalepleri.Add(yeniTalep);
+
+                return Json(new { success = true, message = "Değişiklik talebi başarıyla oluşturuldu", talep = yeniTalep });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Hata oluştu: " + ex.Message });
+            }
         }
 
-        // Admin - Talep detayı
+        /// <summary>
+        /// Kullanıcı tarafından görüntülenecek değişiklik talepleri listesi
+        /// </summary>
+        /// <returns>Talep listesi view'ı</returns>
+        public IActionResult TalepListesi()
+        {
+            return View(_degisiklikTalepleri.OrderByDescending(t => t.TalepTarihi));
+        }
+
+        /// <summary>
+        /// Admin tarafından görüntülenecek değişiklik talepleri listesi
+        /// </summary>
+        /// <returns>Admin talep listesi view'ı</returns>
+        public IActionResult AdminTalepListesi()
+        {
+            return View(_degisiklikTalepleri.OrderByDescending(t => t.TalepTarihi));
+        }
+
+        /// <summary>
+        /// Belirli bir değişiklik talebinin detaylarını gösterir
+        /// </summary>
+        /// <param name="id">Talep ID'si</param>
+        /// <returns>Talep detay view'ı</returns>
         public IActionResult AdminTalepDetay(int id)
         {
-            var talep = _db.DegisiklikTalepleri.Find(id);
+            var talep = _degisiklikTalepleri.FirstOrDefault(t => t.Id == id);
             if (talep == null)
             {
                 return NotFound();
@@ -302,44 +149,107 @@ namespace serkan_test1.Controllers
             return View(talep);
         }
 
-        // Admin - Talebi onayla
+        /// <summary>
+        /// Admin tarafından değişiklik talebini onaylar
+        /// </summary>
+        /// <param name="talepId">Onaylanacak talep ID'si</param>
+        /// <param name="adminNotu">Admin notu</param>
+        /// <returns>JSON sonucu</returns>
         [HttpPost]
-        public IActionResult AdminOnayla(int talepId, string adminNotu = null)
+        public IActionResult AdminOnayla(int talepId, string adminNotu)
         {
-            var talep = _db.DegisiklikTalepleri.Find(talepId);
+            var talep = _degisiklikTalepleri.FirstOrDefault(t => t.Id == talepId);
             if (talep != null)
             {
                 talep.Durum = TalepDurumu.Onaylandi;
                 talep.AdminNotu = adminNotu;
                 talep.IslemTarihi = DateTime.Now;
-                _db.SaveChanges();
-                
-                TempData["AdminMesaj"] = "Talep başarıyla onaylandı.";
+                return Json(new { success = true });
             }
-            return RedirectToAction("AdminTalepListesi");
+            return Json(new { success = false, message = "Talep bulunamadı" });
         }
 
-        // Admin - Talebi reddet
+        /// <summary>
+        /// Admin tarafından değişiklik talebini reddeder
+        /// </summary>
+        /// <param name="talepId">Reddedilecek talep ID'si</param>
+        /// <param name="adminNotu">Admin notu</param>
+        /// <returns>JSON sonucu</returns>
         [HttpPost]
         public IActionResult AdminReddet(int talepId, string adminNotu)
         {
-            if (string.IsNullOrWhiteSpace(adminNotu))
-            {
-                TempData["AdminHata"] = "Red sebebi zorunludur.";
-                return RedirectToAction("AdminTalepDetay", new { id = talepId });
-            }
-
-            var talep = _db.DegisiklikTalepleri.Find(talepId);
+            var talep = _degisiklikTalepleri.FirstOrDefault(t => t.Id == talepId);
             if (talep != null)
             {
                 talep.Durum = TalepDurumu.Reddedildi;
                 talep.AdminNotu = adminNotu;
                 talep.IslemTarihi = DateTime.Now;
-                _db.SaveChanges();
-                
-                TempData["AdminMesaj"] = "Talep reddedildi.";
+                return Json(new { success = true });
             }
-            return RedirectToAction("AdminTalepListesi");
+            return Json(new { success = false, message = "Talep bulunamadı" });
+        }
+
+        /// <summary>
+        /// Yüklenen belgeyi indirme için sunar
+        /// </summary>
+        /// <param name="talepId">Talep ID'si</param>
+        /// <returns>Dosya indirme response'u</returns>
+        public IActionResult BelgeIndir(int talepId)
+        {
+            var talep = _degisiklikTalepleri.FirstOrDefault(t => t.Id == talepId);
+            if (talep == null || string.IsNullOrEmpty(talep.BelgeDosyaAdi))
+            {
+                return NotFound("Belge bulunamadı");
+            }
+
+            var dosyaYolu = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "belgeler", talep.BelgeDosyaAdi);
+            
+            if (!System.IO.File.Exists(dosyaYolu))
+            {
+                return NotFound("Dosya bulunamadı");
+            }
+
+            var dosyaBytes = System.IO.File.ReadAllBytes(dosyaYolu);
+            return File(dosyaBytes, "application/octet-stream", talep.BelgeDosyaAdi);
+        }
+
+        /// <summary>
+        /// Yüklenen belgeyi tarayıcıda görüntülemek için sunar
+        /// </summary>
+        /// <param name="talepId">Talep ID'si</param>
+        /// <returns>Dosya görüntüleme response'u</returns>
+        public IActionResult BelgeGoruntule(int talepId)
+        {
+            var talep = _degisiklikTalepleri.FirstOrDefault(t => t.Id == talepId);
+            if (talep == null || string.IsNullOrEmpty(talep.BelgeDosyaAdi))
+            {
+                return NotFound("Belge bulunamadı");
+            }
+
+            var dosyaYolu = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "belgeler", talep.BelgeDosyaAdi);
+            
+            if (!System.IO.File.Exists(dosyaYolu))
+            {
+                return NotFound("Dosya bulunamadı");
+            }
+
+            var dosyaBytes = System.IO.File.ReadAllBytes(dosyaYolu);
+            var dosyaUzantisi = Path.GetExtension(talep.BelgeDosyaAdi).ToLower();
+            
+            // Dosya türüne göre content type belirle (tarayıcıda görüntüleme için)
+            string contentType = dosyaUzantisi switch
+            {
+                ".pdf" => "application/pdf",
+                ".jpg" or ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                ".gif" => "image/gif",
+                ".txt" => "text/plain",
+                ".doc" => "application/msword",
+                ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                _ => "application/octet-stream"
+            };
+
+            return File(dosyaBytes, contentType);
         }
     }
 }

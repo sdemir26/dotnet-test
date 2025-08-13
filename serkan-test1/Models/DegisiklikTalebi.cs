@@ -3,57 +3,104 @@ using System.ComponentModel.DataAnnotations;
 
 namespace serkan_test1.Models
 {
+    /// <summary>
+    /// Firma bilgilerinde yapılan değişiklik taleplerini temsil eden model
+    /// </summary>
     public class DegisiklikTalebi
     {
-        [Key]
+        /// <summary>
+        /// Talebin benzersiz kimlik numarası
+        /// </summary>
         public int Id { get; set; }
 
-        [Required]
-        [Display(Name = "Kullanıcı Adı")]
-        public string KullaniciAdi { get; set; } = string.Empty;
-
-        [Required]
-        [Display(Name = "Firma Adı")]
+        /// <summary>
+        /// Değişiklik talebinde bulunan firmanın adı
+        /// </summary>
+        [Required(ErrorMessage = "Firma adı gereklidir")]
         public string FirmaAdi { get; set; } = string.Empty;
 
-        [Required]
-        [Display(Name = "Alan Adı")]
+        /// <summary>
+        /// Değişiklik talebini oluşturan kullanıcının adı
+        /// </summary>
+        [Required(ErrorMessage = "Kullanıcı adı gereklidir")]
+        public string KullaniciAdi { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Değiştirilmek istenen alanın adı (örn: "Firma Adı", "Vergi No")
+        /// </summary>
+        [Required(ErrorMessage = "Alan adı gereklidir")]
         public string AlanAdi { get; set; } = string.Empty;
 
-        [Required]
-        [Display(Name = "Eski Değer")]
+        /// <summary>
+        /// Alanın mevcut (eski) değeri
+        /// </summary>
         public string EskiDeger { get; set; } = string.Empty;
 
-        [Required]
-        [Display(Name = "Yeni Değer")]
+        /// <summary>
+        /// Alanın yeni değeri
+        /// </summary>
+        [Required(ErrorMessage = "Yeni değer gereklidir")]
         public string YeniDeger { get; set; } = string.Empty;
 
-        [Required]
-        [Display(Name = "Değişiklik Sebebi")]
+        /// <summary>
+        /// Değişiklik yapılma sebebi
+        /// </summary>
         public string DegisiklikSebebi { get; set; } = string.Empty;
 
-        [Display(Name = "Talep Tarihi")]
-        public DateTime TalepTarihi { get; set; } = DateTime.Now;
+        /// <summary>
+        /// Talebin oluşturulma tarihi
+        /// </summary>
+        public DateTime TalepTarihi { get; set; }
 
-        [Display(Name = "Durum")]
-        public TalepDurumu Durum { get; set; } = TalepDurumu.KontrolEdiliyor;
+        /// <summary>
+        /// Talebin mevcut durumu (Kontrol Ediliyor, Onaylandı, Reddedildi)
+        /// </summary>
+        public TalepDurumu Durum { get; set; }
 
-        [Display(Name = "Admin Notu")]
+        /// <summary>
+        /// Admin tarafından eklenen not (opsiyonel)
+        /// </summary>
         public string? AdminNotu { get; set; }
 
-        [Display(Name = "İşlem Tarihi")]
+        /// <summary>
+        /// Admin tarafından işlemin yapıldığı tarih
+        /// </summary>
         public DateTime? IslemTarihi { get; set; }
+
+        /// <summary>
+        /// Yüklenen belge dosyasının adı (dosya sistemi üzerindeki adı)
+        /// </summary>
+        public string? BelgeDosyaAdi { get; set; }
+
+        /// <summary>
+        /// Belgenin yüklendiği tarih
+        /// </summary>
+        public DateTime? BelgeYuklemeTarihi { get; set; }
+
+        /// <summary>
+        /// Belge yüklenip yüklenmediğini kontrol eden hesaplanmış özellik
+        /// </summary>
+        public bool BelgeVarMi => !string.IsNullOrEmpty(BelgeDosyaAdi);
     }
 
+    /// <summary>
+    /// Değişiklik talebinin durumunu belirten enum
+    /// </summary>
     public enum TalepDurumu
     {
-        [Display(Name = "Kontrol Ediliyor")]
+        /// <summary>
+        /// Talep henüz kontrol edilmedi
+        /// </summary>
         KontrolEdiliyor = 0,
-        
-        [Display(Name = "Onaylandı")]
+
+        /// <summary>
+        /// Talep onaylandı
+        /// </summary>
         Onaylandi = 1,
-        
-        [Display(Name = "Reddedildi")]
+
+        /// <summary>
+        /// Talep reddedildi
+        /// </summary>
         Reddedildi = 2
     }
 }
