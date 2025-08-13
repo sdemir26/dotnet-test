@@ -49,6 +49,52 @@ namespace serkan_test1.Controllers
         }
 
         /// <summary>
+        /// Son değişiklik taleplerini JSON formatında döndürür (AJAX için)
+        /// </summary>
+        /// <returns>Son 5 değişiklik talebi</returns>
+        [HttpGet]
+        public IActionResult SonTalepleri()
+        {
+            var sonTalepler = _degisiklikTalepleri
+                .OrderByDescending(t => t.TalepTarihi)
+                .Take(5)
+                .Select(t => new
+                {
+                    t.Id,
+                    t.AlanAdi,
+                    t.EskiDeger,
+                    t.YeniDeger,
+                    t.TalepTarihi,
+                    t.Durum,
+                    t.BelgeVarMi
+                });
+            
+            return Json(new { success = true, talepler = sonTalepler });
+        }
+
+        /// <summary>
+        /// Belge gerektirmeyen alanları direkt günceller
+        /// </summary>
+        /// <param name="alanAdi">Güncellenecek alanın adı</param>
+        /// <param name="yeniDeger">Alanın yeni değeri</param>
+        /// <returns>JSON sonucu</returns>
+        [HttpPost]
+        public IActionResult AlanGuncelle(string alanAdi, string yeniDeger)
+        {
+            try
+            {
+                // Burada gerçek uygulamada veritabanı güncelleme işlemi yapılacak
+                // Şimdilik sadece başarı mesajı döndürüyoruz
+                
+                return Json(new { success = true, message = $"{alanAdi} başarıyla güncellendi!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Güncelleme sırasında hata oluştu: {ex.Message}" });
+            }
+        }
+
+        /// <summary>
         /// Yeni değişiklik talebi oluşturur ve belge yükleme işlemini gerçekleştirir
         /// </summary>
         /// <param name="alanAdi">Değiştirilecek alanın adı</param>
@@ -58,7 +104,7 @@ namespace serkan_test1.Controllers
         /// <param name="belge">Yüklenen belge dosyası (opsiyonel)</param>
         /// <returns>JSON sonucu</returns>
         [HttpPost]
-        public IActionResult TalepOlustur(string alanAdi, string eskiDeger, string yeniDeger, string degisikSebebi, IFormFile? belge)
+        public IActionResult TalepOlustur(string alanAdi, string eskiDeger, string yeniDeger, string degisiklikSebebi, IFormFile? belge)
         {
             try
             {
@@ -98,7 +144,7 @@ namespace serkan_test1.Controllers
                     AlanAdi = alanAdi,
                     EskiDeger = eskiDeger ?? "-",
                     YeniDeger = yeniDeger,
-                    DegisiklikSebebi = degisikSebebi ?? "Kullanıcı tarafından talep edildi",
+                    DegisiklikSebebi = degisiklikSebebi ?? "Kullanıcı tarafından talep edildi",
                     TalepTarihi = DateTime.Now,
                     Durum = TalepDurumu.KontrolEdiliyor,
                     BelgeDosyaAdi = belgeDosyaAdi,
@@ -154,7 +200,7 @@ namespace serkan_test1.Controllers
         /// </summary>
         /// <param name="talepId">Onaylanacak talep ID'si</param>
         /// <param name="adminNotu">Admin notu</param>
-        /// <returns>JSON sonucu</returns>
+        /// <returns>Liste sayfasına yönlendirme</returns>
         [HttpPost]
         public IActionResult AdminOnayla(int talepId, string adminNotu)
         {
@@ -164,9 +210,15 @@ namespace serkan_test1.Controllers
                 talep.Durum = TalepDurumu.Onaylandi;
                 talep.AdminNotu = adminNotu;
                 talep.IslemTarihi = DateTime.Now;
-                return Json(new { success = true });
+                
+                // Başarı mesajı ekle
+                TempData["SuccessMessage"] = "Talep başarıyla onaylandı!";
+                return RedirectToAction("AdminTalepListesi");
             }
-            return Json(new { success = false, message = "Talep bulunamadı" });
+            
+            // Hata mesajı ekle
+            TempData["ErrorMessage"] = "Talep bulunamadı!";
+            return RedirectToAction("AdminTalepListesi");
         }
 
         /// <summary>
@@ -174,7 +226,7 @@ namespace serkan_test1.Controllers
         /// </summary>
         /// <param name="talepId">Reddedilecek talep ID'si</param>
         /// <param name="adminNotu">Admin notu</param>
-        /// <returns>JSON sonucu</returns>
+        /// <returns>Liste sayfasına yönlendirme</returns>
         [HttpPost]
         public IActionResult AdminReddet(int talepId, string adminNotu)
         {
@@ -184,9 +236,15 @@ namespace serkan_test1.Controllers
                 talep.Durum = TalepDurumu.Reddedildi;
                 talep.AdminNotu = adminNotu;
                 talep.IslemTarihi = DateTime.Now;
-                return Json(new { success = true });
+                
+                // Başarı mesajı ekle
+                TempData["SuccessMessage"] = "Talep başarıyla reddedildi!";
+                return RedirectToAction("AdminTalepListesi");
             }
-            return Json(new { success = false, message = "Talep bulunamadı" });
+            
+            // Hata mesajı ekle
+            TempData["ErrorMessage"] = "Talep bulunamadı!";
+            return RedirectToAction("AdminTalepListesi");
         }
 
         /// <summary>

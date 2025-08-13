@@ -3,6 +3,52 @@
     ViewData["Title"] = "Admin - Değişiklik Talepleri";
 }
 
+<style>
+    /* Tablo responsive düzeltmeleri */
+    .table-responsive {
+        overflow-x: auto;
+        min-width: 100%;
+    }
+    
+    #taleplerTable {
+        min-width: 900px; /* Minimum tablo genişliği */
+    }
+    
+    #taleplerTable th,
+    #taleplerTable td {
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+    
+    /* Mobil cihazlarda tablo düzenlemesi */
+    @@media (max-width: 768px) {
+        #taleplerTable {
+            font-size: 0.875rem;
+        }
+        
+        #taleplerTable th,
+        #taleplerTable td {
+            padding: 0.5rem 0.25rem;
+        }
+        
+        .badge {
+            font-size: 0.75rem;
+        }
+    }
+    
+    /* Belge görüntüleme modal düzeltmeleri */
+    .modal-fullscreen-lg-down {
+        max-width: 95vw;
+    }
+    
+    @@media (max-width: 991.98px) {
+        .modal-fullscreen-lg-down {
+            max-width: 100vw;
+            margin: 0;
+        }
+    }
+</style>
+
 <div class="container-fluid p-4">
     <!-- Header -->
     <div class="row mb-4">
@@ -25,6 +71,22 @@
     </div>
 
     <!-- Mesajlar -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show py-2 mb-3" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show py-2 mb-3" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
     @if (ViewBag.AdminMesaj != null)
     {
         <div class="alert alert-success alert-dismissible fade show py-2 mb-3" role="alert">
@@ -107,31 +169,31 @@
                     else
                     {
                         <div class="table-responsive">
-                            <table class="table table-hover mb-0" id="taleplerTable">
+                            <table class="table table-hover mb-0 table-sm" id="taleplerTable">
                                 <thead class="table-light">
                                     <tr>
-                                        <th class="py-3 px-3">
+                                        <th class="py-2 px-2" style="min-width: 120px;">
                                             <i class="bi bi-building me-1"></i>Firma
                                         </th>
-                                        <th class="py-3 px-3">
+                                        <th class="py-2 px-2" style="min-width: 100px;">
                                             <i class="bi bi-person me-1"></i>Kullanıcı
                                         </th>
-                                        <th class="py-3 px-3">
+                                        <th class="py-2 px-2" style="min-width: 100px;">
                                             <i class="bi bi-gear me-1"></i>Alan
                                         </th>
-                                        <th class="py-3 px-3">
+                                        <th class="py-2 px-2" style="min-width: 150px;">
                                             <i class="bi bi-arrow-right me-1"></i>Değişiklik
                                         </th>
-                                        <th class="py-3 px-3">
-                                            <i class="bi bi-calendar me-1"></i>Talep Tarihi
+                                        <th class="py-2 px-2" style="min-width: 120px;">
+                                            <i class="bi bi-calendar me-1"></i>Tarih
                                         </th>
-                                        <th class="py-3 px-3">
+                                        <th class="py-2 px-2" style="min-width: 120px;">
                                             <i class="bi bi-flag me-1"></i>Durum
                                         </th>
-                                        <th class="py-3 px-3 text-center">
+                                        <th class="py-2 px-2 text-center" style="min-width: 80px;">
                                             <i class="bi bi-file-earmark me-1"></i>Belge
                                         </th>
-                                        <th class="py-3 px-3 text-center">
+                                        <th class="py-2 px-2 text-center" style="min-width: 100px;">
                                             <i class="bi bi-tools me-1"></i>İşlemler
                                         </th>
                                     </tr>
@@ -140,81 +202,78 @@
                                     @foreach (var talep in Model)
                                     {
                                         <tr class="talep-row" data-durum="@((int)talep.Durum)" data-firma="@talep.FirmaAdi">
-                                            <td class="py-3 px-3">
-                                                <strong>@talep.FirmaAdi</strong>
+                                            <td class="py-2 px-2">
+                                                <strong class="small">@talep.FirmaAdi</strong>
                                             </td>
-                                            <td class="py-3 px-3">
-                                                <span class="badge bg-secondary">@talep.KullaniciAdi</span>
+                                            <td class="py-2 px-2">
+                                                <span class="badge bg-secondary small">@talep.KullaniciAdi</span>
                                             </td>
-                                            <td class="py-3 px-3">
-                                                <span class="badge bg-info">@talep.AlanAdi</span>
+                                            <td class="py-2 px-2">
+                                                <span class="badge bg-info small">@talep.AlanAdi</span>
                                             </td>
-                                            <td class="py-3 px-3">
+                                            <td class="py-2 px-2">
                                                 <div class="d-flex flex-column">
                                                     <small class="text-muted">@talep.EskiDeger</small>
                                                     <i class="bi bi-arrow-down text-primary"></i>
-                                                    <strong class="text-primary">@talep.YeniDeger</strong>
+                                                    <strong class="text-primary small">@talep.YeniDeger</strong>
                                                 </div>
                                             </td>
-                                            <td class="py-3 px-3">
-                                                <small class="text-muted">@talep.TalepTarihi.ToString("dd.MM.yyyy HH:mm")</small>
+                                            <td class="py-2 px-2">
+                                                <small class="text-muted">@talep.TalepTarihi.ToString("dd.MM.yyyy")</small>
+                                                <br>
+                                                <small class="text-muted">@talep.TalepTarihi.ToString("HH:mm")</small>
                                             </td>
-                                            <td class="py-3 px-3">
+                                            <td class="py-2 px-2">
                                                 @switch (talep.Durum)
                                                 {
                                                     case serkan_test1.Models.TalepDurumu.KontrolEdiliyor:
-                                                        <span class="badge bg-warning">
-                                                            <i class="bi bi-clock me-1"></i>Kontrol Ediliyor
+                                                        <span class="badge bg-warning small">
+                                                            <i class="bi bi-clock me-1"></i>Kontrol
                                                         </span>
                                                         break;
                                                     case serkan_test1.Models.TalepDurumu.Onaylandi:
-                                                        <span class="badge bg-success">
+                                                        <span class="badge bg-success small">
                                                             <i class="bi bi-check me-1"></i>Onaylandı
                                                         </span>
                                                         break;
                                                     case serkan_test1.Models.TalepDurumu.Reddedildi:
-                                                        <span class="badge bg-danger">
+                                                        <span class="badge bg-danger small">
                                                             <i class="bi bi-times me-1"></i>Reddedildi
                                                         </span>
                                                         break;
                                                 }
                                             </td>
-                                                                                         <td class="py-3 px-3 text-center">
-                                                 @if (talep.BelgeVarMi)
-                                                 {
-                                                     <div class="btn-group" role="group">
-                                                         <button type="button" class="btn btn-sm btn-outline-primary" 
-                                                                 onclick="belgeGoruntule(@talep.Id)" title="Belgeyi Görüntüle">
-                                                             <i class="bi bi-eye"></i>
-                                                         </button>
-                                                         <a href="@Url.Action("BelgeIndir", "FirmaBilgileri", new { talepId = talep.Id })" 
-                                                            class="btn btn-sm btn-outline-success" title="Belgeyi İndir">
-                                                             <i class="bi bi-download"></i>
-                                                         </a>
-                                                     </div>
-                                                 }
-                                                 else
-                                                 {
-                                                     <span class="badge bg-secondary">
-                                                         <i class="bi bi-file-earmark-x me-1"></i>Yok
-                                                     </span>
-                                                 }
-                                             </td>
-                                            <td class="py-3 px-3 text-center">
-                                                <div class="btn-group" role="group">
+                                            <td class="py-2 px-2 text-center">
+                                                @if (talep.BelgeVarMi)
+                                                {
+                                                    <div class="d-flex flex-column gap-1">
+                                                        <button class="btn btn-sm btn-outline-primary" onclick="belgeGoruntule(@talep.Id)" title="Belgeyi Görüntüle">
+                                                            <i class="bi bi-eye"></i>
+                                                        </button>
+                                                        <a href="@Url.Action("BelgeIndir", "FirmaBilgileri", new { talepId = talep.Id })" 
+                                                           class="btn btn-sm btn-outline-success" title="Belgeyi İndir">
+                                                            <i class="bi bi-download"></i>
+                                                        </a>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary small">Yok</span>
+                                                }
+                                            </td>
+                                            <td class="py-2 px-2 text-center">
+                                                <div class="d-flex flex-column gap-1">
                                                     <a href="@Url.Action("AdminTalepDetay", "FirmaBilgileri", new { id = talep.Id })" 
-                                                       class="btn btn-sm btn-outline-primary">
-                                                        <i class="bi bi-eye me-1"></i>Detay
+                                                       class="btn btn-sm btn-outline-info" title="Detay">
+                                                        <i class="bi bi-eye"></i>
                                                     </a>
                                                     @if (talep.Durum == serkan_test1.Models.TalepDurumu.KontrolEdiliyor)
                                                     {
-                                                        <button type="button" class="btn btn-sm btn-success" 
-                                                                onclick="onaylaTalep(@talep.Id)">
-                                                            <i class="bi bi-check me-1"></i>Onayla
+                                                        <button class="btn btn-sm btn-outline-success" onclick="hizliOnayla(@talep.Id)" title="Hızlı Onayla">
+                                                            <i class="bi bi-check"></i>
                                                         </button>
-                                                        <button type="button" class="btn btn-sm btn-danger" 
-                                                                onclick="reddetTalep(@talep.Id)">
-                                                            <i class="bi bi-times me-1"></i>Reddet
+                                                        <button class="btn btn-sm btn-outline-danger" onclick="hizliReddet(@talep.Id)" title="Hızlı Reddet">
+                                                            <i class="bi bi-x"></i>
                                                         </button>
                                                     }
                                                 </div>

@@ -300,7 +300,7 @@
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <form method="post" action="@Url.Action("AdminOnayla", "FirmaBilgileri")">
+                <form method="post" action="@Url.Action("AdminOnayla", "FirmaBilgileri")" id="onayForm">
                     <div class="modal-body">
                         <input type="hidden" name="talepId" value="@Model.Id" />
                         <div class="mb-3">
@@ -335,7 +335,7 @@
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <form method="post" action="@Url.Action("AdminReddet", "FirmaBilgileri")">
+                <form method="post" action="@Url.Action("AdminReddet", "FirmaBilgileri")" id="redForm">
                     <div class="modal-body">
                         <input type="hidden" name="talepId" value="@Model.Id" />
                         <div class="mb-3">
@@ -362,7 +362,7 @@
 
  <!-- Belge Görüntüleme Modal -->
  <div class="modal fade" id="belgeGoruntuleModal" tabindex="-1" aria-labelledby="belgeGoruntuleModalLabel" aria-hidden="true">
-     <div class="modal-dialog modal-xl">
+     <div class="modal-dialog modal-fullscreen-lg-down modal-xl">
          <div class="modal-content">
              <div class="modal-header bg-primary text-white">
                  <h5 class="modal-title" id="belgeGoruntuleModalLabel">
@@ -372,8 +372,8 @@
                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
              </div>
              <div class="modal-body p-0">
-                 <div class="ratio ratio-16x9">
-                     <iframe id="belgeIframe" src="" frameborder="0" style="width: 100%; height: 70vh;"></iframe>
+                 <div class="ratio ratio-16x9" style="height: 80vh;">
+                     <iframe id="belgeIframe" src="" frameborder="0" style="width: 100%; height: 100%; border: none;"></iframe>
                  </div>
              </div>
              <div class="modal-footer">
@@ -402,35 +402,35 @@
             modal.show();
         }
         
-                 // Belge görüntüleme fonksiyonu
-         function belgeGoruntule(talepId) {
-             const iframe = document.getElementById('belgeIframe');
-             const indirLink = document.getElementById('belgeIndirLink');
-             
-             // Iframe src'sini ayarla
-             iframe.src = '@Url.Action("BelgeGoruntule", "FirmaBilgileri")?talepId=' + talepId;
-             
-             // İndirme linkini ayarla
-             indirLink.href = '@Url.Action("BelgeIndir", "FirmaBilgileri")?talepId=' + talepId;
-             
-             // Modal'ı aç
-             const modal = new bootstrap.Modal(document.getElementById('belgeGoruntuleModal'));
-             modal.show();
-         }
-         
-         // Form validasyonu
-         document.addEventListener('DOMContentLoaded', function() {
-             var forms = document.querySelectorAll('form');
-             forms.forEach(function(form) {
-                 form.addEventListener('submit', function(event) {
-                     if (!form.checkValidity()) {
-                         event.preventDefault();
-                         event.stopPropagation();
-                     }
-                     form.classList.add('was-validated');
-                 });
-             });
-         });
+        // Belge görüntüleme fonksiyonu
+        function belgeGoruntule(talepId) {
+            const iframe = document.getElementById('belgeIframe');
+            const indirLink = document.getElementById('belgeIndirLink');
+            
+            // Iframe src'sini ayarla
+            iframe.src = '@Url.Action("BelgeGoruntule", "FirmaBilgileri")?talepId=' + talepId;
+            
+            // İndirme linkini ayarla
+            indirLink.href = '@Url.Action("BelgeIndir", "FirmaBilgileri")?talepId=' + talepId;
+            
+            // Modal'ı aç
+            const modal = new bootstrap.Modal(document.getElementById('belgeGoruntuleModal'));
+            modal.show();
+        }
+        
+        // Form validasyonu
+        document.addEventListener('DOMContentLoaded', function() {
+            var forms = document.querySelectorAll('form');
+            forms.forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                });
+            });
+        });
     </script>
 }
 

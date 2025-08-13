@@ -415,7 +415,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="card-body p-0">
+                <div class="card-body p-0" id="sonTaleplerContainer">
                     @{
                         var sonTalepler = ViewBag.SonTalepler as IEnumerable<serkan_test1.Models.DegisiklikTalebi> ?? new List<serkan_test1.Models.DegisiklikTalebi>();
                     }
@@ -565,32 +565,52 @@
         let duzenlemeModu = false;
         let degisiklikYapildi = false;
         let belgeGerektirenDegisiklik = false;
+        
+        // DOM elementlerini cache'le (performans için)
+        let cachedElements = {};
+
+        // DOM elementlerini cache'le
+        function cacheElements() {
+            cachedElements = {
+                duzenleBtn: document.getElementById('duzenleBtn'),
+                altButonlar: document.getElementById('altButonlar'),
+                uyariMesaji: document.getElementById('uyariMesaji'),
+                kaydetBtn: document.getElementById('kaydetBtn'),
+                belgeYukleBtn: document.getElementById('belgeYukleBtn'),
+                inputs: document.querySelectorAll('input[id$="Input"]'),
+                displays: document.querySelectorAll('div[id$="Display"]')
+            };
+        }
+
+        // Sayfa yüklendiğinde cache'le
+        document.addEventListener('DOMContentLoaded', cacheElements);
 
         // Düzenleme modunu açar - tüm alanları düzenlenebilir hale getirir
         function duzenleModunuAc() {
             duzenlemeModu = true;
             
             // Düzenle butonunu gizle
-            document.getElementById('duzenleBtn').style.display = 'none';
+            cachedElements.duzenleBtn.style.display = 'none';
             
             // Alt butonları göster (Kaydet, Belge Yükle, İptal)
-            document.getElementById('altButonlar').style.display = 'block';
+            cachedElements.altButonlar.style.display = 'block';
             
             // Uyarı mesajını göster (belge gerektiren alanlar için)
-            document.getElementById('uyariMesaji').style.display = 'block';
+            cachedElements.uyariMesaji.style.display = 'block';
             
             // Tüm input alanlarını göster, display alanlarını gizle
-            const inputs = document.querySelectorAll('input[id$="Input"]');
-            const displays = document.querySelectorAll('div[id$="Display"]');
-            
-            inputs.forEach(input => {
+            cachedElements.inputs.forEach(input => {
                 input.classList.remove('d-none');
                 input.classList.add('d-block');
             });
             
-            displays.forEach(display => {
+            cachedElements.displays.forEach(display => {
                 display.classList.add('d-none');
             });
+            
+            // Başlangıçta butonları pasif yap
+            cachedElements.kaydetBtn.disabled = true;
+            cachedElements.belgeYukleBtn.disabled = true;
         }
 
         // Düzenleme modunu kapatır - alanları salt okunur hale getirir
@@ -600,19 +620,16 @@
             belgeGerektirenDegisiklik = false;
             
             // Düzenle butonunu göster
-            document.getElementById('duzenleBtn').style.display = 'block';
+            cachedElements.duzenleBtn.style.display = 'block';
             
             // Alt butonları gizle
-            document.getElementById('altButonlar').style.display = 'none';
+            cachedElements.altButonlar.style.display = 'none';
             
             // Uyarı mesajını gizle
-            document.getElementById('uyariMesaji').style.display = 'none';
+            cachedElements.uyariMesaji.style.display = 'none';
             
             // Tüm input alanlarını gizle, display alanlarını göster
-            const inputs = document.querySelectorAll('input[id$="Input"]');
-            const displays = document.querySelectorAll('div[id$="Display"]');
-            
-            inputs.forEach(input => {
+            cachedElements.inputs.forEach(input => {
                 input.classList.add('d-none');
                 input.classList.remove('d-block');
                 // Orijinal değerleri geri yükle
@@ -620,42 +637,53 @@
                 input.value = originalValue || '';
             });
             
-            displays.forEach(display => {
+            cachedElements.displays.forEach(display => {
                 display.classList.remove('d-none');
             });
             
             // Butonları pasif yap
-            document.getElementById('kaydetBtn').disabled = true;
-            document.getElementById('belgeYukleBtn').disabled = true;
+            cachedElements.kaydetBtn.disabled = true;
+            cachedElements.belgeYukleBtn.disabled = true;
         }
 
-        // Input değişikliklerini kontrol eder ve butonları aktif/pasif yapar
-        function inputDegisti() {
+        // Input değişikliklerini kontrol eder ve butonları aktif/pasif yapar (optimize edilmiş)
+        function inputDegisti(event) {
+            // Sadece düzenleme modunda çalış
+            if (!duzenlemeModu) return;
+            
+            // Tüm input'ları kontrol et ve butonları güncelle
+            checkAllInputs();
+        }
+        
+        // Tüm input'ları kontrol et (sadece gerektiğinde)
+        function checkAllInputs() {
             degisiklikYapildi = false;
             belgeGerektirenDegisiklik = false;
             
-            const inputs = document.querySelectorAll('input[id$="Input"]');
-            
-            inputs.forEach(input => {
+            cachedElements.inputs.forEach(input => {
                 const originalValue = input.getAttribute('data-original') || '';
                 const currentValue = input.value;
                 
                 if (currentValue !== originalValue) {
                     degisiklikYapildi = true;
                     
-                    // Belge gerektiren alan mı kontrol et
                     if (input.getAttribute('data-requires-document') === 'true') {
                         belgeGerektirenDegisiklik = true;
                     }
                 }
             });
             
-            // Kaydet butonunu aktif/pasif yap
-            document.getElementById('kaydetBtn').disabled = !degisiklikYapildi;
-            
-            // Belge yükle butonunu aktif/pasif yap
-            document.getElementById('belgeYukleBtn').disabled = !belgeGerektirenDegisiklik;
+            // Butonları güncelle
+            cachedElements.kaydetBtn.disabled = !degisiklikYapildi; // Herhangi bir değişiklik varsa aktif
+            cachedElements.belgeYukleBtn.disabled = !belgeGerektirenDegisiklik; // Sadece yıldızlı alanlarda değişiklik varsa aktif
         }
+
+        // Event delegation kullanarak tek bir listener ekle
+        document.addEventListener('input', function(event) {
+            if (event.target.matches('input[id$="Input"]')) {
+                inputDegisti(event);
+            }
+        });
 
         // Belge yükleme modalını açar ve değişiklikleri listeler
         function belgeYukleModalAc() {
@@ -732,25 +760,33 @@
                 return;
             }
             
-            // Değişiklik taleplerini sisteme kaydet
-            degisiklikTalepleri.forEach(talep => {
-                kaydetDegisiklikTalebi(talep.alanAdi, talep.eskiDeger, talep.yeniDeger);
-            });
+            // Loading göster
+            showToast('success', 'Talepler gönderiliyor...');
             
-            // Başarı mesajı göster
-            showToast('success', `${degisiklikTalepleri.length} adet değişiklik talebi başarıyla gönderildi!`);
+            // Tüm talepleri paralel olarak gönder
+            const talepPromise = degisiklikTalepleri.map(talep => 
+                kaydetDegisiklikTalebi(talep.alanAdi, talep.eskiDeger, talep.yeniDeger)
+            );
             
-            // Modalı kapat
-            const modal = bootstrap.Modal.getInstance(document.getElementById('belgeYukleModal'));
-            modal.hide();
-            
-            // Düzenleme modunu kapat
-            duzenleModunuKapat();
-            
-            // Sayfayı yenile (yeni talepleri görmek için)
-            setTimeout(() => {
-                location.reload();
-            }, 2000);
+            Promise.all(talepPromise)
+                .then(() => {
+                    // Başarı mesajı göster
+                    showToast('success', `${degisiklikTalepleri.length} adet değişiklik talebi başarıyla gönderildi!`);
+                    
+                    // Modalı kapat
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('belgeYukleModal'));
+                    modal.hide();
+                    
+                    // Düzenleme modunu kapat
+                    duzenleModunuKapat();
+                    
+                    // Sadece talepleri güncelle (sayfa yenileme yok)
+                    guncelleSonTalepleri();
+                })
+                .catch(error => {
+                    console.error('Hata:', error);
+                    showToast('warning', 'Talepler gönderilirken bir hata oluştu!');
+                });
         }
 
         // Değişiklik talebini sisteme kaydet - AJAX ile backend'e gönder
@@ -767,7 +803,7 @@
                 formData.append('belge', belgeInput.files[0]);
             }
             
-            fetch('/FirmaBilgileri/TalepOlustur', {
+            return fetch('/FirmaBilgileri/TalepOlustur', {
                 method: 'POST',
                 body: formData
             })
@@ -775,13 +811,85 @@
             .then(data => {
                 if (data.success) {
                     console.log('Değişiklik talebi kaydedildi:', alanAdi);
+                    return data;
                 } else {
                     console.error('Değişiklik talebi kaydedilemedi:', data.message);
+                    throw new Error(data.message);
                 }
-            })
-            .catch(error => {
-                console.error('Hata:', error);
             });
+        }
+
+        // Son talepleri AJAX ile güncelle (sayfa yenileme olmadan)
+        function guncelleSonTalepleri() {
+            fetch('/FirmaBilgileri/SonTalepleri')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const taleplerContainer = document.getElementById('sonTaleplerContainer');
+                        if (taleplerContainer) {
+                            let taleplerHTML = '';
+                            
+                            if (data.talepler.length === 0) {
+                                taleplerHTML = `
+                                    <div class="text-center py-4">
+                                        <i class="bi bi-inbox text-muted mb-2" style="font-size: 2rem;"></i>
+                                        <p class="text-muted mb-0">Henüz değişiklik talebi bulunmuyor</p>
+                                    </div>
+                                `;
+                            } else {
+                                taleplerHTML = `
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-hover mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th class="small">Alan</th>
+                                                    <th class="small">Yeni Değer</th>
+                                                    <th class="small">Talep Tarihi</th>
+                                                    <th class="small">Durum</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                `;
+                                
+                                data.talepler.forEach(talep => {
+                                    const durumBadge = talep.durum === 0 ? 
+                                        '<span class="badge bg-warning small"><i class="bi bi-clock me-1"></i>Kontrol Ediliyor</span>' :
+                                        talep.durum === 1 ? 
+                                        '<span class="badge bg-success small"><i class="bi bi-check me-1"></i>Onaylandı</span>' :
+                                        '<span class="badge bg-danger small"><i class="bi bi-times me-1"></i>Reddedildi</span>';
+                                    
+                                    taleplerHTML += `
+                                        <tr>
+                                            <td>
+                                                <span class="badge bg-secondary small">${talep.alanAdi}</span>
+                                            </td>
+                                            <td>
+                                                <small class="text-primary fw-medium">${talep.yeniDeger}</small>
+                                            </td>
+                                            <td>
+                                                <small class="text-muted">${new Date(talep.talepTarihi).toLocaleDateString('tr-TR')}</small>
+                                            </td>
+                                            <td>
+                                                ${durumBadge}
+                                            </td>
+                                        </tr>
+                                    `;
+                                });
+                                
+                                taleplerHTML += `
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                `;
+                            }
+                            
+                            taleplerContainer.innerHTML = taleplerHTML;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Talepler güncellenirken hata:', error);
+                });
         }
 
         // Toast bildirimi göster - kullanıcıya bilgi vermek için
@@ -802,11 +910,12 @@
             toast.show();
         }
 
-        // Değişiklikleri kaydet - belge gerektirmeyen alanlar için
+        // Değişiklikleri kaydet - hem yıldızlı hem yıldızsız alanlar için
         function degisiklikleriKaydet() {
-            // Burada sadece düzenlenebilir alanlar kaydedilecek
-            const inputs = document.querySelectorAll('input[id$="Input"]:not([data-requires-document="true"])');
-            let kaydedilecekAlanlar = [];
+            // Tüm değişen alanları topla
+            const inputs = document.querySelectorAll('input[id$="Input"]');
+            let yildizsizAlanlar = [];
+            let yildizliAlanlar = [];
             
             inputs.forEach(input => {
                 const originalValue = input.getAttribute('data-original') || '';
@@ -814,25 +923,25 @@
                 
                 if (currentValue !== originalValue) {
                     const alanAdi = getAlanAdi(input.id);
-                    kaydedilecekAlanlar.push({
+                    const alanData = {
                         alan: alanAdi,
-                        eskiDeger: originalValue,
-                        yeniDeger: currentValue
-                    });
+                        yeniDeger: currentValue,
+                        inputId: input.id
+                    };
+                    
+                    if (input.getAttribute('data-requires-document') === 'true') {
+                        yildizliAlanlar.push(alanData);
+                    } else {
+                        yildizsizAlanlar.push(alanData);
+                    }
                 }
             });
             
-            if (kaydedilecekAlanlar.length > 0) {
-                // Burada AJAX ile kaydetme işlemi yapılacak
-                console.log('Kaydedilecek alanlar:', kaydedilecekAlanlar);
-                showToast('success', 'Değişiklikler başarıyla kaydedildi!');
-                
-                // Display alanlarını güncelle
-                kaydedilecekAlanlar.forEach(alan => {
-                    const inputId = alan.alan.replace(/\s+/g, '').toLowerCase() + 'Input';
-                    const displayId = inputId.replace('Input', 'Display');
-                    
-                    const input = document.getElementById(inputId);
+            if (yildizsizAlanlar.length > 0) {
+                // Yıldızsız alanları direkt güncelle
+                yildizsizAlanlar.forEach(alan => {
+                    const input = document.getElementById(alan.inputId);
+                    const displayId = alan.inputId.replace('Input', 'Display');
                     const display = document.getElementById(displayId);
                     
                     if (input && display) {
@@ -841,7 +950,51 @@
                     }
                 });
                 
-                // Düzenleme modunu kapat
+                // Backend'e arka planda gönder
+                yildizsizAlanlar.forEach(alan => {
+                    fetch('/FirmaBilgileri/AlanGuncelle', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `alanAdi=${encodeURIComponent(alan.alan)}&yeniDeger=${encodeURIComponent(alan.yeniDeger)}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.success) {
+                            console.error('Backend güncelleme hatası:', data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Backend güncelleme hatası:', error);
+                    });
+                });
+            }
+            
+            if (yildizliAlanlar.length > 0) {
+                // Yıldızlı alanlar için talep oluştur
+                const talepPromise = yildizliAlanlar.map(alan => {
+                    const input = document.getElementById(alan.inputId);
+                    const originalValue = input.getAttribute('data-original') || '';
+                    return kaydetDegisiklikTalebi(alan.alan, originalValue, alan.yeniDeger);
+                });
+                
+                Promise.all(talepPromise)
+                    .then(() => {
+                        showToast('success', `${yildizliAlanlar.length} adet değişiklik talebi oluşturuldu!`);
+                        // Talep listesini güncelle
+                        guncelleSonTalepleri();
+                    })
+                    .catch(error => {
+                        console.error('Talep oluşturma hatası:', error);
+                        showToast('warning', 'Talepler oluşturulurken hata oluştu!');
+                    });
+            }
+            
+            // Başarı mesajı göster
+            const toplamDegisiklik = yildizsizAlanlar.length + yildizliAlanlar.length;
+            if (toplamDegisiklik > 0) {
+                showToast('success', `${toplamDegisiklik} adet değişiklik işlendi!`);
                 duzenleModunuKapat();
             } else {
                 showToast('warning', 'Kaydedilecek değişiklik bulunamadı!');
