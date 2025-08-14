@@ -497,3 +497,8 @@ $RECYCLE.BIN/
 /TalepOnayEkrani/obj/
 bin
 obj
+/TalepOnayEkrani/obj/Debug/net9.0/rpswa.dswa.cache.json
+/TalepOnayEkrani/obj/Debug/net9.0/TalepOnayEkrani.AssemblyInfo.cs
+/TalepOnayEkrani/obj/Debug/net9.0/TalepOnayEkrani.AssemblyInfoInputs.cache
+/TalepOnayEkrani/obj/Debug/net9.0/TalepOnayEkrani.GeneratedMSBuildEditorConfig.editorconfig
+/.vs/dotnet-test/v17/.suo
