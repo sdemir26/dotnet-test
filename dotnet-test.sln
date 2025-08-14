@@ -9,6 +9,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFiles", "SolutionFiles", "{975FF2F6-A404-C03E-DF92-5C9A1AD80326}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		FinansalAnaliz2.html = FinansalAnaliz2.html
 		ReadMe.md = ReadMe.md
 		FinansalAnaliz.html = FinansalAnaliz.html
 	EndProjectSection
