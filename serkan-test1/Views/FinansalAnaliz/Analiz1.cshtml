@@ -1,0 +1,72 @@
+@{
+    ViewData["Title"] = "Finansal Analiz 1";
+}
+
+<div class="container-fluid p-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="mb-1 text-dark fw-bold">
+                        <i class="bi bi-graph-up me-2 text-primary"></i>
+                        Finansal Analiz 1
+                    </h3>
+                    <p class="text-muted mb-0">Finansal verilerin analizi ve raporlanması</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-1"></i>Ana Sayfa
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- İçerik -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary bg-gradient text-white border-0 py-3">
+                    <h6 class="mb-0 fw-semibold">
+                        <i class="bi bi-chart-line me-2"></i>
+                        Finansal Analiz Raporu
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Finansal Analiz 1</strong> sayfasına hoş geldiniz. 
+                        Bu sayfa finansal verilerin analizi için tasarlanmıştır.
+                    </div>
+                    
+                    <!-- Örnek içerik -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="bi bi-cash-coin me-2 text-success"></i>
+                                        Gelir Analizi
+                                    </h6>
+                                    <p class="card-text">Aylık gelir trendleri ve analizi</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="bi bi-cart-x me-2 text-danger"></i>
+                                        Gider Analizi
+                                    </h6>
+                                    <p class="card-text">Aylık gider trendleri ve analizi</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

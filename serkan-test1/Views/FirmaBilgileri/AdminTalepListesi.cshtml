@@ -269,10 +269,10 @@
                                                     </a>
                                                     @if (talep.Durum == serkan_test1.Models.TalepDurumu.KontrolEdiliyor)
                                                     {
-                                                        <button class="btn btn-sm btn-outline-success" onclick="hizliOnayla(@talep.Id)" title="Hızlı Onayla">
+                                                        <button class="btn btn-sm btn-outline-success" onclick="onaylaTalep(@talep.Id)" title="Hızlı Onayla">
                                                             <i class="bi bi-check"></i>
                                                         </button>
-                                                        <button class="btn btn-sm btn-outline-danger" onclick="hizliReddet(@talep.Id)" title="Hızlı Reddet">
+                                                        <button class="btn btn-sm btn-outline-danger" onclick="reddetTalep(@talep.Id)" title="Hızlı Reddet">
                                                             <i class="bi bi-x"></i>
                                                         </button>
                                                     }
@@ -497,33 +497,36 @@
         
         // Hızlı onaylama
         function onaylaTalep(talepId) {
-            // Onay modal'ını aç
-            $('#onayModal .modal-title').text('Talebi Onayla');
-            $('#onayModal .modal-body').html(`
-                <div class="modal-body">
-                    <div class="alert alert-info">
-                        <i class="bi bi-info-circle me-2"></i>
-                        Bu talebi onaylamak istediğinizden emin misiniz?
-                    </div>
-                    <div class="mb-3">
-                        <label for="adminNotuOnay" class="form-label">Admin Notu (Opsiyonel)</label>
-                        <textarea class="form-control" id="adminNotuOnay" rows="3" placeholder="Onay için ek not ekleyebilirsiniz..."></textarea>
-                    </div>
+            // Modal içeriğini güncelle
+            document.querySelector('#onayModal .modal-title').textContent = 'Talebi Onayla';
+            document.querySelector('#onayModal .modal-body').innerHTML = `
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Bu talebi onaylamak istediğinizden emin misiniz?
                 </div>
-            `);
+                <div class="mb-3">
+                    <label for="adminNotuOnay" class="form-label">Admin Notu (Opsiyonel)</label>
+                    <textarea class="form-control" id="adminNotuOnay" rows="3" placeholder="Onay için ek not ekleyebilirsiniz..."></textarea>
+                </div>
+            `;
             
             // Onay butonunu güncelle
-            $('#onayModal .btn-primary')
-                .removeClass('btn-danger')
-                .addClass('btn-primary')
-                .html('<i class="bi bi-check-circle me-1"></i>Onayla');
+            const onayBtn = document.querySelector('#onayModal .btn-primary');
+            onayBtn.classList.remove('btn-danger');
+            onayBtn.classList.add('btn-primary');
+            onayBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Onayla';
             
             // Modal'ı aç
-            $('#onayModal').modal('show');
+            const modal = new bootstrap.Modal(document.getElementById('onayModal'));
+            modal.show();
             
-            // Onay butonuna tıklandığında
-            $('#onayModal .btn-primary').off('click').on('click', function() {
-                var adminNotu = $('#adminNotuOnay').val();
+            // Önceki event listener'ları temizle
+            const newOnayBtn = onayBtn.cloneNode(true);
+            onayBtn.parentNode.replaceChild(newOnayBtn, onayBtn);
+            
+            // Yeni event listener ekle
+            newOnayBtn.addEventListener('click', function() {
+                var adminNotu = document.getElementById('adminNotuOnay').value;
                 
                 var form = document.createElement('form');
                 form.method = 'POST';
@@ -548,9 +551,9 @@
         
         // Hızlı reddetme
         function reddetTalep(talepId) {
-            // Red modal'ını aç
-            $('#onayModal .modal-title').text('Talebi Reddet');
-            $('#onayModal .modal-body').html(`
+            // Modal içeriğini güncelle
+            document.querySelector('#onayModal .modal-title').textContent = 'Talebi Reddet';
+            document.querySelector('#onayModal .modal-body').innerHTML = `
                 <div class="alert alert-warning">
                     <i class="bi bi-exclamation-triangle me-2"></i>
                     Bu talebi reddetmek istediğinizden emin misiniz?
@@ -559,20 +562,25 @@
                     <label for="adminNotuRed" class="form-label">Red Sebebi <span class="text-danger">*</span></label>
                     <textarea class="form-control" id="adminNotuRed" rows="3" placeholder="Red sebebini yazın..." required></textarea>
                 </div>
-            `);
+            `;
             
             // Red butonunu güncelle
-            $('#onayModal .btn-primary')
-                .removeClass('btn-primary')
-                .addClass('btn-danger')
-                .html('<i class="bi bi-times-circle me-1"></i>Reddet');
+            const redBtn = document.querySelector('#onayModal .btn-primary');
+            redBtn.classList.remove('btn-primary');
+            redBtn.classList.add('btn-danger');
+            redBtn.innerHTML = '<i class="bi bi-times-circle me-1"></i>Reddet';
             
             // Modal'ı aç
-            $('#onayModal').modal('show');
+            const modal = new bootstrap.Modal(document.getElementById('onayModal'));
+            modal.show();
             
-            // Red butonuna tıklandığında
-            $('#onayModal .btn-danger').off('click').on('click', function() {
-                var adminNotu = $('#adminNotuRed').val();
+            // Önceki event listener'ları temizle
+            const newRedBtn = redBtn.cloneNode(true);
+            redBtn.parentNode.replaceChild(newRedBtn, redBtn);
+            
+            // Yeni event listener ekle
+            newRedBtn.addEventListener('click', function() {
+                var adminNotu = document.getElementById('adminNotuRed').value;
                 
                 if (!adminNotu || !adminNotu.trim()) {
                     alert('Red sebebi yazmanız gerekiyor!');

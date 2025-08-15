@@ -4,50 +4,6 @@
     ViewData["Title"] = "Favorilerim";
 }
 
-<style>
-    /* Inline CSS - Buton boyutlarını zorla küçült */
-    .btn-xs {
-        padding: 0.125rem 0.25rem !important;
-        font-size: 0.625rem !important;
-        line-height: 1 !important;
-        border-radius: 0.15rem !important;
-        min-width: 20px !important;
-        height: 20px !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-    
-    /* Kart layout düzeltmeleri */
-    .klasor-card {
-        height: 100% !important;
-        display: flex !important;
-        flex-direction: column !important;
-    }
-    
-    .klasor-card .card-body {
-        flex: 1 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        padding: 0.75rem !important;
-    }
-    
-    .klasor-card .card-title {
-        margin-bottom: 0.5rem !important;
-        line-height: 1.2 !important;
-    }
-    
-    .klasor-card .mt-auto {
-        margin-top: auto !important;
-        padding-top: 0.5rem !important;
-    }
-    
-    /* Buton grubu düzeltmeleri */
-    .klasor-card .d-flex.gap-1 {
-        gap: 0.25rem !important;
-    }
-</style>
-
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
@@ -70,7 +26,7 @@
                                 <div class="card h-100 klasor-card" style="border-left: 4px solid @klasor.RenkKodu;">
                                     <div class="card-body d-flex flex-column">
                                         <div class="d-flex justify-content-between align-items-start mb-2">
-                                            <div class="d-flex align-items-center flex-grow-1 me-2">
+                                            <div class="d-flex align-items-center">
                                                 <i class="bi @klasor.IkonAdi fs-4 me-2" style="color: @klasor.RenkKodu;"></i>
                                                 <h6 class="card-title mb-0">
                                                     <a href="#" class="text-decoration-none" onclick="klasorIlanlariniGoster(@klasor.Id, '@klasor.KlasorAdi')" style="color: inherit;">
@@ -78,11 +34,11 @@
                                                     </a>
                                                 </h6>
                                             </div>
-                                            <div class="d-flex gap-1 flex-shrink-0">
-                                                <button class="btn btn-xs btn-outline-primary" type="button" onclick="klasorDuzenle(@klasor.Id, '@klasor.KlasorAdi')" title="Düzenle" style="padding: 0.125rem 0.25rem; font-size: 0.625rem; min-width: 20px; height: 20px;">
+                                            <div class="d-flex gap-0">
+                                                <button class="btn btn-xs btn-outline-primary" type="button" onclick="klasorDuzenle(@klasor.Id, '@klasor.KlasorAdi')" title="Düzenle">
                                                     <i class="bi bi-pencil"></i>
                                                 </button>
-                                                <button class="btn btn-xs btn-outline-danger" type="button" onclick="klasorSil(@klasor.Id)" title="Sil" style="padding: 0.125rem 0.25rem; font-size: 0.625rem; min-width: 20px; height: 20px;">
+                                                <button class="btn btn-xs btn-outline-danger" type="button" onclick="klasorSil(@klasor.Id)" title="Sil">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                             </div>
@@ -92,18 +48,7 @@
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <span class="badge bg-secondary">
                                                     <i class="bi bi-star-fill me-1"></i>
-                                                    @if (klasor.FavoriSayisi == 0)
-                                                    {
-                                                        <span>0 ilan</span>
-                                                    }
-                                                    else if (klasor.FavoriSayisi == 1)
-                                                    {
-                                                        <span>1 ilan</span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span>@klasor.FavoriSayisi ilan</span>
-                                                    }
+                                                    @klasor.FavoriSayisi favori
                                                 </span>
                                                 <small class="text-muted">
                                                     @klasor.OlusturmaTarihi.ToString("dd.MM.yyyy")
@@ -302,75 +247,16 @@
         // Klasör ilanlarını göster
         function klasorIlanlariniGoster(id, klasorAdi) {
             document.getElementById('ilanlarModalTitle').textContent = klasorAdi + ' - İlanlar';
+            // Burada gerçek uygulamada API'den ilanları çekersiniz
+            // Şimdilik örnek veriler gösteriyoruz
             const ilanlarContainer = document.getElementById('ilanlarContainer');
-            
-            // Loading göster
             ilanlarContainer.innerHTML = `
-                <div class="text-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Yükleniyor...</span>
-                    </div>
-                    <p class="mt-2">İlanlar yükleniyor...</p>
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Bu klasörde henüz ilan bulunmuyor.
                 </div>
             `;
-            
-            // Modalı aç
-            const modal = new bootstrap.Modal(document.getElementById('ilanlarModal'));
-            modal.show();
-            
-            // API'den ilanları çek
-            fetch(`/Favoriler/KlasorIlanlari?klasorId=${id}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success && data.ilanlar.length > 0) {
-                        // İlanları listele
-                        let ilanlarHTML = '<div class="row">';
-                        data.ilanlar.forEach(ilan => {
-                            ilanlarHTML += `
-                                <div class="col-md-6 col-lg-4 mb-3">
-                                    <div class="card h-100">
-                                        <div class="card-body">
-                                            <h6 class="card-title">${ilan.baslik}</h6>
-                                            <p class="card-text text-primary fw-bold">${ilan.fiyat}</p>
-                                            <small class="text-muted">Tarih: ${ilan.tarih}</small>
-                                        </div>
-                                        <div class="card-footer bg-transparent">
-                                            <button class="btn btn-sm btn-outline-primary" onclick="ilanDetayGoster(${ilan.id})">
-                                                <i class="bi bi-eye me-1"></i>Detay
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                        ilanlarHTML += '</div>';
-                        ilanlarContainer.innerHTML = ilanlarHTML;
-                    } else {
-                        // İlan yoksa mesaj göster
-                        ilanlarContainer.innerHTML = `
-                            <div class="alert alert-info text-center">
-                                <i class="bi bi-info-circle fs-1 text-primary mb-3"></i>
-                                <h5>Bu klasörde henüz ilan bulunmuyor.</h5>
-                                <p class="mb-0">İlan eklemek için arama yapabilir veya yeni ilanlar oluşturabilirsiniz.</p>
-                            </div>
-                        `;
-                    }
-                })
-                .catch(error => {
-                    console.error('Hata:', error);
-                    ilanlarContainer.innerHTML = `
-                        <div class="alert alert-danger">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
-                            İlanlar yüklenirken bir hata oluştu. Lütfen tekrar deneyin.
-                        </div>
-                    `;
-                });
-        }
-
-        // İlan detayını göster (gelecekte kullanılacak)
-        function ilanDetayGoster(ilanId) {
-            alert(`İlan ID: ${ilanId} - Detay sayfası açılacak`);
-            // Burada ilan detay sayfasına yönlendirme yapılabilir
+            new bootstrap.Modal(document.getElementById('ilanlarModal')).show();
         }
 
         // Modal kapandığında form temizle

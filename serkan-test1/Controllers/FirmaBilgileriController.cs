@@ -14,6 +14,28 @@ namespace serkan_test1.Controllers
         // Geçici olarak statik veri kullanıyoruz - gerçek uygulamada veritabanı kullanılacak
         private static List<DegisiklikTalebi> _degisiklikTalepleri = new List<DegisiklikTalebi>();
         private static int _talepIdCounter = 1;
+        
+        // Firma bilgileri için static veri
+        private static FirmaBilgileriViewModel _firmaBilgileri = new FirmaBilgileriViewModel
+        {
+            FirmaAdi = "Test Firma A.Ş.",
+            FirmaUnvani = "Test Firma Anonim Şirketi",
+            FirmaTipi = "Anonim Şirket",
+            Domain = "testfirma.com",
+            YetkiliAdi = "Ahmet",
+            YetkiliSoyadi = "Yılmaz",
+            YetkiliTCNo = "12345678901",
+            Sifre = "123456",
+            CepTelefonu = "0555 123 45 67",
+            EPosta = "info@testfirma.com",
+            Ulke = "Türkiye",
+            Il = "İstanbul",
+            Ilce = "Kadıköy",
+            Mahalle = "Fenerbahçe",
+            VergiDairesiIl = "İstanbul",
+            VergiDairesi = "Kadıköy",
+            VergiNo = "1234567890"
+        };
 
         /// <summary>
         /// Ana firma bilgileri sayfasını gösterir
@@ -21,31 +43,9 @@ namespace serkan_test1.Controllers
         /// <returns>Firma bilgileri view'ı</returns>
         public IActionResult Bilgiler()
         {
-            // Örnek firma verisi - gerçek uygulamada veritabanından gelecek
-            var model = new FirmaBilgileriViewModel
-            {
-                FirmaAdi = "Test Firma A.Ş.",
-                FirmaUnvani = "Test Firma Anonim Şirketi",
-                FirmaTipi = "Anonim Şirket",
-                Domain = "testfirma.com",
-                YetkiliAdi = "Ahmet",
-                YetkiliSoyadi = "Yılmaz",
-                YetkiliTCNo = "12345678901",
-                Sifre = "123456",
-                CepTelefonu = "0555 123 45 67",
-                EPosta = "info@testfirma.com",
-                Ulke = "Türkiye",
-                Il = "İstanbul",
-                Ilce = "Kadıköy",
-                Mahalle = "Fenerbahçe",
-                VergiDairesiIl = "İstanbul",
-                VergiDairesi = "Kadıköy",
-                VergiNo = "1234567890"
-            };
-
             // Son 5 değişiklik talebini view'a gönder
             ViewBag.SonTalepler = _degisiklikTalepleri.OrderByDescending(t => t.TalepTarihi).Take(5);
-            return View(model);
+            return View(_firmaBilgileri);
         }
 
         /// <summary>
@@ -83,14 +83,79 @@ namespace serkan_test1.Controllers
         {
             try
             {
-                // Burada gerçek uygulamada veritabanı güncelleme işlemi yapılacak
-                // Şimdilik sadece başarı mesajı döndürüyoruz
+                // Firma bilgilerini güncelle
+                GuncelleFirmaBilgileri(alanAdi, yeniDeger);
                 
                 return Json(new { success = true, message = $"{alanAdi} başarıyla güncellendi!" });
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, message = $"Güncelleme sırasında hata oluştu: {ex.Message}" });
+            }
+        }
+
+        /// <summary>
+        /// Firma bilgilerini günceller (admin onayı sonrası veya direkt güncelleme için)
+        /// </summary>
+        /// <param name="alanAdi">Güncellenecek alanın adı</param>
+        /// <param name="yeniDeger">Alanın yeni değeri</param>
+        private void GuncelleFirmaBilgileri(string alanAdi, string yeniDeger)
+        {
+            switch (alanAdi)
+            {
+                case "Firma Adı":
+                    _firmaBilgileri.FirmaAdi = yeniDeger;
+                    break;
+                case "Firma Ünvanı":
+                    _firmaBilgileri.FirmaUnvani = yeniDeger;
+                    break;
+                case "Firma Tipi":
+                    _firmaBilgileri.FirmaTipi = yeniDeger;
+                    break;
+                case "Domain":
+                    _firmaBilgileri.Domain = yeniDeger;
+                    break;
+                case "Yetkili Adı":
+                    _firmaBilgileri.YetkiliAdi = yeniDeger;
+                    break;
+                case "Yetkili Soyadı":
+                    _firmaBilgileri.YetkiliSoyadi = yeniDeger;
+                    break;
+                case "TC Kimlik Numarası":
+                    _firmaBilgileri.YetkiliTCNo = yeniDeger;
+                    break;
+                case "Şifre":
+                    _firmaBilgileri.Sifre = yeniDeger;
+                    break;
+                case "Cep Telefonu":
+                    _firmaBilgileri.CepTelefonu = yeniDeger;
+                    break;
+                case "E-Posta":
+                    _firmaBilgileri.EPosta = yeniDeger;
+                    break;
+                case "Ülke":
+                    _firmaBilgileri.Ulke = yeniDeger;
+                    break;
+                case "İl":
+                    _firmaBilgileri.Il = yeniDeger;
+                    break;
+                case "İlçe":
+                    _firmaBilgileri.Ilce = yeniDeger;
+                    break;
+                case "Mahalle":
+                    _firmaBilgileri.Mahalle = yeniDeger;
+                    break;
+                case "Vergi Dairesi İl":
+                    _firmaBilgileri.VergiDairesiIl = yeniDeger;
+                    break;
+                case "Vergi Dairesi":
+                    _firmaBilgileri.VergiDairesi = yeniDeger;
+                    break;
+                case "Vergi No":
+                    _firmaBilgileri.VergiNo = yeniDeger;
+                    break;
+                default:
+                    throw new ArgumentException($"Bilinmeyen alan: {alanAdi}");
             }
         }
 
@@ -211,8 +276,11 @@ namespace serkan_test1.Controllers
                 talep.AdminNotu = adminNotu;
                 talep.IslemTarihi = DateTime.Now;
                 
+                // Gerçek firma bilgilerini güncelle
+                GuncelleFirmaBilgileri(talep.AlanAdi, talep.YeniDeger);
+                
                 // Başarı mesajı ekle
-                TempData["SuccessMessage"] = "Talep başarıyla onaylandı!";
+                TempData["SuccessMessage"] = "Talep başarıyla onaylandı ve firma bilgileri güncellendi!";
                 return RedirectToAction("AdminTalepListesi");
             }
             
