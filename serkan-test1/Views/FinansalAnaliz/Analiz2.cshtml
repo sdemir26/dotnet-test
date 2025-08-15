@@ -12,7 +12,7 @@
                         <i class="bi bi-pie-chart me-2 text-success"></i>
                         Finansal Analiz 2
                     </h3>
-                    <p class="text-muted mb-0">Detaylı finansal raporlar ve grafikler</p>
+                    <p class="text-muted mb-0">Basit Finansal Hesaplamalar</p>
                 </div>
                 <div class="d-flex gap-2">
                     <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary">
@@ -23,49 +23,80 @@
         </div>
     </div>
 
-    <!-- İçerik -->
-    <div class="row">
-        <div class="col-12">
+    <!-- Basit Hesaplamalar -->
+    <div class="row mb-4">
+        <div class="col-md-6">
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-success bg-gradient text-white border-0 py-3">
+                <div class="card-header bg-info bg-gradient text-white border-0 py-3">
                     <h6 class="mb-0 fw-semibold">
-                        <i class="bi bi-bar-chart me-2"></i>
-                        Detaylı Finansal Rapor
+                        <i class="bi bi-calculator me-2"></i>
+                        Basit Kar Hesaplama
                     </h6>
                 </div>
                 <div class="card-body">
-                    <div class="alert alert-success">
-                        <i class="bi bi-check-circle me-2"></i>
-                        <strong>Finansal Analiz 2</strong> sayfasına hoş geldiniz. 
-                        Bu sayfa detaylı finansal raporlar için tasarlanmıştır.
-                    </div>
+                    <form id="karForm">
+                        <div class="mb-3">
+                            <label for="satisGeliri" class="form-label">Satış Geliri (₺)</label>
+                            <input type="number" class="form-control" id="satisGeliri" placeholder="Örn: 1000" step="0.01" min="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="maliyet" class="form-label">Maliyet (₺)</label>
+                            <input type="number" class="form-control" id="maliyet" placeholder="Örn: 600" step="0.01" min="0" required>
+                        </div>
+                        <button type="submit" class="btn btn-info w-100">
+                            <i class="bi bi-calculator me-2"></i>Kar Hesapla
+                        </button>
+                    </form>
                     
-                    <!-- Örnek içerik -->
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="card border-0 bg-light">
-                                <div class="card-body text-center">
-                                    <i class="bi bi-graph-up-arrow text-success" style="font-size: 2rem;"></i>
-                                    <h6 class="card-title mt-2">Kar Analizi</h6>
-                                    <p class="card-text">Yıllık kar trendleri</p>
+                    <div id="karSonuc" class="mt-3" style="display: none;">
+                        <div class="alert alert-info">
+                            <h6 class="mb-2">Kar Hesaplama Sonucu:</h6>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Brüt Kar:</strong> <span id="brutKar" class="text-success"></span>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Kar Marjı:</strong> <span id="karMarji" class="text-primary"></span>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="card border-0 bg-light">
-                                <div class="card-body text-center">
-                                    <i class="bi bi-currency-exchange text-primary" style="font-size: 2rem;"></i>
-                                    <h6 class="card-title mt-2">Nakit Akışı</h6>
-                                    <p class="card-text">Aylık nakit akış analizi</p>
-                                </div>
-                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-warning bg-gradient text-white border-0 py-3">
+                    <h6 class="mb-0 fw-semibold">
+                        <i class="bi bi-percent me-2"></i>
+                        Yüzde Hesaplama
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form id="yuzdeForm">
+                        <div class="mb-3">
+                            <label for="anaDeger" class="form-label">Ana Değer</label>
+                            <input type="number" class="form-control" id="anaDeger" placeholder="Örn: 100" step="0.01" min="0" required>
                         </div>
-                        <div class="col-md-4">
-                            <div class="card border-0 bg-light">
-                                <div class="card-body text-center">
-                                    <i class="bi bi-pie-chart text-warning" style="font-size: 2rem;"></i>
-                                    <h6 class="card-title mt-2">Dağılım Analizi</h6>
-                                    <p class="card-text">Gelir-gider dağılımı</p>
+                        <div class="mb-3">
+                            <label for="yuzde" class="form-label">Yüzde (%)</label>
+                            <input type="number" class="form-control" id="yuzde" placeholder="Örn: 25" step="0.1" min="0" max="100" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100">
+                            <i class="bi bi-calculator me-2"></i>Hesapla
+                        </button>
+                    </form>
+                    
+                    <div id="yuzdeSonuc" class="mt-3" style="display: none;">
+                        <div class="alert alert-warning">
+                            <h6 class="mb-2">Yüzde Hesaplama Sonucu:</h6>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Sonuç:</strong> <span id="yuzdeSonucDeger" class="text-warning"></span>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Artış/Azalış:</strong> <span id="yuzdeFark" class="text-primary"></span>
                                 </div>
                             </div>
                         </div>
@@ -74,4 +105,157 @@
             </div>
         </div>
     </div>
+
+    <!-- Grafik -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-dark bg-gradient text-white border-0 py-3">
+                    <h6 class="mb-0 fw-semibold">
+                        <i class="bi bi-bar-chart me-2"></i>
+                        Basit Analiz Grafiği
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="basitChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Açıklamalar -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-secondary bg-gradient text-white border-0 py-3">
+                    <h6 class="mb-0 fw-semibold">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Hesaplama Açıklamaları
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-info">Kar Hesaplama</h6>
+                            <p class="small text-muted">
+                                Satış gelirinden maliyeti çıkararak brüt karı hesaplar. 
+                                Kar marjı, karın satış gelirine oranıdır.
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-warning">Yüzde Hesaplama</h6>
+                            <p class="small text-muted">
+                                Bir değerin belirli yüzdesini hesaplar. 
+                                Artış veya azalış miktarını gösterir.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    let basitChart;
+
+    // Sayfa yüklendiğinde
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form event listener'ları
+        document.getElementById('karForm').addEventListener('submit', hesaplaKar);
+        document.getElementById('yuzdeForm').addEventListener('submit', hesaplaYuzde);
+        
+        // Grafik oluştur
+        createChart();
+    });
+
+    // Kar Hesapla
+    function hesaplaKar(e) {
+        e.preventDefault();
+        
+        const satisGeliri = parseFloat(document.getElementById('satisGeliri').value);
+        const maliyet = parseFloat(document.getElementById('maliyet').value);
+        
+        const brutKar = satisGeliri - maliyet;
+        const karMarji = (brutKar / satisGeliri) * 100;
+        
+        document.getElementById('brutKar').textContent = `₺${brutKar.toLocaleString('tr-TR')}`;
+        document.getElementById('karMarji').textContent = `%${karMarji.toFixed(2)}`;
+        document.getElementById('karSonuc').style.display = 'block';
+        
+        updateChart('Kar', brutKar);
+    }
+
+    // Yüzde Hesapla
+    function hesaplaYuzde(e) {
+        e.preventDefault();
+        
+        const anaDeger = parseFloat(document.getElementById('anaDeger').value);
+        const yuzde = parseFloat(document.getElementById('yuzde').value);
+        
+        const sonuc = (anaDeger * yuzde) / 100;
+        const fark = sonuc - anaDeger;
+        
+        document.getElementById('yuzdeSonucDeger').textContent = sonuc.toLocaleString('tr-TR');
+        document.getElementById('yuzdeFark').textContent = fark > 0 ? `+${fark.toLocaleString('tr-TR')}` : fark.toLocaleString('tr-TR');
+        document.getElementById('yuzdeSonuc').style.display = 'block';
+        
+        updateChart('Yüzde', sonuc);
+    }
+
+    // Grafik oluştur
+    function createChart() {
+        const ctx = document.getElementById('basitChart').getContext('2d');
+        basitChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Kar', 'Yüzde'],
+                datasets: [{
+                    label: 'Değer',
+                    data: [0, 0],
+                    backgroundColor: ['#0dcaf0', '#ffc107'],
+                    borderWidth: 1,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Değer'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+
+    // Grafik güncelle
+    function updateChart(metrik, deger) {
+        const labels = basitChart.data.labels;
+        const data = basitChart.data.datasets[0].data;
+        
+        // Metrik zaten varsa güncelle, yoksa ekle
+        const index = labels.indexOf(metrik);
+        if (index !== -1) {
+            data[index] = deger;
+        } else {
+            labels.push(metrik);
+            data.push(deger);
+        }
+        
+        basitChart.update();
+    }
+</script>

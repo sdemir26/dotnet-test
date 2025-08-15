@@ -1,0 +1,597 @@
+@{
+    ViewData["Title"] = "Finansal Analiz 4 - Gelişmiş";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Gelir/Gider Takibi -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-cash-coin me-2"></i>Gelir/Gider Takibi
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Gelir Ekleme -->
+                    <form id="gelirForm" class="mb-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="gelirAciklama" class="form-label">Gelir Açıklaması</label>
+                                <input type="text" class="form-control" id="gelirAciklama" placeholder="Gelir açıklaması" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="gelirMiktar" class="form-label">Miktar (₺)</label>
+                                <input type="text" class="form-control" id="gelirMiktar" placeholder="Örn: 1.000" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-sm mt-2">
+                            <i class="bi bi-plus-circle me-1"></i>Gelir Ekle
+                        </button>
+                    </form>
+
+                    <!-- Gider Ekleme -->
+                    <form id="giderForm" class="mb-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="giderAciklama" class="form-label">Gider Açıklaması</label>
+                                <input type="text" class="form-control" id="giderAciklama" placeholder="Gider açıklaması" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="giderMiktar" class="form-label">Miktar (₺)</label>
+                                <input type="text" class="form-control" id="giderMiktar" placeholder="Örn: 500" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-danger btn-sm mt-2">
+                            <i class="bi bi-plus-circle me-1"></i>Gider Ekle
+                        </button>
+                    </form>
+
+                    <!-- Özet Kartları -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <div class="card bg-success text-white">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title">Toplam Gelir</h6>
+                                    <h4 id="toplamGelir">₺0</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-danger text-white">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title">Toplam Gider</h6>
+                                    <h4 id="toplamGider">₺0</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-info text-white">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title">Net Kar</h6>
+                                    <h4 id="netKar">₺0</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gelir/Gider Listeleri -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Gelirler</h6>
+                            <div id="gelirListesi" class="list-group list-group-flush"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Giderler</h6>
+                            <div id="giderListesi" class="list-group list-group-flush"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gelişmiş Finansal Analiz -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-graph-up me-2"></i>Gelişmiş Finansal Analiz
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Payback Period Hesaplama -->
+                    <div class="mb-4">
+                        <h6>Payback Period (Geri Ödeme Süresi) Hesaplama</h6>
+                        <form id="paybackForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="paybackYatirim" class="form-label">Başlangıç Yatırımı (₺)</label>
+                                    <input type="text" class="form-control" id="paybackYatirim" placeholder="Örn: 100.000" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="paybackYillikGelir" class="form-label">Yıllık Gelir (₺)</label>
+                                    <input type="text" class="form-control" id="paybackYillikGelir" placeholder="Örn: 25.000" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm mt-2">Payback Hesapla</button>
+                        </form>
+                        <div id="paybackSonuc" class="mt-2"></div>
+                    </div>
+
+                    <!-- Break-Even Analizi -->
+                    <div class="mb-4">
+                        <h6>Break-Even (Başabaş) Analizi</h6>
+                        <form id="beForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="beSabitMaliyet" class="form-label">Sabit Maliyetler (₺)</label>
+                                    <input type="text" class="form-control" id="beSabitMaliyet" placeholder="Örn: 50.000" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="beBirimFiyat" class="form-label">Birim Satış Fiyatı (₺)</label>
+                                    <input type="number" class="form-control" id="beBirimFiyat" placeholder="100" step="0.01" required>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-6">
+                                    <label for="beBirimMaliyet" class="form-label">Birim Değişken Maliyet (₺)</label>
+                                    <input type="number" class="form-control" id="beBirimMaliyet" placeholder="60" step="0.01" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-primary btn-sm w-100 mt-4">Break-Even Hesapla</button>
+                                </div>
+                            </div>
+                        </form>
+                        <div id="beSonuc" class="mt-2"></div>
+                    </div>
+
+                    <!-- Sensitivity Analizi -->
+                    <div class="mb-4">
+                        <h6>Sensitivity (Hassasiyet) Analizi</h6>
+                        <form id="sensForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="sensYatirim" class="form-label">Yatırım Miktarı (₺)</label>
+                                    <input type="text" class="form-control" id="sensYatirim" placeholder="Örn: 200.000" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="sensYillikGelir" class="form-label">Yıllık Gelir (₺)</label>
+                                    <input type="text" class="form-control" id="sensYillikGelir" placeholder="Örn: 50.000" required>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-6">
+                                    <label for="sensFaiz" class="form-label">Faiz Oranı (%)</label>
+                                    <input type="number" class="form-control" id="sensFaiz" placeholder="10" step="0.1" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-primary btn-sm w-100 mt-4">Sensitivity Hesapla</button>
+                                </div>
+                            </div>
+                        </form>
+                        <div id="sensSonuc" class="mt-2"></div>
+                    </div>
+
+                    <!-- Kar Marjı Analizi -->
+                    <div class="mb-4">
+                        <h6>Kar Marjı Analizi</h6>
+                        <form id="kmForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="kmSatisGeliri" class="form-label">Satış Geliri (₺)</label>
+                                    <input type="text" class="form-control" id="kmSatisGeliri" placeholder="Örn: 100.000" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="kmMaliyet" class="form-label">Toplam Maliyet (₺)</label>
+                                    <input type="text" class="form-control" id="kmMaliyet" placeholder="Örn: 70.000" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm mt-2">Kar Marjı Hesapla</button>
+                        </form>
+                        <div id="kmSonuc" class="mt-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grafik -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-bar-chart me-2"></i>Finansal Analiz Grafiği
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="finansalChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let gelirler = [];
+    let giderler = [];
+    let finansalChart;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Gelir/Gider formları
+        document.getElementById('gelirForm').addEventListener('submit', addGelir);
+        document.getElementById('giderForm').addEventListener('submit', addGider);
+        
+        // Finansal analiz formları
+        document.getElementById('paybackForm').addEventListener('submit', hesaplaPayback);
+        document.getElementById('beForm').addEventListener('submit', hesaplaBreakeven);
+        document.getElementById('sensForm').addEventListener('submit', hesaplaSensitivity);
+        document.getElementById('kmForm').addEventListener('submit', hesaplaKarMarji);
+        
+        // Input formatting
+        setupInputFormatting();
+        
+        // Veri yükleme ve UI güncelleme
+        loadData();
+        updateUI();
+        createChart();
+    });
+
+    // Gelir ekleme
+    function addGelir(e) {
+        e.preventDefault();
+        const aciklama = document.getElementById('gelirAciklama').value;
+        const miktar = parseFormattedValue(document.getElementById('gelirMiktar').value);
+        
+        if (aciklama && miktar > 0) {
+            const gelir = {
+                id: Date.now(),
+                aciklama: aciklama,
+                miktar: miktar,
+                tarih: new Date().toLocaleDateString('tr-TR')
+            };
+            
+            gelirler.push(gelir);
+            saveData();
+            updateUI();
+            updateChart();
+            
+            document.getElementById('gelirForm').reset();
+        }
+    }
+
+    // Gider ekleme
+    function addGider(e) {
+        e.preventDefault();
+        const aciklama = document.getElementById('giderAciklama').value;
+        const miktar = parseFormattedValue(document.getElementById('giderMiktar').value);
+        
+        if (aciklama && miktar > 0) {
+            const gider = {
+                id: Date.now(),
+                aciklama: aciklama,
+                miktar: miktar,
+                tarih: new Date().toLocaleDateString('tr-TR')
+            };
+            
+            giderler.push(gider);
+            saveData();
+            updateUI();
+            updateChart();
+            
+            document.getElementById('giderForm').reset();
+        }
+    }
+
+    // Veri kaydetme
+    function saveData() {
+        localStorage.setItem('gelirler', JSON.stringify(gelirler));
+        localStorage.setItem('giderler', JSON.stringify(giderler));
+    }
+
+    // Veri yükleme
+    function loadData() {
+        const savedGelirler = localStorage.getItem('gelirler');
+        const savedGiderler = localStorage.getItem('giderler');
+        
+        if (savedGelirler) gelirler = JSON.parse(savedGelirler);
+        if (savedGiderler) giderler = JSON.parse(savedGiderler);
+    }
+
+    // UI güncelleme
+    function updateUI() {
+        updateSummaryCards();
+        updateLists();
+    }
+
+    // Özet kartları güncelleme
+    function updateSummaryCards() {
+        const toplamGelir = gelirler.reduce((sum, gelir) => sum + gelir.miktar, 0);
+        const toplamGider = giderler.reduce((sum, gider) => sum + gider.miktar, 0);
+        const netKar = toplamGelir - toplamGider;
+        
+        document.getElementById('toplamGelir').textContent = `₺${toplamGelir.toLocaleString('tr-TR')}`;
+        document.getElementById('toplamGider').textContent = `₺${toplamGider.toLocaleString('tr-TR')}`;
+        document.getElementById('netKar').textContent = `₺${netKar.toLocaleString('tr-TR')}`;
+    }
+
+    // Listeleri güncelleme
+    function updateLists() {
+        // Gelir listesi
+        const gelirListesi = document.getElementById('gelirListesi');
+        gelirListesi.innerHTML = gelirler.map(gelir => `
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>${gelir.aciklama}</strong>
+                    <small class="text-muted d-block">${gelir.tarih}</small>
+                </div>
+                <div>
+                    <span class="badge bg-success">₺${gelir.miktar.toLocaleString('tr-TR')}</span>
+                    <button class="btn btn-sm btn-outline-danger ms-2" onclick="deleteGelir(${gelir.id})">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+
+        // Gider listesi
+        const giderListesi = document.getElementById('giderListesi');
+        giderListesi.innerHTML = giderler.map(gider => `
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>${gider.aciklama}</strong>
+                    <small class="text-muted d-block">${gider.tarih}</small>
+                </div>
+                <div>
+                    <span class="badge bg-danger">₺${gider.miktar.toLocaleString('tr-TR')}</span>
+                    <button class="btn btn-sm btn-outline-danger ms-2" onclick="deleteGider(${gider.id})">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Gelir silme
+    function deleteGelir(id) {
+        gelirler = gelirler.filter(gelir => gelir.id !== id);
+        saveData();
+        updateUI();
+        updateChart();
+    }
+
+    // Gider silme
+    function deleteGider(id) {
+        giderler = giderler.filter(gider => gider.id !== id);
+        saveData();
+        updateUI();
+        updateChart();
+    }
+
+    // Input formatting setup
+    function setupInputFormatting() {
+        const moneyInputs = [
+            'gelirMiktar', 'giderMiktar',
+            'paybackYatirim', 'paybackYillikGelir',
+            'beSabitMaliyet',
+            'sensYatirim', 'sensYillikGelir',
+            'kmSatisGeliri', 'kmMaliyet'
+        ];
+        
+        moneyInputs.forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.addEventListener('input', formatMoneyInput);
+                input.addEventListener('blur', formatMoneyInput);
+            }
+        });
+    }
+
+    // Para formatı
+    function formatMoneyInput(e) {
+        let value = e.target.value.replace(/[^\d]/g, '');
+        if (value === '') return;
+        value = parseInt(value).toLocaleString('tr-TR');
+        e.target.value = value;
+    }
+
+    // Formatlanmış değeri parse etme
+    function parseFormattedValue(value) {
+        return parseFloat(value.replace(/\./g, '')) || 0;
+    }
+
+    // Payback Period hesaplama
+    function hesaplaPayback(e) {
+        e.preventDefault();
+        const yatirim = parseFormattedValue(document.getElementById('paybackYatirim').value);
+        const yillikGelir = parseFormattedValue(document.getElementById('paybackYillikGelir').value);
+        
+        if (yatirim > 0 && yillikGelir > 0) {
+            const paybackYil = yatirim / yillikGelir;
+            const paybackAy = (paybackYil - Math.floor(paybackYil)) * 12;
+            
+            let sonuc = `Payback Period: ${Math.floor(paybackYil)} yıl`;
+            if (paybackAy > 0) {
+                sonuc += ` ${Math.round(paybackAy)} ay`;
+            }
+            
+            document.getElementById('paybackSonuc').innerHTML = `
+                <div class="alert alert-info">
+                    <strong>Payback Period Sonucu:</strong><br>
+                    ${sonuc}<br>
+                    <small>Yatırım: ₺${yatirim.toLocaleString('tr-TR')} | Yıllık Gelir: ₺${yillikGelir.toLocaleString('tr-TR')}</small>
+                </div>
+            `;
+            
+            updateChart('Payback (Yıl)', paybackYil);
+        }
+    }
+
+    // Break-Even hesaplama
+    function hesaplaBreakeven(e) {
+        e.preventDefault();
+        const sabitMaliyet = parseFormattedValue(document.getElementById('beSabitMaliyet').value);
+        const birimFiyat = parseFloat(document.getElementById('beBirimFiyat').value);
+        const birimMaliyet = parseFloat(document.getElementById('beBirimMaliyet').value);
+        
+        if (sabitMaliyet > 0 && birimFiyat > 0 && birimMaliyet >= 0) {
+            const birimKar = birimFiyat - birimMaliyet;
+            const breakEvenAdet = birimKar > 0 ? sabitMaliyet / birimKar : 0;
+            const breakEvenGelir = breakEvenAdet * birimFiyat;
+            
+            if (birimKar > 0) {
+                document.getElementById('beSonuc').innerHTML = `
+                    <div class="alert alert-success">
+                        <strong>Break-Even Sonucu:</strong><br>
+                        Break-Even Adet: ${Math.ceil(breakEvenAdet).toLocaleString('tr-TR')}<br>
+                        Break-Even Gelir: ₺${breakEvenGelir.toLocaleString('tr-TR')}<br>
+                        <small>Birim Kar: ₺${birimKar.toFixed(2)}</small>
+                    </div>
+                `;
+                
+                updateChart('Break-Even Adet', breakEvenAdet);
+            } else {
+                document.getElementById('beSonuc').innerHTML = `
+                    <div class="alert alert-danger">
+                        <strong>Break-Even Hesaplanamadı:</strong><br>
+                        Birim fiyat, birim maliyetten düşük olamaz!
+                    </div>
+                `;
+            }
+        }
+    }
+
+    // Sensitivity analizi
+    function hesaplaSensitivity(e) {
+        e.preventDefault();
+        const yatirim = parseFormattedValue(document.getElementById('sensYatirim').value);
+        const yillikGelir = parseFormattedValue(document.getElementById('sensYillikGelir').value);
+        const faiz = parseFloat(document.getElementById('sensFaiz').value) / 100;
+        
+        if (yatirim > 0 && yillikGelir > 0 && faiz > 0) {
+            // 5 yıl için NPV hesapla
+            let npv = -yatirim;
+            for (let i = 1; i <= 5; i++) {
+                npv += yillikGelir / Math.pow(1 + faiz, i);
+            }
+            
+            // Gelir %10 azaldığında NPV
+            let npvAzalan = -yatirim;
+            for (let i = 1; i <= 5; i++) {
+                npvAzalan += (yillikGelir * 0.9) / Math.pow(1 + faiz, i);
+            }
+            
+            // Gelir %10 arttığında NPV
+            let npvArtan = -yatirim;
+            for (let i = 1; i <= 5; i++) {
+                npvArtan += (yillikGelir * 1.1) / Math.pow(1 + faiz, i);
+            }
+            
+            document.getElementById('sensSonuc').innerHTML = `
+                <div class="alert alert-warning">
+                    <strong>Sensitivity Analizi Sonucu:</strong><br>
+                    Temel NPV: ₺${npv.toFixed(2)}<br>
+                    Gelir %10 Azaldığında: ₺${npvAzalan.toFixed(2)}<br>
+                    Gelir %10 Arttığında: ₺${npvArtan.toFixed(2)}<br>
+                    <small>Hassasiyet: Gelir değişimi NPV'yi etkiliyor</small>
+                </div>
+            `;
+            
+            updateChart('Sensitivity NPV', npv);
+        }
+    }
+
+    // Kar marjı analizi
+    function hesaplaKarMarji(e) {
+        e.preventDefault();
+        const satisGeliri = parseFormattedValue(document.getElementById('kmSatisGeliri').value);
+        const maliyet = parseFormattedValue(document.getElementById('kmMaliyet').value);
+        
+        if (satisGeliri > 0 && maliyet >= 0) {
+            const kar = satisGeliri - maliyet;
+            const karMarji = (kar / satisGeliri) * 100;
+            const maliyetMarji = (maliyet / satisGeliri) * 100;
+            
+            const renk = karMarji > 20 ? 'success' : karMarji > 10 ? 'warning' : 'danger';
+            
+            document.getElementById('kmSonuc').innerHTML = `
+                <div class="alert alert-${renk}">
+                    <strong>Kar Marjı Analizi Sonucu:</strong><br>
+                    Net Kar: ₺${kar.toLocaleString('tr-TR')}<br>
+                    Kar Marjı: %${karMarji.toFixed(2)}<br>
+                    Maliyet Marjı: %${maliyetMarji.toFixed(2)}<br>
+                    <small>Durum: ${karMarji > 20 ? 'Yüksek Kar' : karMarji > 10 ? 'Orta Kar' : 'Düşük Kar'}</small>
+                </div>
+            `;
+            
+            updateChart('Kar Marjı (%)', karMarji);
+        }
+    }
+
+    // Chart oluşturma
+    function createChart() {
+        const ctx = document.getElementById('finansalChart').getContext('2d');
+        finansalChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Gelir', 'Gider'],
+                datasets: [{
+                    label: 'Miktar (₺)',
+                    data: [0, 0],
+                    backgroundColor: ['#198754', '#dc3545'],
+                    borderWidth: 1,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Finansal Durum'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '₺' + value.toLocaleString('tr-TR');
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Chart güncelleme
+    function updateChart() {
+        const toplamGelir = gelirler.reduce((sum, gelir) => sum + gelir.miktar, 0);
+        const toplamGider = giderler.reduce((sum, gider) => sum + gider.miktar, 0);
+        
+        finansalChart.data.datasets[0].data = [toplamGelir, toplamGider];
+        finansalChart.update();
+    }
+
+    // Finansal analiz sonuçlarını chart'a ekleme
+    function updateChart(metrik, deger) {
+        const labels = finansalChart.data.labels;
+        const data = finansalChart.data.datasets[0].data;
+        
+        const index = labels.indexOf(metrik);
+        if (index !== -1) {
+            data[index] = deger;
+        } else {
+            labels.push(metrik);
+            data.push(deger);
+        }
+        
+        finansalChart.update();
+    }
+</script>

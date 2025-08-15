@@ -12,7 +12,7 @@
                         <i class="bi bi-graph-up me-2 text-primary"></i>
                         Finansal Analiz 1
                     </h3>
-                    <p class="text-muted mb-0">Finansal verilerin analizi ve raporlanması</p>
+                    <p class="text-muted mb-0">Gelir ve Gider Takibi</p>
                 </div>
                 <div class="d-flex gap-2">
                     <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary">
@@ -23,50 +23,345 @@
         </div>
     </div>
 
-    <!-- İçerik -->
-    <div class="row">
-        <div class="col-12">
+    <!-- Gelir Ekleme -->
+    <div class="row mb-4">
+        <div class="col-md-6">
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-primary bg-gradient text-white border-0 py-3">
+                <div class="card-header bg-success bg-gradient text-white border-0 py-3">
                     <h6 class="mb-0 fw-semibold">
-                        <i class="bi bi-chart-line me-2"></i>
-                        Finansal Analiz Raporu
+                        <i class="bi bi-plus-circle me-2"></i>
+                        Gelir Ekle
                     </h6>
                 </div>
                 <div class="card-body">
-                    <div class="alert alert-info">
-                        <i class="bi bi-info-circle me-2"></i>
-                        <strong>Finansal Analiz 1</strong> sayfasına hoş geldiniz. 
-                        Bu sayfa finansal verilerin analizi için tasarlanmıştır.
+                    <form id="gelirForm">
+                        <div class="mb-3">
+                            <label for="gelirAciklama" class="form-label">Gelir Açıklaması</label>
+                            <input type="text" class="form-control" id="gelirAciklama" placeholder="Örn: Satış geliri" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="gelirMiktar" class="form-label">Miktar (₺)</label>
+                            <input type="number" class="form-control" id="gelirMiktar" placeholder="Örn: 1000" step="0.01" min="0" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="bi bi-plus me-2"></i>Gelir Ekle
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-danger bg-gradient text-white border-0 py-3">
+                    <h6 class="mb-0 fw-semibold">
+                        <i class="bi bi-dash-circle me-2"></i>
+                        Gider Ekle
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form id="giderForm">
+                        <div class="mb-3">
+                            <label for="giderAciklama" class="form-label">Gider Açıklaması</label>
+                            <input type="text" class="form-control" id="giderAciklama" placeholder="Örn: Kira ödemesi" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="giderMiktar" class="form-label">Miktar (₺)</label>
+                            <input type="number" class="form-control" id="giderMiktar" placeholder="Örn: 500" step="0.01" min="0" required>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100">
+                            <i class="bi bi-plus me-2"></i>Gider Ekle
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Özet Kartları -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm bg-success bg-gradient text-white">
+                <div class="card-body text-center">
+                    <h4 class="mb-2">Toplam Gelir</h4>
+                    <h2 id="toplamGelir">₺0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm bg-danger bg-gradient text-white">
+                <div class="card-body text-center">
+                    <h4 class="mb-2">Toplam Gider</h4>
+                    <h2 id="toplamGider">₺0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm bg-primary bg-gradient text-white">
+                <div class="card-body text-center">
+                    <h4 class="mb-2">Net Kar</h4>
+                    <h2 id="netKar">₺0</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detaylı Listeler -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-success bg-gradient text-white border-0 py-3">
+                    <h6 class="mb-0 fw-semibold">
+                        <i class="bi bi-list-check me-2"></i>
+                        Gelir Listesi
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div id="gelirListesi">
+                        <p class="text-muted text-center">Henüz gelir eklenmemiş</p>
                     </div>
-                    
-                    <!-- Örnek içerik -->
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="card border-0 bg-light">
-                                <div class="card-body">
-                                    <h6 class="card-title">
-                                        <i class="bi bi-cash-coin me-2 text-success"></i>
-                                        Gelir Analizi
-                                    </h6>
-                                    <p class="card-text">Aylık gelir trendleri ve analizi</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card border-0 bg-light">
-                                <div class="card-body">
-                                    <h6 class="card-title">
-                                        <i class="bi bi-cart-x me-2 text-danger"></i>
-                                        Gider Analizi
-                                    </h6>
-                                    <p class="card-text">Aylık gider trendleri ve analizi</p>
-                                </div>
-                            </div>
-                        </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-danger bg-gradient text-white border-0 py-3">
+                    <h6 class="mb-0 fw-semibold">
+                        <i class="bi bi-list-check me-2"></i>
+                        Gider Listesi
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div id="giderListesi">
+                        <p class="text-muted text-center">Henüz gider eklenmemiş</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Grafik -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-dark bg-gradient text-white border-0 py-3">
+                    <h6 class="mb-0 fw-semibold">
+                        <i class="bi bi-pie-chart me-2"></i>
+                        Gelir-Gider Dağılımı
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="gelirGiderChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    let gelirler = [];
+    let giderler = [];
+    let gelirGiderChart;
+
+    // Sayfa yüklendiğinde
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form event listener'ları
+        document.getElementById('gelirForm').addEventListener('submit', addGelir);
+        document.getElementById('giderForm').addEventListener('submit', addGider);
+        
+        // Verileri yükle
+        loadData();
+        
+        // Grafik oluştur
+        createChart();
+        
+        // UI'ı güncelle
+        updateUI();
+    });
+
+    // Gelir ekle
+    function addGelir(e) {
+        e.preventDefault();
+        
+        const aciklama = document.getElementById('gelirAciklama').value;
+        const miktar = parseFloat(document.getElementById('gelirMiktar').value);
+        
+        if (!aciklama || !miktar) return;
+        
+        gelirler.push({
+            id: Date.now(),
+            aciklama: aciklama,
+            miktar: miktar,
+            tarih: new Date().toLocaleDateString('tr-TR')
+        });
+        
+        document.getElementById('gelirForm').reset();
+        saveData();
+        updateUI();
+        updateChart();
+    }
+
+    // Gider ekle
+    function addGider(e) {
+        e.preventDefault();
+        
+        const aciklama = document.getElementById('giderAciklama').value;
+        const miktar = parseFloat(document.getElementById('giderMiktar').value);
+        
+        if (!aciklama || !miktar) return;
+        
+        giderler.push({
+            id: Date.now(),
+            aciklama: aciklama,
+            miktar: miktar,
+            tarih: new Date().toLocaleDateString('tr-TR')
+        });
+        
+        document.getElementById('giderForm').reset();
+        saveData();
+        updateUI();
+        updateChart();
+    }
+
+    // Verileri kaydet
+    function saveData() {
+        localStorage.setItem('gelirler', JSON.stringify(gelirler));
+        localStorage.setItem('giderler', JSON.stringify(giderler));
+    }
+
+    // Verileri yükle
+    function loadData() {
+        const savedGelirler = localStorage.getItem('gelirler');
+        const savedGiderler = localStorage.getItem('giderler');
+        
+        if (savedGelirler) gelirler = JSON.parse(savedGelirler);
+        if (savedGiderler) giderler = JSON.parse(savedGiderler);
+    }
+
+    // UI'ı güncelle
+    function updateUI() {
+        updateSummaryCards();
+        updateLists();
+    }
+
+    // Özet kartlarını güncelle
+    function updateSummaryCards() {
+        const toplamGelir = gelirler.reduce((sum, gelir) => sum + gelir.miktar, 0);
+        const toplamGider = giderler.reduce((sum, gider) => sum + gider.miktar, 0);
+        const netKar = toplamGelir - toplamGider;
+        
+        document.getElementById('toplamGelir').textContent = `₺${toplamGelir.toLocaleString('tr-TR')}`;
+        document.getElementById('toplamGider').textContent = `₺${toplamGider.toLocaleString('tr-TR')}`;
+        document.getElementById('netKar').textContent = `₺${netKar.toLocaleString('tr-TR')}`;
+        
+        // Net kar rengini güncelle
+        const netKarElement = document.getElementById('netKar');
+        if (netKar > 0) {
+            netKarElement.className = 'text-success';
+        } else if (netKar < 0) {
+            netKarElement.className = 'text-danger';
+        } else {
+            netKarElement.className = 'text-white';
+        }
+    }
+
+    // Listeleri güncelle
+    function updateLists() {
+        // Gelir listesi
+        const gelirListesi = document.getElementById('gelirListesi');
+        if (gelirler.length === 0) {
+            gelirListesi.innerHTML = '<p class="text-muted text-center">Henüz gelir eklenmemiş</p>';
+        } else {
+            gelirListesi.innerHTML = gelirler.map(gelir => `
+                <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
+                    <div>
+                        <strong>${gelir.aciklama}</strong><br>
+                        <small class="text-muted">${gelir.tarih}</small>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="text-success me-3">₺${gelir.miktar.toLocaleString('tr-TR')}</span>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteGelir(${gelir.id})">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Gider listesi
+        const giderListesi = document.getElementById('giderListesi');
+        if (giderler.length === 0) {
+            giderListesi.innerHTML = '<p class="text-muted text-center">Henüz gider eklenmemiş</p>';
+        } else {
+            giderListesi.innerHTML = giderler.map(gider => `
+                <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
+                    <div>
+                        <strong>${gider.aciklama}</strong><br>
+                        <small class="text-muted">${gider.tarih}</small>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="text-danger me-3">₺${gider.miktar.toLocaleString('tr-TR')}</span>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteGider(${gider.id})">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+    }
+
+    // Gelir sil
+    function deleteGelir(id) {
+        gelirler = gelirler.filter(gelir => gelir.id !== id);
+        saveData();
+        updateUI();
+        updateChart();
+    }
+
+    // Gider sil
+    function deleteGider(id) {
+        giderler = giderler.filter(gider => gider.id !== id);
+        saveData();
+        updateUI();
+        updateChart();
+    }
+
+    // Grafik oluştur
+    function createChart() {
+        const ctx = document.getElementById('gelirGiderChart').getContext('2d');
+        gelirGiderChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Gelir', 'Gider'],
+                datasets: [{
+                    data: [0, 0],
+                    backgroundColor: ['#198754', '#dc3545'],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+
+    // Grafik güncelle
+    function updateChart() {
+        const toplamGelir = gelirler.reduce((sum, gelir) => sum + gelir.miktar, 0);
+        const toplamGider = giderler.reduce((sum, gider) => sum + gider.miktar, 0);
+        
+        gelirGiderChart.data.datasets[0].data = [toplamGelir, toplamGider];
+        gelirGiderChart.update();
+    }
+</script>

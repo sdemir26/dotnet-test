@@ -7,6 +7,11 @@ namespace serkan_test1.Controllers
     /// </summary>
     public class FinansalAnalizController : Controller
     {
+        public IActionResult Index()
+        {
+            return View();
+        }
+
         /// <summary>
         /// Finansal Analiz 1 sayfasını gösterir
         /// </summary>
@@ -21,6 +26,16 @@ namespace serkan_test1.Controllers
         /// </summary>
         /// <returns>Finansal analiz 2 view'ı</returns>
         public IActionResult Analiz2()
+        {
+            return View();
+        }
+
+        public IActionResult Analiz3()
+        {
+            return View();
+        }
+
+        public IActionResult Analiz4()
         {
             return View();
         }

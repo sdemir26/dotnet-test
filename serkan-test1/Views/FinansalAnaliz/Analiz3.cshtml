@@ -1,0 +1,1060 @@
+@{
+    ViewData["Title"] = "Finansal Analiz 3 - Kapsamlı";
+}
+
+<div class="container-fluid">
+    <!-- Gelir/Gider Takibi - Her zaman görünür -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-cash-coin me-2"></i>Gelir/Gider Takibi
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                                                 <!-- Gelir Ekleme -->
+                         <div class="col-md-3">
+                             <form id="gelirForm">
+                                 <label for="gelirAciklama" class="form-label">Gelir Açıklaması</label>
+                                 <input type="text" class="form-control mb-2" id="gelirAciklama" placeholder="Gelir açıklaması" required>
+                                 <label for="gelirMiktar" class="form-label">Miktar (₺)</label>
+                                 <input type="text" class="form-control mb-2" id="gelirMiktar" placeholder="Örn: 1.000" required>
+                                 <label for="gelirPeriyot" class="form-label">Periyot</label>
+                                 <select class="form-select mb-2" id="gelirPeriyot" required>
+                                     <option value="aylik">Aylık</option>
+                                     <option value="yillik">Yıllık</option>
+                                 </select>
+                                 <button type="submit" class="btn btn-success btn-sm w-100">
+                                     <i class="bi bi-plus-circle me-1"></i>Gelir Ekle
+                                 </button>
+                             </form>
+                         </div>
+ 
+                         <!-- Gider Ekleme -->
+                         <div class="col-md-3">
+                             <form id="giderForm">
+                                 <label for="giderAciklama" class="form-label">Gider Açıklaması</label>
+                                 <input type="text" class="form-control mb-2" id="giderAciklama" placeholder="Gider açıklaması" required>
+                                 <label for="giderMiktar" class="form-label">Miktar (₺)</label>
+                                 <input type="text" class="form-control mb-2" id="giderMiktar" placeholder="Örn: 500" required>
+                                 <label for="giderPeriyot" class="form-label">Periyot</label>
+                                 <select class="form-select mb-2" id="giderPeriyot" required>
+                                     <option value="aylik">Aylık</option>
+                                     <option value="yillik">Yıllık</option>
+                                 </select>
+                                 <button type="submit" class="btn btn-danger btn-sm w-100">
+                                     <i class="bi bi-plus-circle me-1"></i>Gider Ekle
+                                 </button>
+                             </form>
+                         </div>
+
+                        <!-- Özet Kartları -->
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="card bg-success text-white">
+                                        <div class="card-body text-center p-2">
+                                            <h6 class="card-title mb-1">Toplam Gelir</h6>
+                                            <h5 id="toplamGelir" class="mb-0">₺0</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card bg-danger text-white">
+                                        <div class="card-body text-center p-2">
+                                            <h6 class="card-title mb-1">Toplam Gider</h6>
+                                            <h5 id="toplamGider" class="mb-0">₺0</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card bg-info text-white">
+                                        <div class="card-body text-center p-2">
+                                            <h6 class="card-title mb-1">Net Kar</h6>
+                                            <h5 id="netKar" class="mb-0">₺0</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gelir/Gider Listeleri -->
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h6>Gelirler</h6>
+                            <div id="gelirListesi" class="list-group list-group-flush" style="max-height: 200px; overflow-y: auto;"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Giderler</h6>
+                            <div id="giderListesi" class="list-group list-group-flush" style="max-height: 200px; overflow-y: auto;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Finansal Analiz Sekmeleri -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs" id="analizTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active text-dark" id="yatirim-tab" data-bs-toggle="tab" data-bs-target="#yatirim" type="button" role="tab">
+                                <i class="bi bi-graph-up me-2"></i>Yatırım Analizi
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link text-dark" id="operasyonel-tab" data-bs-toggle="tab" data-bs-target="#operasyonel" type="button" role="tab">
+                                <i class="bi bi-calculator me-2"></i>Operasyonel Analiz
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link text-dark" id="genel-tab" data-bs-toggle="tab" data-bs-target="#genel" type="button" role="tab">
+                                <i class="bi bi-bar-chart me-2"></i>Genel Bakış
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="analizTabContent">
+                        <!-- Yatırım Analizi Sekmesi -->
+                        <div class="tab-pane fade show active" id="yatirim" role="tabpanel">
+                            <div class="row">
+                                <!-- ROI Hesaplama -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card border-primary">
+                                        <div class="card-header bg-primary text-white">
+                                            <h6 class="mb-0">ROI (Yatırım Getirisi)</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="alert alert-info mb-3">
+                                                <small><strong>ROI Nedir?</strong> Yatırımın yıllık getiri oranıdır. Yüksek ROI = Daha iyi yatırım. Dönüş süresi de hesaplanır.</small>
+                                            </div>
+                                            <form id="roiForm">
+                                                <div class="mb-2">
+                                                    <label for="roiYatirim" class="form-label">Yatırım Miktarı (₺)</label>
+                                                    <input type="text" class="form-control" id="roiYatirim" placeholder="Örn: 10.000" required>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted">Gelir ve gider verileri yukarıdaki takip bölümünden alınacaktır.</small>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary btn-sm w-100">ROI Hesapla</button>
+                                            </form>
+                                            <div id="roiSonuc" class="mt-2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- NPV Hesaplama -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card border-success">
+                                        <div class="card-header bg-success text-white">
+                                            <h6 class="mb-0">NPV (Net Bugünkü Değer)</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="alert alert-info mb-3">
+                                                <small><strong>NPV Nedir?</strong> Gelecekteki nakit akışlarının bugünkü değerini hesaplar. Pozitif NPV = Kârlı yatırım.</small>
+                                            </div>
+                                            <form id="npvForm">
+                                                <div class="mb-2">
+                                                    <label for="npvYatirim" class="form-label">Başlangıç Yatırımı (₺)</label>
+                                                    <input type="text" class="form-control" id="npvYatirim" placeholder="Örn: 50.000" required>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted">Yıllık nakit akışı yukarıdaki gelir/gider verilerinden hesaplanacaktır.</small>
+                                                </div>
+                                                                                                 <div class="row">
+                                                     <div class="col-6">
+                                                         <label for="npvFaiz" class="form-label">İskonto Oranı (%)</label>
+                                                         <input type="text" class="form-control" id="npvFaiz" placeholder="10" required>
+                                                         <small class="text-muted">Risk primi, enflasyon ve alternatif yatırım getirisi</small>
+                                                     </div>
+                                                     <div class="col-6">
+                                                         <label for="npvSure" class="form-label">Süre (Yıl)</label>
+                                                         <input type="text" class="form-control" id="npvSure" placeholder="5" required>
+                                                     </div>
+                                                 </div>
+                                                <button type="submit" class="btn btn-success btn-sm w-100 mt-2">NPV Hesapla</button>
+                                            </form>
+                                            <div id="npvSonuc" class="mt-2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- IRR Hesaplama -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card border-warning">
+                                        <div class="card-header bg-warning text-dark">
+                                            <h6 class="mb-0">IRR (İç Verim Oranı)</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="alert alert-info mb-3">
+                                                <small><strong>IRR Nedir?</strong> Yatırımın yıllık getiri oranıdır. Yüksek IRR = Daha iyi yatırım.</small>
+                                            </div>
+                                            <form id="irrForm">
+                                                <div class="mb-2">
+                                                    <label for="irrYatirim" class="form-label">Başlangıç Yatırımı (₺)</label>
+                                                    <input type="text" class="form-control" id="irrYatirim" placeholder="Örn: 100.000" required>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted">Yıllık nakit akışı yukarıdaki gelir/gider verilerinden hesaplanacaktır.</small>
+                                                </div>
+                                                                                                 <div class="mb-2">
+                                                     <label for="irrSure" class="form-label">Süre (Yıl)</label>
+                                                     <input type="text" class="form-control" id="irrSure" placeholder="5" required>
+                                                 </div>
+                                                <button type="submit" class="btn btn-warning btn-sm w-100">IRR Hesapla</button>
+                                            </form>
+                                            <div id="irrSonuc" class="mt-2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Hızlı Analiz -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card border-info">
+                                        <div class="card-header bg-info text-white">
+                                            <h6 class="mb-0">Hızlı Analiz</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="alert alert-info mb-3">
+                                                <small><strong>Hızlı Analiz Nedir?</strong> ROI ve Kar Marjı'nı birlikte hesaplar. Genel yatırım performansını değerlendirir.</small>
+                                            </div>
+                                            <form id="hizliForm">
+                                                <div class="mb-2">
+                                                    <label for="hizliYatirim" class="form-label">Toplam Yatırım (₺)</label>
+                                                    <input type="text" class="form-control" id="hizliYatirim" placeholder="Örn: 20.000" required>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted">Gelir ve gider verileri yukarıdaki takip bölümünden alınacaktır.</small>
+                                                </div>
+                                                <button type="submit" class="btn btn-info btn-sm w-100">Hızlı Analiz Yap</button>
+                                            </form>
+                                            <div id="hizliSonuc" class="mt-2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Operasyonel Analiz Sekmesi -->
+                        <div class="tab-pane fade" id="operasyonel" role="tabpanel">
+                            <div class="row">
+                                <!-- Payback Period -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card border-danger">
+                                        <div class="card-header bg-danger text-white">
+                                            <h6 class="mb-0">Payback Period (Geri Ödeme Süresi)</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="alert alert-info mb-3">
+                                                <small><strong>Payback Period Nedir?</strong> Yatırımın ne kadar sürede geri ödeneceğini hesaplar. Kısa süre = Daha iyi yatırım.</small>
+                                            </div>
+                                            <form id="paybackForm">
+                                                <div class="mb-2">
+                                                    <label for="paybackYatirim" class="form-label">Başlangıç Yatırımı (₺)</label>
+                                                    <input type="text" class="form-control" id="paybackYatirim" placeholder="Örn: 100.000" required>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted">Yıllık gelir yukarıdaki gelir/gider verilerinden hesaplanacaktır.</small>
+                                                </div>
+                                                <button type="submit" class="btn btn-danger btn-sm w-100">Payback Hesapla</button>
+                                            </form>
+                                            <div id="paybackSonuc" class="mt-2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Break-Even -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card border-secondary">
+                                        <div class="card-header bg-secondary text-white">
+                                            <h6 class="mb-0">Break-Even (Başabaş) Analizi</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="alert alert-info mb-3">
+                                                <small><strong>Break-Even Nedir?</strong> Kâr/zarar sıfır olduğu satış adetini hesaplar.</small>
+                                            </div>
+                                            <form id="beForm">
+                                                <div class="mb-2">
+                                                    <label for="beSabitMaliyet" class="form-label">Sabit Maliyetler (₺)</label>
+                                                    <input type="text" class="form-control" id="beSabitMaliyet" placeholder="Örn: 50.000" required>
+                                                    <small class="text-muted">Kira, maaş, sigorta gibi değişmeyen maliyetler</small>
+                                                </div>
+                                                                                                 <div class="row">
+                                                     <div class="col-6">
+                                                         <label for="beBirimFiyat" class="form-label">Birim Satış Fiyatı (₺)</label>
+                                                         <input type="text" class="form-control" id="beBirimFiyat" placeholder="100" required>
+                                                         <small class="text-muted">Ürün/hizmet satış fiyatı</small>
+                                                     </div>
+                                                     <div class="col-6">
+                                                         <label for="beBirimMaliyet" class="form-label">Birim Değişken Maliyet (₺)</label>
+                                                         <input type="text" class="form-control" id="beBirimMaliyet" placeholder="60" required>
+                                                         <small class="text-muted">Ürün/hizmet üretim maliyeti</small>
+                                                     </div>
+                                                 </div>
+                                                <button type="submit" class="btn btn-secondary btn-sm w-100 mt-2">Break-Even Hesapla</button>
+                                            </form>
+                                            <div id="beSonuc" class="mt-2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Sensitivity -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card border-dark">
+                                        <div class="card-header bg-dark text-white">
+                                            <h6 class="mb-0">Hassasiyet (Sensitivity) Analizi</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="alert alert-info mb-3">
+                                                <small><strong>Sensitivity Nedir?</strong> Gelir değişimlerinin NPV üzerindeki etkisini analiz eder.</small>
+                                            </div>
+                                            <form id="sensForm">
+                                                <div class="mb-2">
+                                                    <label for="sensYatirim" class="form-label">Yatırım Miktarı (₺)</label>
+                                                    <input type="text" class="form-control" id="sensYatirim" placeholder="Örn: 200.000" required>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted">Yıllık gelir yukarıdaki gelir/gider verilerinden hesaplanacaktır.</small>
+                                                </div>
+                                                                                                 <div class="mb-2">
+                                                     <label for="sensFaiz" class="form-label">İskonto Oranı (%)</label>
+                                                     <input type="text" class="form-control" id="sensFaiz" placeholder="10" required>
+                                                     <small class="text-muted">Risk primi, enflasyon ve alternatif yatırım getirisi</small>
+                                                 </div>
+                                                <button type="submit" class="btn btn-dark btn-sm w-100">Sensitivity Hesapla</button>
+                                            </form>
+                                            <div id="sensSonuc" class="mt-2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Kar Marjı -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card border-primary">
+                                        <div class="card-header bg-primary text-white">
+                                            <h6 class="mb-0">Kar Marjı Analizi</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="alert alert-info mb-3">
+                                                <small><strong>Kar Marjı Nedir?</strong> Net karın toplam gelire oranıdır. Yüksek kar marjı = Daha kârlı işletme.</small>
+                                            </div>
+                                            <form id="kmForm">
+                                                <div class="mb-2">
+                                                    <small class="text-muted">Gelir ve maliyet verileri yukarıdaki takip bölümünden alınacaktır.</small>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary btn-sm w-100">Kar Marjı Hesapla</button>
+                                            </form>
+                                            <div id="kmSonuc" class="mt-2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Genel Bakış Sekmesi -->
+                        <div class="tab-pane fade" id="genel" role="tabpanel">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h5 class="mb-3">Finansal Durum Özeti</h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h6 class="mb-0">Gelir/Gider Dağılımı</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <canvas id="gelirGiderChart" height="200"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h6 class="mb-0">Analiz Sonuçları</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <canvas id="analizChart" height="200"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let gelirler = [];
+    let giderler = [];
+    let gelirGiderChart;
+    let analizChart;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Gelir/Gider formları
+        document.getElementById('gelirForm').addEventListener('submit', addGelir);
+        document.getElementById('giderForm').addEventListener('submit', addGider);
+        
+        // Yatırım analiz formları
+        document.getElementById('roiForm').addEventListener('submit', hesaplaROI);
+        document.getElementById('npvForm').addEventListener('submit', hesaplaNPV);
+        document.getElementById('irrForm').addEventListener('submit', hesaplaIRR);
+        document.getElementById('hizliForm').addEventListener('submit', hizliAnaliz);
+        
+        // Operasyonel analiz formları
+        document.getElementById('paybackForm').addEventListener('submit', hesaplaPayback);
+        document.getElementById('beForm').addEventListener('submit', hesaplaBreakeven);
+        document.getElementById('sensForm').addEventListener('submit', hesaplaSensitivity);
+        document.getElementById('kmForm').addEventListener('submit', hesaplaKarMarji);
+        
+        // Input formatting
+        setupInputFormatting();
+        
+        // Veri yükleme ve UI güncelleme
+        loadData();
+        updateUI();
+        createCharts();
+    });
+
+    // Gelir ekleme
+    function addGelir(e) {
+        e.preventDefault();
+        const aciklama = document.getElementById('gelirAciklama').value;
+        const miktar = parseFormattedValue(document.getElementById('gelirMiktar').value);
+        const periyot = document.getElementById('gelirPeriyot').value;
+        
+        if (aciklama && miktar > 0) {
+            const gelir = {
+                id: Date.now(),
+                aciklama: aciklama,
+                miktar: miktar,
+                periyot: periyot,
+                tarih: new Date().toLocaleDateString('tr-TR')
+            };
+            
+            gelirler.push(gelir);
+            saveData();
+            updateUI();
+            updateCharts();
+            
+            document.getElementById('gelirForm').reset();
+        }
+    }
+
+    // Gider ekleme
+    function addGider(e) {
+        e.preventDefault();
+        const aciklama = document.getElementById('giderAciklama').value;
+        const miktar = parseFormattedValue(document.getElementById('giderMiktar').value);
+        const periyot = document.getElementById('giderPeriyot').value;
+        
+        if (aciklama && miktar > 0) {
+            const gider = {
+                id: Date.now(),
+                aciklama: aciklama,
+                miktar: miktar,
+                periyot: periyot,
+                tarih: new Date().toLocaleDateString('tr-TR')
+            };
+            
+            giderler.push(gider);
+            saveData();
+            updateUI();
+            updateCharts();
+            
+            document.getElementById('giderForm').reset();
+        }
+    }
+
+    // Veri kaydetme
+    function saveData() {
+        localStorage.setItem('gelirler', JSON.stringify(gelirler));
+        localStorage.setItem('giderler', JSON.stringify(giderler));
+    }
+
+    // Veri yükleme
+    function loadData() {
+        const savedGelirler = localStorage.getItem('gelirler');
+        const savedGiderler = localStorage.getItem('giderler');
+        
+        if (savedGelirler) gelirler = JSON.parse(savedGelirler);
+        if (savedGiderler) giderler = JSON.parse(savedGiderler);
+    }
+
+    // UI güncelleme
+    function updateUI() {
+        updateSummaryCards();
+        updateLists();
+    }
+
+    // Yıllık gelir/gider hesaplama
+    function getYillikGelirGider() {
+        let yillikGelir = 0;
+        let yillikGider = 0;
+        
+        gelirler.forEach(gelir => {
+            if (gelir.periyot === 'aylik') {
+                yillikGelir += gelir.miktar * 12;
+            } else {
+                yillikGelir += gelir.miktar;
+            }
+        });
+        
+        giderler.forEach(gider => {
+            if (gider.periyot === 'aylik') {
+                yillikGider += gider.miktar * 12;
+            } else {
+                yillikGider += gider.miktar;
+            }
+        });
+        
+        return { yillikGelir, yillikGider };
+    }
+    
+    // Özet kartları güncelleme
+    function updateSummaryCards() {
+        const { yillikGelir, yillikGider } = getYillikGelirGider();
+        const netKar = yillikGelir - yillikGider;
+        
+        document.getElementById('toplamGelir').textContent = `₺${yillikGelir.toLocaleString('tr-TR')}/yıl`;
+        document.getElementById('toplamGider').textContent = `₺${yillikGider.toLocaleString('tr-TR')}/yıl`;
+        document.getElementById('netKar').textContent = `₺${netKar.toLocaleString('tr-TR')}/yıl`;
+    }
+
+    // Listeleri güncelleme
+    function updateLists() {
+        // Gelir listesi
+        const gelirListesi = document.getElementById('gelirListesi');
+        gelirListesi.innerHTML = gelirler.map(gelir => `
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>${gelir.aciklama}</strong>
+                    <small class="text-muted d-block">${gelir.tarih} - ${gelir.periyot === 'aylik' ? 'Aylık' : 'Yıllık'}</small>
+                </div>
+                <div>
+                    <span class="badge bg-success">₺${gelir.miktar.toLocaleString('tr-TR')}</span>
+                    <button class="btn btn-sm btn-outline-danger ms-2" onclick="deleteGelir(${gelir.id})">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+
+        // Gider listesi
+        const giderListesi = document.getElementById('giderListesi');
+        giderListesi.innerHTML = giderler.map(gider => `
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>${gider.aciklama}</strong>
+                    <small class="text-muted d-block">${gider.tarih} - ${gider.periyot === 'aylik' ? 'Aylık' : 'Yıllık'}</small>
+                </div>
+                <div>
+                    <span class="badge bg-danger">₺${gider.miktar.toLocaleString('tr-TR')}</span>
+                    <button class="btn btn-sm btn-outline-danger ms-2" onclick="deleteGider(${gider.id})">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Gelir silme
+    function deleteGelir(id) {
+        gelirler = gelirler.filter(gelir => gelir.id !== id);
+        saveData();
+        updateUI();
+        updateCharts();
+    }
+
+    // Gider silme
+    function deleteGider(id) {
+        giderler = giderler.filter(gider => gider.id !== id);
+        saveData();
+        updateUI();
+        updateCharts();
+    }
+
+    // Input formatting setup
+    function setupInputFormatting() {
+        const moneyInputs = [
+            'gelirMiktar', 'giderMiktar',
+            'roiYatirim',
+            'npvYatirim',
+            'irrYatirim',
+            'hizliYatirim',
+            'paybackYatirim',
+            'beSabitMaliyet',
+            'sensYatirim'
+        ];
+        
+        const numberInputs = [
+            'npvFaiz', 'npvSure',
+            'irrSure',
+            'beBirimFiyat', 'beBirimMaliyet',
+            'sensFaiz'
+        ];
+        
+        moneyInputs.forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.addEventListener('input', formatMoneyInput);
+                input.addEventListener('blur', formatMoneyInput);
+            }
+        });
+        
+        numberInputs.forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.addEventListener('input', formatNumberInput);
+                input.addEventListener('blur', formatNumberInput);
+            }
+        });
+    }
+
+    // Para formatı
+    function formatMoneyInput(e) {
+        let value = e.target.value.replace(/[^\d]/g, '');
+        if (value === '') return;
+        value = parseInt(value).toLocaleString('tr-TR');
+        e.target.value = value;
+    }
+
+    // Sayı formatı (ondalıklı sayılar için)
+    function formatNumberInput(e) {
+        let value = e.target.value.replace(/[^\d.,]/g, '');
+        if (value === '') return;
+        
+        // Virgülü noktaya çevir
+        value = value.replace(',', '.');
+        
+        // Birden fazla nokta varsa sadece ilkini al
+        const parts = value.split('.');
+        if (parts.length > 2) {
+            value = parts[0] + '.' + parts.slice(1).join('');
+        }
+        
+        e.target.value = value;
+    }
+
+    // Formatlanmış değeri parse etme
+    function parseFormattedValue(value) {
+        return parseFloat(value.replace(/\./g, '')) || 0;
+    }
+
+    // Sayısal değeri parse etme
+    function parseNumberValue(value) {
+        return parseFloat(value.replace(',', '.')) || 0;
+    }
+
+    // ROI hesaplama
+    function hesaplaROI(e) {
+        e.preventDefault();
+        const yatirim = parseFormattedValue(document.getElementById('roiYatirim').value);
+        
+        // Yıllık gelir/gider verilerini kullan
+        const { yillikGelir, yillikGider } = getYillikGelirGider();
+        
+        if (yatirim > 0) {
+            const yillikNetKar = yillikGelir - yillikGider;
+            const roi = (yillikNetKar / yatirim) * 100;
+            const roiText = roi.toFixed(2);
+            
+            // Dönüş süresi hesaplama
+            let donusSuresi = '';
+            if (yillikNetKar > 0) {
+                const donusYil = yatirim / yillikNetKar;
+                const donusAy = (donusYil - Math.floor(donusYil)) * 12;
+                donusSuresi = `${Math.floor(donusYil)} yıl`;
+                if (donusAy > 0) {
+                    donusSuresi += ` ${Math.round(donusAy)} ay`;
+                }
+            } else {
+                donusSuresi = 'Hesaplanamadı (Negatif kar)';
+            }
+            
+            const renk = roi > 0 ? 'success' : 'danger';
+            const aciklama = roi > 0 ? 
+                'Bu yatırım kârlıdır ve belirtilen sürede geri ödenir.' : 
+                'Bu yatırım kârsızdır.';
+            
+            document.getElementById('roiSonuc').innerHTML = `
+                <div class="alert alert-${renk}">
+                    <strong>ROI (Yatırım Getirisi) Sonucu:</strong><br>
+                    <strong>%${roiText}</strong><br>
+                    <strong>Dönüş Süresi: ${donusSuresi}</strong><br>
+                    <small>Açıklama: ${aciklama}</small><br>
+                    <small>Yıllık Gelir: ₺${yillikGelir.toLocaleString('tr-TR')}</small><br>
+                    <small>Yıllık Gider: ₺${yillikGider.toLocaleString('tr-TR')}</small><br>
+                    <small>Yıllık Net Kar: ₺${yillikNetKar.toLocaleString('tr-TR')}</small><br>
+                    <small>Yatırım: ₺${yatirim.toLocaleString('tr-TR')}</small>
+                </div>
+            `;
+            
+            updateAnalizChart('ROI', roi);
+        }
+    }
+
+    // NPV hesaplama
+    function hesaplaNPV(e) {
+        e.preventDefault();
+        const yatirim = parseFormattedValue(document.getElementById('npvYatirim').value);
+        const faiz = parseNumberValue(document.getElementById('npvFaiz').value) / 100;
+        const sure = parseInt(parseNumberValue(document.getElementById('npvSure').value));
+        
+        // Yıllık gelir/gider verilerini kullan
+        const { yillikGelir, yillikGider } = getYillikGelirGider();
+        const yillikNakitAkisi = yillikGelir - yillikGider;
+        
+        if (yatirim > 0 && faiz > 0 && sure > 0) {
+            let npv = -yatirim;
+            for (let i = 1; i <= sure; i++) {
+                npv += yillikNakitAkisi / Math.pow(1 + faiz, i);
+            }
+            
+            const npvText = npv.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const durum = npv > 0 ? 'Kârlı Yatırım' : 'Kârsız Yatırım';
+            const aciklama = npv > 0 ? 
+                'Bu yatırım, belirtilen faiz oranında kârlıdır.' : 
+                'Bu yatırım, belirtilen faiz oranında kârsızdır.';
+            const renk = npv > 0 ? 'success' : 'danger';
+            
+            document.getElementById('npvSonuc').innerHTML = `
+                <div class="alert alert-${renk}">
+                    <strong>NPV (Net Bugünkü Değer) Sonucu:</strong><br>
+                    <strong>₺${npvText}</strong><br>
+                    <small>Durum: ${durum}</small><br>
+                    <small>Açıklama: ${aciklama}</small><br>
+                    <small>Yıllık Nakit Akışı: ₺${yillikNakitAkisi.toLocaleString('tr-TR')}</small><br>
+                    <small>Faiz Oranı: %${(faiz * 100).toFixed(1)}</small><br>
+                    <small>Süre: ${sure} yıl</small>
+                </div>
+            `;
+            
+            updateAnalizChart('NPV', npv);
+        }
+    }
+
+    // IRR hesaplama
+    function hesaplaIRR(e) {
+        e.preventDefault();
+        const yatirim = parseFormattedValue(document.getElementById('irrYatirim').value);
+        const sure = parseInt(parseNumberValue(document.getElementById('irrSure').value));
+        
+        // Yıllık gelir/gider verilerini kullan
+        const { yillikGelir, yillikGider } = getYillikGelirGider();
+        const yillikNakitAkisi = yillikGelir - yillikGider;
+        
+        if (yatirim > 0 && yillikNakitAkisi > 0 && sure > 0) {
+            const toplamNakitAkisi = yillikNakitAkisi * sure;
+            const irr = ((toplamNakitAkisi - yatirim) / yatirim) * 100;
+            const irrText = irr.toFixed(2);
+            
+            const renk = irr > 0 ? 'success' : 'danger';
+            const aciklama = irr > 0 ? 
+                'Bu yatırımın yıllık getiri oranı pozitiftir.' : 
+                'Bu yatırımın yıllık getiri oranı negatiftir.';
+            
+            document.getElementById('irrSonuc').innerHTML = `
+                <div class="alert alert-${renk}">
+                    <strong>IRR (İç Verim Oranı) Sonucu:</strong><br>
+                    <strong>%${irrText}</strong><br>
+                    <small>Açıklama: ${aciklama}</small><br>
+                    <small>Yıllık Nakit Akışı: ₺${yillikNakitAkisi.toLocaleString('tr-TR')}</small><br>
+                    <small>Toplam Nakit Akışı: ₺${toplamNakitAkisi.toLocaleString('tr-TR')}</small><br>
+                    <small>Yatırım: ₺${yatirim.toLocaleString('tr-TR')}</small><br>
+                    <small>Süre: ${sure} yıl</small>
+                </div>
+            `;
+            
+            updateAnalizChart('IRR', irr);
+        }
+    }
+
+    // Hızlı analiz
+    function hizliAnaliz(e) {
+        e.preventDefault();
+        const yatirim = parseFormattedValue(document.getElementById('hizliYatirim').value);
+        
+        // Yıllık gelir/gider verilerini kullan
+        const { yillikGelir, yillikGider } = getYillikGelirGider();
+        
+        if (yatirim > 0 && yillikGelir > 0) {
+            const yillikNetKar = yillikGelir - yillikGider;
+            const karMarji = (yillikNetKar / yillikGelir) * 100;
+            const roi = (yillikNetKar / yatirim) * 100;
+            
+            // Dönüş süresi hesaplama
+            let donusSuresi = '';
+            if (yillikNetKar > 0) {
+                const donusYil = yatirim / yillikNetKar;
+                const donusAy = (donusYil - Math.floor(donusYil)) * 12;
+                donusSuresi = `${Math.floor(donusYil)} yıl`;
+                if (donusAy > 0) {
+                    donusSuresi += ` ${Math.round(donusAy)} ay`;
+                }
+            } else {
+                donusSuresi = 'Hesaplanamadı (Negatif kar)';
+            }
+            
+            const renk = roi > 0 ? 'success' : 'danger';
+            const aciklama = roi > 0 ? 
+                'Bu yatırım kârlıdır ve belirtilen sürede geri ödenir.' : 
+                'Bu yatırım kârsızdır.';
+            
+            document.getElementById('hizliSonuc').innerHTML = `
+                <div class="alert alert-${renk}">
+                    <strong>Hızlı Analiz Sonucu:</strong><br>
+                    <strong>ROI: %${roi.toFixed(2)}</strong><br>
+                    <strong>Dönüş Süresi: ${donusSuresi}</strong><br>
+                    <strong>Kar Marjı: %${karMarji.toFixed(2)}</strong><br>
+                    <small>Açıklama: ${aciklama}</small><br>
+                    <small>Yıllık Gelir: ₺${yillikGelir.toLocaleString('tr-TR')}</small><br>
+                    <small>Yıllık Gider: ₺${yillikGider.toLocaleString('tr-TR')}</small><br>
+                    <small>Yıllık Net Kar: ₺${yillikNetKar.toLocaleString('tr-TR')}</small><br>
+                    <small>Yatırım: ₺${yatirim.toLocaleString('tr-TR')}</small>
+                </div>
+            `;
+            
+            updateAnalizChart('Hızlı ROI', roi);
+        }
+    }
+
+    // Payback Period hesaplama
+    function hesaplaPayback(e) {
+        e.preventDefault();
+        const yatirim = parseFormattedValue(document.getElementById('paybackYatirim').value);
+        
+        // Yıllık gelir/gider verilerini kullan
+        const { yillikGelir, yillikGider } = getYillikGelirGider();
+        const yillikNetGelir = yillikGelir - yillikGider;
+        
+        if (yatirim > 0 && yillikNetGelir > 0) {
+            const paybackYil = yatirim / yillikNetGelir;
+            const paybackAy = (paybackYil - Math.floor(paybackYil)) * 12;
+            
+            let sonuc = `Payback Period: ${Math.floor(paybackYil)} yıl`;
+            if (paybackAy > 0) {
+                sonuc += ` ${Math.round(paybackAy)} ay`;
+            }
+            
+            document.getElementById('paybackSonuc').innerHTML = `
+                <div class="alert alert-info">
+                    <strong>Payback Period Sonucu:</strong><br>
+                    ${sonuc}<br>
+                    <small>Yatırım: ₺${yatirim.toLocaleString('tr-TR')}</small><br>
+                    <small>Yıllık Net Gelir: ₺${yillikNetGelir.toLocaleString('tr-TR')}</small>
+                </div>
+            `;
+            
+            updateAnalizChart('Payback (Yıl)', paybackYil);
+        }
+    }
+
+    // Break-Even hesaplama
+    function hesaplaBreakeven(e) {
+        e.preventDefault();
+        const sabitMaliyet = parseFormattedValue(document.getElementById('beSabitMaliyet').value);
+        const birimFiyat = parseNumberValue(document.getElementById('beBirimFiyat').value);
+        const birimMaliyet = parseNumberValue(document.getElementById('beBirimMaliyet').value);
+        
+        if (sabitMaliyet > 0 && birimFiyat > 0 && birimMaliyet >= 0) {
+            const birimKar = birimFiyat - birimMaliyet;
+            const breakEvenAdet = birimKar > 0 ? sabitMaliyet / birimKar : 0;
+            const breakEvenGelir = breakEvenAdet * birimFiyat;
+            
+            if (birimKar > 0) {
+                document.getElementById('beSonuc').innerHTML = `
+                    <div class="alert alert-success">
+                        <strong>Break-Even (Başabaş) Analizi Sonucu:</strong><br>
+                        <strong>Satılması Gereken Adet: ${Math.ceil(breakEvenAdet).toLocaleString('tr-TR')}</strong><br>
+                        <strong>Break-Even Gelir: ₺${breakEvenGelir.toLocaleString('tr-TR')}</strong><br>
+                        <small>Açıklama: Bu adet kadar satış yapıldığında kâr/zarar sıfır olur.</small><br>
+                        <small>Sabit Maliyet: ₺${sabitMaliyet.toLocaleString('tr-TR')}</small><br>
+                        <small>Birim Fiyat: ₺${birimFiyat.toLocaleString('tr-TR')}</small><br>
+                        <small>Birim Maliyet: ₺${birimMaliyet.toLocaleString('tr-TR')}</small><br>
+                        <small>Birim Kar: ₺${birimKar.toFixed(2)}</small>
+                    </div>
+                `;
+                
+                updateAnalizChart('Break-Even Adet', breakEvenAdet);
+            } else {
+                document.getElementById('beSonuc').innerHTML = `
+                    <div class="alert alert-danger">
+                        <strong>Break-Even Hesaplanamadı:</strong><br>
+                        Birim fiyat, birim maliyetten düşük olamaz!<br>
+                        <small>Birim fiyat: ₺${birimFiyat}</small><br>
+                        <small>Birim maliyet: ₺${birimMaliyet}</small>
+                    </div>
+                `;
+            }
+        }
+    }
+
+    // Sensitivity analizi
+    function hesaplaSensitivity(e) {
+        e.preventDefault();
+        const yatirim = parseFormattedValue(document.getElementById('sensYatirim').value);
+        const faiz = parseNumberValue(document.getElementById('sensFaiz').value) / 100;
+        
+        // Yıllık gelir/gider verilerini kullan
+        const { yillikGelir, yillikGider } = getYillikGelirGider();
+        const yillikNetGelir = yillikGelir - yillikGider;
+        
+        if (yatirim > 0 && yillikNetGelir > 0 && faiz > 0) {
+            let npv = -yatirim;
+            for (let i = 1; i <= 5; i++) {
+                npv += yillikNetGelir / Math.pow(1 + faiz, i);
+            }
+            
+            let npvAzalan = -yatirim;
+            for (let i = 1; i <= 5; i++) {
+                npvAzalan += (yillikNetGelir * 0.9) / Math.pow(1 + faiz, i);
+            }
+            
+            let npvArtan = -yatirim;
+            for (let i = 1; i <= 5; i++) {
+                npvArtan += (yillikNetGelir * 1.1) / Math.pow(1 + faiz, i);
+            }
+            
+            document.getElementById('sensSonuc').innerHTML = `
+                <div class="alert alert-warning">
+                    <strong>Hassasiyet (Sensitivity) Analizi Sonucu:</strong><br>
+                    <strong>Temel NPV: ₺${npv.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong><br>
+                    <strong>Gelir %10 Azaldığında: ₺${npvAzalan.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong><br>
+                    <strong>Gelir %10 Arttığında: ₺${npvArtan.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong><br>
+                    <small>Açıklama: Gelir değişimlerinin NPV üzerindeki etkisi analiz edilmiştir.</small><br>
+                    <small>Yıllık Net Gelir: ₺${yillikNetGelir.toLocaleString('tr-TR')}</small><br>
+                    <small>Faiz Oranı: %${(faiz * 100).toFixed(1)}</small><br>
+                    <small>Analiz Süresi: 5 yıl</small>
+                </div>
+            `;
+            
+            updateAnalizChart('Sensitivity NPV', npv);
+        }
+    }
+
+    // Kar marjı analizi
+    function hesaplaKarMarji(e) {
+        e.preventDefault();
+        
+        // Yıllık gelir/gider verilerini kullan
+        const { yillikGelir, yillikGider } = getYillikGelirGider();
+        
+        if (yillikGelir > 0) {
+            const kar = yillikGelir - yillikGider;
+            const karMarji = (kar / yillikGelir) * 100;
+            const maliyetMarji = (yillikGider / yillikGelir) * 100;
+            
+            const renk = karMarji > 20 ? 'success' : karMarji > 10 ? 'warning' : 'danger';
+            
+            document.getElementById('kmSonuc').innerHTML = `
+                <div class="alert alert-${renk}">
+                    <strong>Kar Marjı Analizi Sonucu:</strong><br>
+                    Yıllık Gelir: ₺${yillikGelir.toLocaleString('tr-TR')}<br>
+                    Yıllık Gider: ₺${yillikGider.toLocaleString('tr-TR')}<br>
+                    Yıllık Net Kar: ₺${kar.toLocaleString('tr-TR')}<br>
+                    Kar Marjı: %${karMarji.toFixed(2)}<br>
+                    Maliyet Marjı: %${maliyetMarji.toFixed(2)}<br>
+                    <small>Durum: ${karMarji > 20 ? 'Yüksek Kar' : karMarji > 10 ? 'Orta Kar' : 'Düşük Kar'}</small>
+                </div>
+            `;
+            
+            updateAnalizChart('Kar Marjı (%)', karMarji);
+        }
+    }
+
+    // Chart'ları oluşturma
+    function createCharts() {
+        // Gelir/Gider Chart
+        const ctx1 = document.getElementById('gelirGiderChart').getContext('2d');
+        gelirGiderChart = new Chart(ctx1, {
+            type: 'doughnut',
+            data: {
+                labels: ['Gelir', 'Gider'],
+                datasets: [{
+                    data: [0, 0],
+                    backgroundColor: ['#198754', '#dc3545'],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Analiz Sonuçları Chart
+        const ctx2 = document.getElementById('analizChart').getContext('2d');
+        analizChart = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Analiz Sonuçları',
+                    data: [],
+                    backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6c757d', '#0dcaf0', '#6610f2', '#fd7e14'],
+                    borderWidth: 1,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    // Chart'ları güncelleme
+    function updateCharts() {
+        const { yillikGelir, yillikGider } = getYillikGelirGider();
+        
+        gelirGiderChart.data.datasets[0].data = [yillikGelir, yillikGider];
+        gelirGiderChart.update();
+    }
+
+    // Analiz chart'ını güncelleme
+    function updateAnalizChart(metrik, deger) {
+        const labels = analizChart.data.labels;
+        const data = analizChart.data.datasets[0].data;
+        
+        const index = labels.indexOf(metrik);
+        if (index !== -1) {
+            data[index] = deger;
+        } else {
+            labels.push(metrik);
+            data.push(deger);
+        }
+        
+        analizChart.update();
+    }
+    
+
+</script>
