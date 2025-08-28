@@ -1,0 +1,208 @@
+@using OdemeTakip.Models
+@{
+    ViewData["Title"] = "Firma Detayı";
+    var firma = ViewBag.Firma as Firma;
+}
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">@firma.FirmaAdi - Detay</h1>
+    <a href="@Url.Action("FirmaListesi", "Admin")" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+        <i class="fas fa-arrow-left fa-sm text-white-50"></i> Geri Dön
+    </a>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle"></i> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row">
+    <!-- Firma Bilgileri -->
+    <div class="col-xl-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Firma Bilgileri
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            <strong>Firma Adı:</strong> @firma.FirmaAdi<br>
+                            <strong>Üyelik Durumu:</strong> 
+                                                         @if (firma.UyelikDurumu == UyelikDurumu.Aktif)
+                             {
+                                 <span style="background-color: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Aktif</span>
+                             }
+                             else if (firma.UyelikDurumu == UyelikDurumu.Beklemede)
+                             {
+                                 <span style="background-color: #dc3545; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Beklemede</span>
+                             }
+                             else if (firma.UyelikDurumu == UyelikDurumu.Pasif)
+                             {
+                                 <span style="background-color: #ffc107; color: black; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Pasif</span>
+                             }
+                             else if (firma.UyelikDurumu == UyelikDurumu.AskıyaAlınmış)
+                             {
+                                 <span style="background-color: #6c757d; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Askıya Alınmış</span>
+                             }
+                             else
+                             {
+                                 <span style="background-color: #343a40; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">İptal Edilmiş</span>
+                             }
+                            <br>
+                            <strong>Kalan İlan Hakkı:</strong> @firma.KalanIlanHakki<br>
+                            <strong>Toplam Kullanılan İlan:</strong> @firma.ToplamKullanilanIlan<br>
+                            <strong>Üyelik Başlangıç:</strong> @firma.UyelikBaslangicTarihi.ToString("dd.MM.yyyy")<br>
+                            <strong>Beklemede Durumuna Düşme:</strong> @firma.BeklemedeDurumunaDusmeSayisi kez<br>
+                            @if (firma.SonBeklemedeDurumunaDusmeTarihi.HasValue)
+                            {
+                                <strong>Son Beklemede Durumuna Düşme:</strong> @firma.SonBeklemedeDurumunaDusmeTarihi.Value.ToString("dd.MM.yyyy")
+                            }
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-building fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<!-- Admin İşlemleri -->
+@if (firma.UyelikDurumu == UyelikDurumu.Beklemede)
+{
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-warning">Admin İşlemleri</h6>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning">
+                <strong>Dikkat!</strong> Bu firma @firma.BeklemedeDurumunaDusmeSayisi kez aynı yıl içinde ödeme yapmadığı için beklemede durumunda. 
+                İlan verebilmesi için admin onayı gereklidir.
+            </div>
+            <form method="post" action="@Url.Action("PasifFirmayiAktifYap", "Admin", new { id = firma.Id })" style="display: inline;">
+                <button type="submit" class="btn btn-success" onclick="return confirm('Bu firmayı aktif hale getirmek istediğinizden emin misiniz?')">
+                    <i class="fas fa-check"></i> Firmayı Aktif Hale Getir
+                </button>
+            </form>
+        </div>
+    </div>
+}
+else if (firma.UyelikDurumu == UyelikDurumu.Pasif)
+{
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-info">Bilgi</h6>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info">
+                <strong>Bilgi:</strong> Bu firma @firma.BeklemedeDurumunaDusmeSayisi kez ödeme yapmadığı için pasif durumda. 
+                Ödeme yapıldığında otomatik olarak aktif hale gelecektir.
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Ödeme Geçmişi -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Ödeme Geçmişi</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm" width="100%" cellspacing="0">
+                <thead>
+                                            <tr>
+                            <th>Ödenmesi Gereken Tarih</th>
+                            <th>Ödeme Tarihi</th>
+                            <th>İlan Sayısı</th>
+                            <th>Net Tutar</th>
+                            <th>Açıklama</th>
+                        </tr>
+                </thead>
+                <tbody>
+                    @if (ViewBag.SabitUcretOdemeler != null)
+                    {
+                                                 @foreach (var odeme in ViewBag.SabitUcretOdemeler)
+                         {
+                             var odemeDonemi = DateTime.ParseExact(odeme.OdemeDonemi, "yyyy-MM-dd", null);
+                             var odemeGecikmesi = odeme.OdemeTarihi > odemeDonemi && odeme.OdemeDurumu == OdemeDurumu.Odendi;
+                            
+                            <tr>
+                                <td>@odemeDonemi.ToString("dd.MM.yyyy")</td>
+                                <td>
+                                    @if (odemeGecikmesi)
+                                    {
+                                        <span style="color: #ffc107; font-weight: bold;">@odeme.OdemeTarihi.ToString("dd.MM.yyyy")</span>
+                                    }
+                                    else
+                                    {
+                                        @odeme.OdemeTarihi.ToString("dd.MM.yyyy")
+                                    }
+                                </td>
+                                <td>-</td>
+                                <td>@odeme.Tutar.ToString("C")</td>
+                                <td>@odeme.Aciklama</td>
+                            </tr>
+                        }
+                    }
+                    
+                    @if (ViewBag.KontorPaketSatislar != null)
+                    {
+                        @foreach (var satis in ViewBag.KontorPaketSatislar)
+                        {
+                            <tr>
+                                <td>-</td>
+                                <td>@satis.SatisTarihi.ToString("dd.MM.yyyy")</td>
+                                <td>@satis.IlanSayisi</td>
+                                <td>@satis.NetTutar.ToString("C")</td>
+                                <td>@satis.Aciklama</td>
+                            </tr>
+                        }
+                    }
+                    
+                    @if (ViewBag.DinamikIlanSatislar != null)
+                    {
+                        @foreach (var satis in ViewBag.DinamikIlanSatislar)
+                        {
+                            <tr>
+                                <td>-</td>
+                                <td>@satis.SatisTarihi.ToString("dd.MM.yyyy")</td>
+                                <td>@satis.IstenenIlanSayisi</td>
+                                <td>@satis.NetTutar.ToString("C")</td>
+                                <td>@satis.Aciklama</td>
+                            </tr>
+                        }
+                    }
+                    
+                    @{
+                        var sabitUcretVarMi = ViewBag.SabitUcretOdemeler != null && ((IEnumerable<object>)ViewBag.SabitUcretOdemeler).Any();
+                        var kontorPaketVarMi = ViewBag.KontorPaketSatislar != null && ((IEnumerable<object>)ViewBag.KontorPaketSatislar).Any();
+                        var dinamikIlanVarMi = ViewBag.DinamikIlanSatislar != null && ((IEnumerable<object>)ViewBag.DinamikIlanSatislar).Any();
+                    }
+                    
+                    @if (!sabitUcretVarMi && !kontorPaketVarMi && !dinamikIlanVarMi)
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">Henüz işlem bulunmuyor</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

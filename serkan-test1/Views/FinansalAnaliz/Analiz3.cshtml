@@ -157,9 +157,9 @@
                                             <h6 class="mb-0">NPV (Net Bugünkü Değer)</h6>
                                         </div>
                                         <div class="card-body">
-                                            <div class="alert alert-info mb-3">
-                                                <small><strong>NPV Nedir?</strong> Gelecekteki nakit akışlarının bugünkü değerini hesaplar. Pozitif NPV = Kârlı yatırım.</small>
-                                            </div>
+                                                                                         <div class="alert alert-info mb-3">
+                                                 <small><strong>NPV Nedir?</strong> Gelecekteki nakit akışlarının bugünkü değerini hesaplar. Zaman değeri oranı ile gelecekteki para bugüne indirgenir. Pozitif NPV = Kârlı yatırım.</small>
+                                             </div>
                                             <form id="npvForm">
                                                 <div class="mb-2">
                                                     <label for="npvYatirim" class="form-label">Başlangıç Yatırımı (₺)</label>
@@ -170,9 +170,9 @@
                                                 </div>
                                                                                                  <div class="row">
                                                      <div class="col-6">
-                                                         <label for="npvFaiz" class="form-label">İskonto Oranı (%)</label>
+                                                         <label for="npvFaiz" class="form-label">Zaman Değeri Oranı (%)</label>
                                                          <input type="text" class="form-control" id="npvFaiz" placeholder="10" required>
-                                                         <small class="text-muted">Risk primi, enflasyon ve alternatif yatırım getirisi</small>
+                                                         <small class="text-muted">Risk primi, enflasyon ve alternatif yatırım getirisi (İskonto oranı)</small>
                                                      </div>
                                                      <div class="col-6">
                                                          <label for="npvSure" class="form-label">Süre (Yıl)</label>
@@ -312,9 +312,9 @@
                                             <h6 class="mb-0">Hassasiyet (Sensitivity) Analizi</h6>
                                         </div>
                                         <div class="card-body">
-                                            <div class="alert alert-info mb-3">
-                                                <small><strong>Sensitivity Nedir?</strong> Gelir değişimlerinin NPV üzerindeki etkisini analiz eder.</small>
-                                            </div>
+                                                                                         <div class="alert alert-info mb-3">
+                                                 <small><strong>Sensitivity Nedir?</strong> Gelir değişimlerinin NPV üzerindeki etkisini analiz eder. Zaman değeri oranı ile gelecekteki nakit akışları bugüne indirgenir.</small>
+                                             </div>
                                             <form id="sensForm">
                                                 <div class="mb-2">
                                                     <label for="sensYatirim" class="form-label">Yatırım Miktarı (₺)</label>
@@ -324,9 +324,9 @@
                                                     <small class="text-muted">Yıllık gelir yukarıdaki gelir/gider verilerinden hesaplanacaktır.</small>
                                                 </div>
                                                                                                  <div class="mb-2">
-                                                     <label for="sensFaiz" class="form-label">İskonto Oranı (%)</label>
+                                                     <label for="sensFaiz" class="form-label">Zaman Değeri Oranı (%)</label>
                                                      <input type="text" class="form-control" id="sensFaiz" placeholder="10" required>
-                                                     <small class="text-muted">Risk primi, enflasyon ve alternatif yatırım getirisi</small>
+                                                     <small class="text-muted">Risk primi, enflasyon ve alternatif yatırım getirisi (İskonto oranı)</small>
                                                  </div>
                                                 <button type="submit" class="btn btn-dark btn-sm w-100">Sensitivity Hesapla</button>
                                             </form>

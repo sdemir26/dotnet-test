@@ -1,0 +1,229 @@
+@model OdemeTakip.Controllers.DashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Admin Dashboard</h1>
+    
+    <!-- Özet Kartları -->
+    <div class="row">
+        <!-- Toplam Firma Sayısı -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Toplam Firma</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.ToplamFirmaSayisi</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-building fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pasif Firma Sayısı -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                Pasif Firma</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.PasifFirmaSayisi</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-times-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bu Ay Toplam Gelir -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Bu Ay Gelir</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.BuAyToplamGelir.ToString("C")</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bu Yıl Toplam Gelir -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Bu Yıl Gelir</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.BuYilToplamGelir.ToString("C")</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- İkinci Satır Kartları -->
+    <div class="row">
+        <!-- Ödenmemiş Sabit Ücret Sayısı -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-secondary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                                Ödenmemiş Sabit Ücret</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.OdenmemisSabitUcretSayisi</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bu Ay Satın Alınan İlan Sayısı -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Bu Ay Satın Alınan İlan</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.BuAySatilanIlanSayisi</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bu Yıl Satın Alınan İlan Sayısı -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Bu Yıl Satın Alınan İlan</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.BuYilSatilanIlanSayisi</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-chart-line fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Son Ödemeler Tablosu -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Son Ödemeler</h6>
+                </div>
+                <div class="card-body">
+                    @if (Model.SonOdemeler.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-bordered" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Firma Adı</th>
+                                        <th>Ödeme Tarihi</th>
+                                        <th>Tutar</th>
+                                        <th>Fatura No</th>
+                                        <th>İşlem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var odeme in Model.SonOdemeler)
+                                    {
+                                        <tr>
+                                            <td>@odeme.Firma?.FirmaAdi</td>
+                                            <td>@odeme.OdemeTarihi.ToString("dd.MM.yyyy")</td>
+                                            <td>@odeme.Tutar.ToString("C")</td>
+                                            <td>@odeme.FaturaNo</td>
+                                            <td>
+                                                <a href="@Url.Action("FirmaDetay", "Admin", new { id = odeme.FirmaId })" 
+                                                   class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-eye"></i> Detay
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Henüz ödeme bulunmuyor.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bilgi Kartı -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Sistem Bilgileri</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-info-circle text-info"></i> Sabit Ücret Sistemi</h6>
+                            <ul class="mb-0">
+                                <li>Aylık sabit ücret: <strong>250 TL</strong></li>
+                                <li>5 ilan hakkı dahil</li>
+                                <li>Ödenmeyen sabit ücret → Pasif durum</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-shopping-cart text-success"></i> Kontör Sistemi</h6>
+                            <ul class="mb-0">
+                                <li>Dinamik ilan satın alma</li>
+                                <li>Paket satın alma</li>
+                                <li>Tüm ödemeler peşin</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Admin Dashboard yüklendi');
+        });
+    </script>
+}

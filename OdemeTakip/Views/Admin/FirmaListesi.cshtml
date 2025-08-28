@@ -1,0 +1,76 @@
+@using OdemeTakip.Models
+@{
+    ViewData["Title"] = "Firma Listesi";
+}
+
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Firma Listesi</h1>
+    
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Tüm Firmalar</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Firma Adı</th>
+                            <th>Firma Ünvanı</th>
+                            <th>Üyelik Durumu</th>
+                            <th>Toplam Kullanılan İlan</th>
+                            <th>Sabit Ücret Borcu</th>
+                            <th>Üyelik Başlangıç</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var firma in ViewBag.Firmalar)
+                        {
+                            <tr>
+                                <td>@firma.FirmaAdi</td>
+                                <td>@firma.FirmaUnvani</td>
+                                <td>
+                                    @if (firma.UyelikDurumu == UyelikDurumu.Aktif)
+                                    {
+                                        <span style="background-color: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Aktif</span>
+                                    }
+                                    else if (firma.UyelikDurumu == UyelikDurumu.Beklemede)
+                                    {
+                                        <span style="background-color: #dc3545; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Beklemede</span>
+                                    }
+                                    else if (firma.UyelikDurumu == UyelikDurumu.Pasif)
+                                    {
+                                        <span style="background-color: #ffc107; color: black; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Pasif</span>
+                                    }
+                                    else
+                                    {
+                                        <span style="background-color: #6c757d; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">@firma.UyelikDurumu</span>
+                                    }
+                                </td>
+                                <td>@firma.ToplamKullanilanIlan</td>
+                                <td>
+                                    @if (firma.SabitUcretBorc > 0)
+                                    {
+                                        <span class="text-danger font-weight-bold">Var</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-success">Yok</span>
+                                    }
+                                </td>
+                                <td>@firma.UyelikBaslangicTarihi.ToString("dd.MM.yyyy")</td>
+                                <td>
+                                    <a href="@Url.Action("FirmaDetay", "Admin", new { id = firma.Id })" 
+                                       class="btn btn-sm btn-primary">
+                                        <i class="fas fa-eye"></i> Detay
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

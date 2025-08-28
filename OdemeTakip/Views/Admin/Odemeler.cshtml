@@ -1,0 +1,153 @@
+@using OdemeTakip.Models
+@{
+    ViewData["Title"] = "Ödemeler";
+}
+
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Ödemeler</h1>
+    
+    <!-- Sabit Ücret Ödemeleri -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Sabit Ücret Ödemeleri</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Firma</th>
+                            <th>Ödeme Tarihi</th>
+                            <th>Dönem</th>
+                            <th>Tutar</th>
+                            <th>Durum</th>
+                            <th>Fatura No</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var odeme in ViewBag.SabitUcretOdemeler)
+                        {
+                            <tr>
+                                <td>@odeme.Firma?.FirmaAdi</td>
+                                <td>@odeme.OdemeTarihi.ToString("dd.MM.yyyy")</td>
+                                <td>@odeme.OdemeDonemi</td>
+                                <td>@odeme.Tutar.ToString("C")</td>
+                                <td>
+                                    @if (odeme.OdemeDurumu == OdemeDurumu.Odendi)
+                                    {
+                                        <span style="background-color: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Ödendi</span>
+                                    }
+                                    else
+                                    {
+                                        <span style="background-color: #dc3545; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Bekliyor</span>
+                                    }
+                                </td>
+                                <td>@odeme.FaturaNo</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Kontör Paket Satışları -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Kontör Paket Satışları</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Firma</th>
+                            <th>Satış Tarihi</th>
+                            <th>Paket</th>
+                            <th>İlan Sayısı</th>
+                            <th>Birim Fiyat</th>
+                            <th>İskonto</th>
+                            <th>Net Tutar</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var satis in ViewBag.KontorPaketSatislar)
+                        {
+                            <tr>
+                                <td>@satis.Firma?.FirmaAdi</td>
+                                <td>@satis.SatisTarihi.ToString("dd.MM.yyyy")</td>
+                                <td>@satis.KontorPaketi?.PaketAdi</td>
+                                <td>@satis.IlanSayisi</td>
+                                <td>@satis.BirimFiyat.ToString("C")</td>
+                                <td>%@satis.IskontoOrani</td>
+                                <td>@satis.NetTutar.ToString("C")</td>
+                                <td>
+                                    @if (satis.OdemeDurumu == OdemeDurumu.Odendi)
+                                    {
+                                        <span style="background-color: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Ödendi</span>
+                                    }
+                                    else
+                                    {
+                                        <span style="background-color: #dc3545; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Bekliyor</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dinamik İlan Satışları -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Dinamik İlan Satışları</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Firma</th>
+                            <th>Satış Tarihi</th>
+                            <th>İstenen İlan</th>
+                            <th>Mevcut Toplam</th>
+                            <th>Yeni Toplam</th>
+                            <th>Birim Fiyat</th>
+                            <th>İskonto</th>
+                            <th>Net Tutar</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var satis in ViewBag.DinamikIlanSatislar)
+                        {
+                            <tr>
+                                <td>@satis.Firma?.FirmaAdi</td>
+                                <td>@satis.SatisTarihi.ToString("dd.MM.yyyy")</td>
+                                <td>@satis.IstenenIlanSayisi</td>
+                                <td>@satis.MevcutToplamIlan</td>
+                                <td>@satis.YeniToplamIlan</td>
+                                <td>@satis.BirimFiyat.ToString("C")</td>
+                                <td>%@satis.IskontoOrani</td>
+                                <td>@satis.NetTutar.ToString("C")</td>
+                                <td>
+                                    @if (satis.OdemeDurumu == OdemeDurumu.Odendi)
+                                    {
+                                        <span style="background-color: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Ödendi</span>
+                                    }
+                                    else
+                                    {
+                                        <span style="background-color: #dc3545; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Bekliyor</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

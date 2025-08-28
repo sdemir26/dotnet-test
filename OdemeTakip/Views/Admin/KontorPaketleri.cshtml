@@ -1,0 +1,149 @@
+@{
+    ViewData["Title"] = "Kontör Paketleri";
+}
+
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Kontör Paketleri</h1>
+    
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Mevcut Paketler</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Paket Adı</th>
+                            <th>İlan Sayısı</th>
+                            <th>Paket Fiyatı</th>
+                            <th>Birim İlan Fiyatı</th>
+                            <th>İskonto Oranı</th>
+                            <th>Net Fiyat</th>
+                            <th>Açıklama</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.KontorPaketleri != null)
+                        {
+                            @foreach (var paket in ViewBag.KontorPaketleri)
+                            {
+                                <tr>
+                                    <td>@paket.PaketAdi</td>
+                                    <td>@paket.IlanSayisi</td>
+                                    <td>@paket.PaketFiyati.ToString("C")</td>
+                                    <td>@paket.BirimIlanFiyati.ToString("C")</td>
+                                    <td>%@paket.IskontoOrani</td>
+                                    <td>@paket.NetFiyat.ToString("C")</td>
+                                    <td>@paket.Aciklama</td>
+                                    <td>
+                                        @if (paket.Aktif)
+                                        {
+                                            <span class="badge badge-success">Aktif</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-secondary">Pasif</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center text-muted">Henüz paket bulunmuyor</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Paket Satış İstatistikleri -->
+    <div class="row">
+        <div class="col-xl-6 col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-success">Paket Satış İstatistikleri</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Paket</th>
+                                    <th>Satış Sayısı</th>
+                                    <th>Toplam Gelir</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.PaketSatisIstatistikleri != null)
+                                {
+                                    @foreach (var istatistik in ViewBag.PaketSatisIstatistikleri)
+                                    {
+                                        <tr>
+                                            <td>@istatistik.PaketAdi</td>
+                                            <td>@istatistik.SatisSayisi</td>
+                                            <td>@istatistik.ToplamGelir.ToString("C")</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted">Henüz satış bulunmuyor</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-6 col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-info">Son Paket Satışları</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Firma</th>
+                                    <th>Paket</th>
+                                    <th>Tarih</th>
+                                    <th>Tutar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.SonPaketSatislar != null)
+                                {
+                                    @foreach (var satis in ViewBag.SonPaketSatislar)
+                                    {
+                                        <tr>
+                                            <td>@satis.Firma?.FirmaAdi</td>
+                                            <td>@satis.KontorPaketi?.PaketAdi</td>
+                                            <td>@satis.SatisTarihi.ToString("dd.MM.yyyy")</td>
+                                            <td>@satis.NetTutar.ToString("C")</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">Henüz satış bulunmuyor</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

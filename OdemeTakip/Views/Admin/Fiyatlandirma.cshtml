@@ -1,0 +1,126 @@
+@using OdemeTakip.Models
+@{
+    var fiyatlandirmalar = ViewBag.Fiyatlandirmalar as List<dynamic>;
+    var sistemAyarlari = ViewBag.SistemAyarlari as dynamic;
+}
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Fiyatlandırma</h1>
+</div>
+
+<div class="row">
+    <div class="col-xl-12 col-lg-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Kademeli Fiyatlandırma Sistemi</h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                            Aylık Sabit Ücret
+                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                            @(sistemAyarlari?.AylikSabitUcret.ToString() ?? "250,00 ₺")
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                            Birim İlan Fiyatı
+                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                            @(sistemAyarlari?.BirimIlanFiyati.ToString() ?? "50,00 ₺")
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-tag fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Kademe</th>
+                                <th>İlan Aralığı</th>
+                                <th>Üst Barem</th>
+                                <th>Birim Fiyat</th>
+                                <th>Sabit Ücret</th>
+                                <th>İskonto</th>
+                                <th>Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var kademe in fiyatlandirmalar)
+                            {
+                                var indirimliBirimFiyat = (sistemAyarlari?.BirimIlanFiyati ?? 50.00m) * (1 - kademe.IskontoOrani / 100);
+                                var kademeClass = kademe.IskontoOrani switch
+                                {
+                                    0 => "table-light",
+                                    5 => "table-info",
+                                    10 => "table-primary",
+                                    15 => "table-success",
+                                    20 => "table-warning",
+                                    25 => "table-danger",
+                                    30 => "table-secondary",
+                                    35 => "table-dark",
+                                    _ => "table-light"
+                                };
+                                
+                                <tr class="@kademeClass">
+                                    <td><strong>@kademe.Kademe</strong></td>
+                                    <td>@kademe.MinIlan - @kademe.MaxIlan</td>
+                                    <td>@kademe.UstBarem</td>
+                                    <td>@kademe.BirimFiyat.ToString("0.00") ₺</td>
+                                    <td>@kademe.SabitFiyat.ToString("0.00") ₺</td>
+                                    <td>
+                                        @if (kademe.IskontoOrani > 0)
+                                        {
+                                            <span class="badge bg-success">%@kademe.IskontoOrani</span>
+                                            <br><small class="text-muted">@indirimliBirimFiyat.ToString("0.00") ₺</small>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">%@kademe.IskontoOrani</span>
+                                        }
+                                    </td>
+                                    <td>@kademe.Aciklama</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="alert alert-info mt-4">
+                    <h6><i class="fas fa-info-circle"></i> Fiyatlandırma Sistemi Nasıl Çalışır?</h6>
+                    <ul class="mb-0">
+                        <li><strong>Sabit Ücret:</strong> Her ay 250₺ ödenir ve 5 ilan hakkı verilir</li>
+                        <li><strong>Kademeli İskonto:</strong> İlan sayısı arttıkça iskonto oranı artar</li>
+                        <li><strong>Dinamik Satın Alma:</strong> İhtiyaç duydukça ek ilan satın alınabilir</li>
+                        <li><strong>Paket Satın Alma:</strong> Önceden belirlenmiş paketlerden seçim yapılabilir</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
